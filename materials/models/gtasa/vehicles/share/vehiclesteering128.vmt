@@ -1,0 +1,6 @@
+"VertexlitGeneric"
+{
+"$basetexture" "models/gtasa/vehicles/share/vehiclesteering128"
+"$nocull" 1
+"$alphatest" 1
+}

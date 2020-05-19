@@ -1,0 +1,9 @@
+"VertexlitGeneric"
+{
+"$basetexture" "models/gtasa/vehicles/share/vehicletyres128"
+"$envmap" "env_cubemap"
+"$envmaptint" "[.2 .2 .2]"
+"$envmapmask" "models/gtasa/vehicles/share/xvehicleenv128"
+"$blendtintbybasealpha" 1
+"$halflambert" 1
+}

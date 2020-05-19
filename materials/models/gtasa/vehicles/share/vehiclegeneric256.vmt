@@ -1,0 +1,7 @@
+"VertexlitGeneric"
+{
+"$basetexture" "models/gtasa/vehicles/share/vehiclegeneric256"
+"$blendtintbybasealpha" 1
+"$nocull" 1
+"$halflambert" 1
+}
