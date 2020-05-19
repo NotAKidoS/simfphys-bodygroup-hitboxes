@@ -28,3 +28,5 @@ Almost complete rewrite, damage improvments, health, and fuel cap flag.
 
 https://youtu.be/cXy6QwvxTRY
 
+# disclaimer
+*The code is shit.* I'm trying to make it scalable but theres a lot of things that fly over my head, so once I have toyed around with it enough and have integrated everything I will need of it then it'll be rewritten from scratch with a hopfully thought out map/plan.
