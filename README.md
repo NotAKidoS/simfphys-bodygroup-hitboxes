@@ -17,9 +17,14 @@ This addon does not include any tools to create hitboxes easily, just allows for
 
 # videos (in order of creation to now)
 First itteration of the addon, not much included other than breaking when shot.
+
 https://youtu.be/IFaR70mHBOo
+
 Update, bodygroups drop and spawn gibs with the vehicles color.
+
 https://youtu.be/PlCo2sHxk0w
+
 Almost complete rewrite, damage improvments, health, and fuel cap flag.
+
 https://youtu.be/cXy6QwvxTRY
 
