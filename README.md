@@ -37,4 +37,4 @@ LATEST: Added glass shatter, damaged engine sound, gib collision sounds, grass/d
 https://youtu.be/n5IGriERNwM
 
 # disclaimer
-*The code is shit.* I'm trying to make it scalable but theres a lot of things that fly over my head, so once I have toyed around with it enough and have integrated everything I will need of it then it'll be rewritten from scratch with a hopfully thought out map/plan.
+*The code is shit.* Some parts of the script are not perfected yet and will be reworked once I've finally found and implemented all the features needed.
