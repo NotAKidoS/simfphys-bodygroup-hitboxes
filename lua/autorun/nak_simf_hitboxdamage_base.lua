@@ -10,19 +10,39 @@
 
 local Entity = FindMetaTable( "Entity" )
 
-if SERVER then
-	util.AddNetworkString("NAKSendSimfphysHitbox")
+
+if CLIENT then
+	net.Receive("simfphys_gtasa_glassbreak_fx", function(length)
+		local self = net.ReadEntity()
+		local id = net.ReadString()
+		if IsValid( self ) then
+			local effectdata = EffectData()
+			effectdata:SetOrigin( self:LocalToWorld(self.hbinfo[id].glasspos) )
+			util.Effect( "simf_gtasa_glassbreak", effectdata )
+		end
+	end)
 end
 
-
+if SERVER then
+	util.AddNetworkString("NAKSendSimfphysHitbox")
+	util.AddNetworkString("simfphys_gtasa_glassbreak_fx")
+end
 
 local function SpawnGib(self, id)
 
 	local hbinfo = self.hbinfo
+	
+	if hbinfo[id].glass then
+		self:EmitSound("Glass.BulletImpact")
+		net.Start( "simfphys_gtasa_glassbreak_fx" )
+			net.WriteEntity( self )
+			net.WriteString( id )
+		net.Broadcast()
+	end
 
 	if (hbinfo[id].gibmodel) then
 		local offset = hbinfo[id].giboffset and hbinfo[id].giboffset or Vector(0,0,0)
-		local bprop = ents.Create( "gmod_sent_vehicle_fphysics_livegib" )
+		local bprop = ents.Create( "gmod_simf_gtasa_nofire_gib" )
 		-- print(self:LocalToWorld(offset) - self:GetPos(), self:GetPos())
 		bprop:SetModel( hbinfo[id].gibmodel )
 		bprop:SetPos( self:LocalToWorld(offset) ) 
@@ -76,10 +96,13 @@ local function SharedDamage(self, damagePos, dmgAmount, type)
 			hbinfo[id].curhealth = hbinfo[id].curhealth - dmgAmount
 			
 			
-			if hbinfo[id].curhealth < hbinfo[id].health / 0.5 && self.hbinfo[id].damaged != 1 then 
+			if hbinfo[id].curhealth < 70%hbinfo[id].health && self.hbinfo[id].damaged != 1 then 
 				self.hbinfo[id].damaged = 1
 				if (self:GetBodygroup( hbinfo[id].bdgroup ) + 1) < (self:GetBodygroupCount( hbinfo[id].bdgroup ) ) then
 					self:SetBodygroup( hbinfo[id].bdgroup, (self:GetBodygroup( hbinfo[id].bdgroup ) + 1) )
+					if hbinfo[id].glass then
+						self:EmitSound("gtasa/sfx/damage_light.wav")
+					end
 				end
 			end
 			
@@ -113,7 +136,6 @@ local function OverrideTakeDamage(self,hbinfo)
 
 		self:_OnTakeDamage(dmginfo)
 		
-		
 	end
 end
 
@@ -126,6 +148,10 @@ local function OverridePhysicsDamage(self,hbinfo)
 	//override the old function to call our code first, then call the old stored one
 	
 	self.PhysicsCollide  = function(ent, data, physobj) ---START OF FUNCTION
+	
+		if (data.Speed > 50 && data.DeltaTime > 0.8 ) then
+			self:EmitSound( "gtasa/sfx/damage_hvy"..math.random(1,7)..".wav" )
+		end
 	
 		//dont do damage if hitting flesh (player walking into a vehicle)
 		if IsValid( data.HitEntity ) then

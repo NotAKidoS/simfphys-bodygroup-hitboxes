@@ -18,18 +18,18 @@ if CLIENT then
 		render.ModelMaterialOverride()
 		render.SetBlend(1)
 	end
-	net.Receive("simfphys_explosion_fx", function(length)
+	net.Receive("simfphys_gtasa_explosion_fx", function(length)
 		local self = net.ReadEntity()
 		if IsValid( self ) then
 			local effectdata = EffectData()
 				effectdata:SetOrigin( self:GetPos() )
-			util.Effect( "simfphys_explosion", effectdata )
+			util.Effect( "simf_gtasa_explosion", effectdata )
 		end
 	end)
 end
 
 if SERVER then
-	util.AddNetworkString( "simfphys_explosion_fx" )
+	util.AddNetworkString( "simfphys_gtasa_explosion_fx" )
 	
 	function ENT:Initialize()
 		self:PhysicsInit( SOLID_VPHYSICS )
@@ -52,7 +52,7 @@ if SERVER then
 		timer.Simple( 0.05, function()
 			if not IsValid( self ) then return end
 			if self.MakeSound == true then
-				net.Start( "simfphys_explosion_fx" )
+				net.Start( "simfphys_gtasa_explosion_fx" )
 					net.WriteEntity( self )
 				net.Broadcast()
 				
@@ -84,7 +84,7 @@ if SERVER then
 					self.particleeffect:Activate()
 					self.particleeffect:SetParent( self )
 					
-					self.FireSound = CreateSound(self, "ambient/fire/firebig.wav")
+					self.FireSound = CreateSound(self, "gtasa/sfx/fire_loop.wav")
 					self.FireSound:Play()
 				end)
 				

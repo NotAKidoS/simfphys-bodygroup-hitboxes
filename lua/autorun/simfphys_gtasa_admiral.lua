@@ -48,7 +48,7 @@ local V = {
 			hitboxes.pfdoor = {max = Vector(31.641,-40.466,-15.112), min = Vector(-13.111,-34.092,8.405), bdgroup = 7, gibmodel = "models/gtasa/vehicles/admiral/door_rf_dam.mdl", giboffset = Vector(30,-40,0), health=100 }
 			hitboxes.drdoor = {min = Vector(-13.975,40.466,-15.112), max = Vector(-48.503,34.092,8.405), bdgroup = 6, gibmodel = "models/gtasa/vehicles/admiral/door_lr_dam.mdl", giboffset = Vector(-15,40,0), health=100 }
 			hitboxes.prdoor = {max = Vector(-13.975,-40.466,-15.112), min = Vector(-48.503,-34.092,8.405), bdgroup = 8, gibmodel = "models/gtasa/vehicles/admiral/door_rr_dam.mdl", giboffset = Vector(-15,-40,0), health=100 }
-			hitboxes.windowf = {min = Vector(38.901,34.251,9.725), max = Vector(10.353,-34.251,27.39), bdgroup = 9, health=6 }
+			hitboxes.windowf = {min = Vector(38.901,34.251,9.725), max = Vector(10.353,-34.251,27.39), bdgroup = 9, health=6, glass=true, glasspos=Vector(22.645,0,21.77) }
 			
 			hitboxes.gastank = {min = Vector(-69.348,36,7.3), max = Vector(-74.554,39.024,2.377), explode=true }
 			
@@ -56,13 +56,7 @@ local V = {
 			ent:NAKAddHitBoxes(hitboxes)
 			
 			
-			for i = 1, table.Count( ent.Wheels ) do
-				local Wheel = ent.Wheels[i]
-				-- SetProxyColor( nil, WheelGhost, ColorTable )
-				Wheel.snd_skid = "gtasa/sfx/tireskid.wav"
-			end
-			
-			
+			ent:NAKSimfGTASA() -- function that'll do all the GTASA changes for you
 		end,
 		
 		OnTick = function(ent) 
@@ -72,141 +66,6 @@ local V = {
 				ent:SetSubMaterial( 4 ,"models/gtasa/vehicles/share/vehiclelights128" )
             end
         end,	
-		
-		
-		ExplodeVehicle = function(self) 
-			if not IsValid( self ) then return end
-			if self.destroyed then return end
-			
-			self.destroyed = true
-
-			local ply = self.EntityOwner
-			local skin = self:GetSkin()
-			local Col = self:GetColor()
-			Col.r = Col.r * 0.8
-			Col.g = Col.g * 0.8
-			Col.b = Col.b * 0.8
-			
-			if self.GibModels then
-				local bprop = ents.Create( "gmod_sent_vehicle_fphysics_gtasa_custom_gib" )
-				bprop:SetModel( self.GibModels[1] )
-				bprop:SetPos( self:GetPos() )
-				bprop:SetAngles( self:GetAngles() )
-				bprop.MakeSound = true
-				bprop:Spawn()
-				bprop:Activate()
-				bprop:GetPhysicsObject():SetVelocity( self:GetVelocity() + Vector(math.random(-5,5),math.random(-5,5),math.random(150,250)) ) 
-				bprop:GetPhysicsObject():SetMass( self.Mass * 0.75 )
-				bprop.DoNotDuplicate = true
-				bprop:SetColor( Col )
-				bprop:SetSkin( skin )
-				
-				self.Gib = bprop
-				
-				simfphys.SetOwner( ply , bprop )
-				
-				if IsValid( ply ) then
-					undo.Create( "Gib" )
-					undo.SetPlayer( ply )
-					undo.AddEntity( bprop )
-					undo.SetCustomUndoText( "Undone Gib" )
-					undo.Finish( "Gib" )
-					ply:AddCleanup( "Gibs", bprop )
-				end
-				
-				for i = 2, table.Count( self.GibModels ) do
-					local prop = ents.Create( "gmod_sent_vehicle_fphysics_gib" )
-					prop:SetModel( self.GibModels[i] )			
-					prop:SetPos( self:GetPos() )
-					prop:SetAngles( self:GetAngles() )
-					prop:SetOwner( bprop )
-					prop:Spawn()
-					prop:Activate()
-					prop.DoNotDuplicate = true
-					bprop:DeleteOnRemove( prop )
-					
-					local PhysObj = prop:GetPhysicsObject()
-					if IsValid( PhysObj ) then
-						PhysObj:SetVelocityInstantaneous( VectorRand() * 500 + self:GetVelocity() + Vector(0,0,math.random(150,250)) )
-						PhysObj:AddAngleVelocity( VectorRand() )
-					end
-					
-					
-					simfphys.SetOwner( ply , prop )
-				end
-			else
-				
-				local bprop = ents.Create( "gmod_sent_vehicle_fphysics_gib" )
-				bprop:SetModel( self:GetModel() )			
-				bprop:SetPos( self:GetPos() )
-				bprop:SetAngles( self:GetAngles() )
-				bprop.MakeSound = true
-				bprop:Spawn()
-				bprop:Activate()
-				bprop:GetPhysicsObject():SetVelocity( self:GetVelocity() + Vector(math.random(-5,5),math.random(-5,5),math.random(150,250)) ) 
-				bprop:GetPhysicsObject():SetMass( self.Mass * 0.75 )
-				bprop.DoNotDuplicate = true
-				bprop:SetColor( Col )
-				bprop:SetSkin( skin )
-				
-				self.Gib = bprop
-				
-				simfphys.SetOwner( ply , bprop )
-				
-				if IsValid( ply ) then
-					undo.Create( "Gib" )
-					undo.SetPlayer( ply )
-					undo.AddEntity( bprop )
-					undo.SetCustomUndoText( "Undone Gib" )
-					undo.Finish( "Gib" )
-					ply:AddCleanup( "Gibs", bprop )
-				end
-				
-				if self.CustomWheels == true and not self.NoWheelGibs then
-					for i = 1, table.Count( self.GhostWheels ) do
-						local Wheel = self.GhostWheels[i]
-						if IsValid(Wheel) then
-							local prop = ents.Create( "gmod_sent_vehicle_fphysics_gib" )
-							prop:SetModel( Wheel:GetModel() )			
-							prop:SetPos( Wheel:LocalToWorld( Vector(0,0,0) ) )
-							prop:SetAngles( Wheel:LocalToWorldAngles( Angle(0,0,0) ) )
-							prop:SetOwner( bprop )
-							prop:Spawn()
-							prop:Activate()
-							prop:GetPhysicsObject():SetVelocity( self:GetVelocity() + Vector(math.random(-5,5),math.random(-5,5),math.random(0,25)) )
-							prop:GetPhysicsObject():SetMass( 20 )
-							prop.DoNotDuplicate = true
-							bprop:DeleteOnRemove( prop )
-							
-							simfphys.SetOwner( ply , prop )
-						end
-					end
-				end
-			end
-
-			local Driver = self:GetDriver()
-			if IsValid( Driver ) then
-				if self.RemoteDriver ~= Driver then
-					Driver:TakeDamage( Driver:Health() + Driver:Armor(), self.LastAttacker or Entity(0), self.LastInflictor or Entity(0) )
-				end
-			end
-			
-			if self.PassengerSeats then
-				for i = 1, table.Count( self.PassengerSeats ) do
-					local Passenger = self.pSeat[i]:GetDriver()
-					if IsValid( Passenger ) then
-						Passenger:TakeDamage( Passenger:Health() + Passenger:Armor(), self.LastAttacker or Entity(0), self.LastInflictor or Entity(0) )
-					end
-				end
-			end
-
-			self:Extinguish() 
-			
-			self:OnDestroyed()
-			
-			self:Remove()
-        end,
-
 		
 		CustomWheels = true,
 		CustomSuspensionTravel = 1.5,
