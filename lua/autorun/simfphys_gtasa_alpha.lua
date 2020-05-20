@@ -37,16 +37,22 @@ local V = {
 			end		
 			
 			local hitboxes = {}
-			hitboxes.hood = {max = Vector(32.817,-32.525,10), min = Vector(96,32.523,-2.548), bdgroup = 1, gibmodel = "models/gtasa/vehicles/alpha/bonnet_dam.mdl", giboffset = Vector(32,-2,8), health=120 }
-			hitboxes.trunk = {max = Vector(-70.664,30.356,12), min = Vector(-95.053,-30.356,0.953), bdgroup = 2, gibmodel = "models/gtasa/vehicles/alpha/boot_dam.mdl", giboffset = Vector(-72,0,13), health=120 }
-			hitboxes.bumperf = {max = Vector(72.052,-42.048,-4), min = Vector(96,42.048,-22), bdgroup = 3, gibmodel = "models/gtasa/vehicles/alpha/bump_front_dam.mdl", giboffset = Vector(90,-34,-15), health=50 }
+			hitboxes.hood = {max = Vector(32.817,-40,10), min = Vector(98,40,-20), bdgroup = 1, gibmodel = "models/gtasa/vehicles/alpha/bonnet_dam.mdl", giboffset = Vector(32,-2,8), health=180 }
+			hitboxes.trunk = {max = Vector(-70.664,30.356,12), min = Vector(-100,-30.356,-5), bdgroup = 2, gibmodel = "models/gtasa/vehicles/alpha/boot_dam.mdl", giboffset = Vector(-72,0,13), health=160 }
+			hitboxes.bumperf = {max = Vector(72.052,-42.048,-4), min = Vector(98,42.048,-22), bdgroup = 3, gibmodel = "models/gtasa/vehicles/alpha/bump_front_dam.mdl", giboffset = Vector(90,-34,-15), health=120 }
 			hitboxes.bumperr = {min = Vector(-68.723,-41.032,-4), max = Vector(-101,41.032,-20.368), bdgroup = 4, gibmodel = "models/gtasa/vehicles/alpha/bump_rear_dam.mdl", giboffset = Vector(-87,34,-14), health=120 }
-			hitboxes.dfdoor = {min = Vector(-27.675,41.844,8.499), max = Vector(31.569,34.991,-18.246), bdgroup = 5, gibmodel = "models/gtasa/vehicles/alpha/door_lf_dam.mdl", giboffset = Vector(29,38,-5.5), health=90 }
-			hitboxes.pfdoor = {max = Vector(-27.675,-41.844,8.499), min = Vector(31.569,-34.991,-18.246), bdgroup = 6, gibmodel = "models/gtasa/vehicles/alpha/door_rf_dam.mdl", giboffset = Vector(29,-38.5,-5.5), health=90 }
+			hitboxes.dfdoor = {min = Vector(-34,43,8.499), max = Vector(34,34.991,-22), bdgroup = 5, gibmodel = "models/gtasa/vehicles/alpha/door_lf_dam.mdl", giboffset = Vector(29,38,-5.5), health=125 }
+			hitboxes.pfdoor = {max = Vector(-34,-43,8.499), min = Vector(34,-34.991,-22), bdgroup = 6, gibmodel = "models/gtasa/vehicles/alpha/door_rf_dam.mdl", giboffset = Vector(29,-38.5,-5.5), health=125 }
 			hitboxes.windowf = {min = Vector(33.734,32.611,8.056), max = Vector(3.52,-32.611,21.738), bdgroup = 7, health=6 }
 			hitboxes.gastank = {min = Vector(-75.286,-40.8,1.014), max = Vector(-67.834,-38,7.337), explode=true }
 			
 			ent:NAKAddHitBoxes(hitboxes)
+			
+			for i = 1, table.Count( ent.Wheels ) do
+				local Wheel = ent.Wheels[i]
+				-- SetProxyColor( nil, WheelGhost, ColorTable )
+				Wheel.snd_skid = "gtasa/sfx/tireskid.wav"
+			end
 			
 		end,
 		

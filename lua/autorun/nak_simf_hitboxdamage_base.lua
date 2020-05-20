@@ -48,6 +48,10 @@ local function SharedDamage(self, damagePos, dmgAmount, type)
 	
 	local hbinfo = self.hbinfo
 	
+	local damagePos = self:WorldToLocal(self:NearestPoint( self:LocalToWorld(damagePos) ))
+	
+	-- print(damagePos)
+	
 	-- if type == DMG_BLAST then -- horrid attempt at making blast damage do something
 		-- damagePos = self:WorldToLocal(self:NearestPoint( self:LocalToWorld(damagePos) ))
 	-- end
@@ -55,8 +59,14 @@ local function SharedDamage(self, damagePos, dmgAmount, type)
 	-- print(dmgAmount)
 	
 	for id in SortedPairs( hbinfo ) do
+		-- print(id)
+		-- print(damagePos:WithinAABox( hbinfo[id].min, hbinfo[id].max ))
 		if damagePos:WithinAABox( hbinfo[id].min, hbinfo[id].max ) then
-			-- print("PART "..hbinfo[id].bdgroup.." WAS HIT")
+		
+			
+			if hbinfo[id].bdgroup then
+				print("PART "..hbinfo[id].bdgroup.." WAS HIT")
+			end
 			
 			if hbinfo[id].explode then
 				self:ExplodeVehicle()
@@ -66,7 +76,7 @@ local function SharedDamage(self, damagePos, dmgAmount, type)
 			hbinfo[id].curhealth = hbinfo[id].curhealth - dmgAmount
 			
 			
-			if hbinfo[id].curhealth < hbinfo[id].health / 2 && self.hbinfo[id].damaged != 1 then 
+			if hbinfo[id].curhealth < hbinfo[id].health / 0.5 && self.hbinfo[id].damaged != 1 then 
 				self.hbinfo[id].damaged = 1
 				if (self:GetBodygroup( hbinfo[id].bdgroup ) + 1) < (self:GetBodygroupCount( hbinfo[id].bdgroup ) ) then
 					self:SetBodygroup( hbinfo[id].bdgroup, (self:GetBodygroup( hbinfo[id].bdgroup ) + 1) )
@@ -81,7 +91,7 @@ local function SharedDamage(self, damagePos, dmgAmount, type)
 			end
 			
 			-- if dmgAmount > hbinfo[id].health then SharedDamage(self, damagePos, 1) end -- if insane damage, give chance to completely kill the thing
-			if dmgAmount > hbinfo[id].health/1.5 && math.random(0,1) == 1 then SharedDamage(self, damagePos, math.random(10,80)) end -- if insane damage, give chance to completely kill the thing
+			-- if dmgAmount > hbinfo[id].health/1.5 && math.random(0,1) == 1 then SharedDamage(self, damagePos, math.random(10,80)) end -- if insane damage, give chance to completely kill the thing
 			
 		end
 	end
@@ -131,9 +141,10 @@ local function OverridePhysicsDamage(self,hbinfo)
 			if ( (data.Speed) > 1000 && data.DeltaTime > 0.2 ) then
 				local damagePos = ent:WorldToLocal(data.HitPos)
 				SharedDamage(ent, damagePos, data.Speed/12 )
-			elseif data.HitEntity:IsWorld() && ( (data.Speed) > 100 && data.DeltaTime > 0.2 ) then
+			elseif data.HitEntity:IsWorld() && ( (data.Speed) > 60 && data.DeltaTime > 0.2 ) then
 				local damagePos = ent:WorldToLocal(data.HitPos)
 				SharedDamage(ent, damagePos, data.Speed/12 )
+				print("world damage")
 			end
 			
 		elseif ( (data.Speed) > 100 && data.DeltaTime > 0.2 ) then
