@@ -5,6 +5,8 @@ local V = {
 	Category = "GTA:SA - Sports",
 	SpawnOffset = Vector(0,0,10),
 	SpawnAngleOffset = 90,
+	NAKGame = "GTA:SA",
+	NAKType = "Sports",
 	
 	Members = {
 		Mass = 1500,
@@ -49,20 +51,20 @@ local V = {
 			ent:NAKAddHitBoxes(hitboxes)
 			
 			ent:NAKSimfGTASA() -- function that'll do all the GTASA changes for you
+			
+			if ( ProxyColor ) then
+				local CarCols = {}
+				CarCols[1] = {Color(109,24,34)}
+				CarCols[2] = {Color(171,152,143)}
+				CarCols[3] = {Color(32,32,44)}
+				CarCols[4] = {Color(123,10,42)}
+				CarCols[5] = {Color(132,148,171)}
+				CarCols[6] = {Color(93,27,32)}
+				CarCols[7] = {Color(88,89,90)}
+				CarCols[8] = {Color(100,100,100)}
+				ent:SetProxyColor( CarCols[math.random(1,8)] )
+			end
 		end,
-		
-		OnTick = function(ent) 
-            if ent:GetLightsEnabled()	then
-			    ent:SetSubMaterial( 3 ,"models/gtasa/vehicles/share/vehiclelightson128" )
-            else 
-				ent:SetSubMaterial( 3 ,"models/gtasa/vehicles/share/vehiclelights128" )
-            end
-			
-			
-			-- if ent:
-			
-			
-        end,
 		
 		CustomWheels = true,
 		CustomSuspensionTravel = 1.5,
@@ -263,7 +265,19 @@ local light_table = {
 				}
 			},
 		},
-	}
+	},
 	
+	SubMaterials = {
+		off = {
+			Base = {
+				[3] = ""
+			},
+		},
+		on_lowbeam = {
+			Base = {
+				[3] = "models/gtasa/vehicles/share/vehiclelightson128"
+			},
+		},
+	}
 }
 list.Set( "simfphys_lights", "gtasa_alpha", light_table)

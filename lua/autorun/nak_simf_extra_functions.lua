@@ -11,6 +11,22 @@
 //The VehicleExplode function needs to be replaced entirly though as I can not easily replace the entity it spawns, so that mayyyy
 //break eventually, but I will try to implement some sort of way to not override it if it causes trouble.
 
+sound.Add( {
+	name = "NAKGTASAFire",
+	channel = CHAN_STATIC,
+	volume = 0.8,
+	level = 70,
+	pitch = {95, 110},
+	sound = "gtasa/sfx/fire_loop.wav"
+} )
+sound.Add( {
+	name = "NAKGTASAFireEng",
+	channel = CHAN_STATIC,
+	volume = 0.4,
+	level = 72,
+	pitch = {95, 110},
+	sound = "gtasa/sfx/engine_damaged_loop.wav"
+} )
 
 if CLIENT then
 	net.Receive("simf_dmgengine_sound", function(length)
@@ -20,9 +36,32 @@ if CLIENT then
 			self.DamageSnd = CreateSound(self, snd)
 		end
 	end)
+	
+	net.Receive("nakkillveh_fire", function(length)
+		local self = net.ReadEntity()
+		if IsValid( self ) then
+			local delay = 0.1
+			local nextOccurance = 0
+			
+			hook.Add( "Think", "nakkillveh_fire_" .. self:EntIndex(), function()
+				local timeLeft = nextOccurance - CurTime()
+				if timeLeft > 0 then return end
+				if IsValid(self) then
+					local effectdata = EffectData()
+					effectdata:SetOrigin( self:GetEnginePos() + Vector(0,0,25) )
+					effectdata:SetEntity( self )
+					util.Effect( "simf_gtasa_fire", effectdata )
+					nextOccurance = CurTime() + delay
+				else
+					hook.Remove( "Think", "nakkillveh_fire_" .. self:EntIndex() )
+				end
+			end )
+		end
+	end)
 end
 
 if SERVER then util.AddNetworkString( "simf_dmgengine_sound" ) end
+if SERVER then util.AddNetworkString( "nakkillveh_fire" ) end
 
 
 
@@ -102,6 +141,10 @@ function Entity:NAKSimfCustomExplode()
 		local ply = self.EntityOwner
 		local skin = self:GetSkin()
 		local Col = self:GetColor()
+		local prxyClr
+		if ProxyColor then
+			prxyClr = self:GetProxyColor()
+		end
 		Col.r = Col.r * 0.8
 		Col.g = Col.g * 0.8
 		Col.b = Col.b * 0.8
@@ -118,6 +161,7 @@ function Entity:NAKSimfCustomExplode()
 			bprop:GetPhysicsObject():SetMass( self.Mass * 0.75 )
 			bprop.DoNotDuplicate = true
 			bprop:SetColor( Col )
+			if ProxyColor then bprop:SetProxyColor(prxyClr) end
 			bprop:SetSkin( skin )
 			
 			self.Gib = bprop
@@ -141,6 +185,8 @@ function Entity:NAKSimfCustomExplode()
 				prop:SetOwner( bprop )
 				prop:Spawn()
 				prop:Activate()
+				prop:SetColor( Col )
+				if ProxyColor then prop:SetProxyColor(prxyClr) end
 				prop.DoNotDuplicate = true
 				bprop:DeleteOnRemove( prop )
 				
@@ -166,6 +212,7 @@ function Entity:NAKSimfCustomExplode()
 			bprop:GetPhysicsObject():SetMass( self.Mass * 0.75 )
 			bprop.DoNotDuplicate = true
 			bprop:SetColor( Col )
+			if ProxyColor then bprop:SetProxyColor(prxyClr) end
 			bprop:SetSkin( skin )
 			
 			self.Gib = bprop
@@ -227,11 +274,40 @@ function Entity:NAKSimfCustomExplode()
 	end
 end
 
-function Entity:NAKSimfFireTime(eqa)
-	-- print(eqa)
-	if eqa then
-		self:TakeDamage(5)
-		if self:GetCurHealth() == 0 then self:ExplodeVehicle() end
+function Entity:NAKKillVehicle()
+
+	net.Start( "nakkillveh_fire" )
+		net.WriteEntity( self )
+	net.Broadcast()
+	
+	self:EmitSound( "NAKGTASAFire" )
+	if self:EngineActive() then
+		self:EmitSound( "NAKGTASAFireEng" )
+	end
+	self:CallOnRemove( "NAKGTASAFireSoundRemove", function() self:StopSound( "NAKGTASAFire" ) self:StopSound( "NAKGTASAFireEng" ) end)
+	
+	timer.Create( "GTASAKillVeh_" .. self:EntIndex(), math.random(4,5), 1, function()
+		if !IsValid(self) then return end
+		self:ExplodeVehicle()
+	end)
+end
+
+
+
+
+function Entity:NAKSimfFireTime(Danger)
+
+	if Danger then
+		if !self.NAKUpsideDownDanger then
+			self.NAKUpsideDownDanger = true
+			timer.Create( "GTASADanger_" .. self:EntIndex(), math.random(3.5,4.5), 1, function()
+				if !IsValid(self) then return end
+				if !self.NAKUpsideDownDanger then return end
+				self:NAKKillVehicle()
+			end)
+		end
+	else
+		self.NAKUpsideDownDanger = false
 	end
 	
 end
@@ -245,17 +321,7 @@ function Entity:NAKSimfUpsideDownFire()
 	
 	self.OnTick  = function(self) ---START OF FUNCTION
 	
-		-- if istable( self.Wheels ) then
-			-- for i = 1, table.Count( self.Wheels ) do
-				-- local Wheel = self.Wheels[ i ]
-				-- if IsValid(Wheel) then
-					-- print(Wheel:GetOnGround())
-				-- end
-			-- end
-		-- end
-	
 		if self:GetAngles():Up().z < -0.7 then
-			-- self:EmitSound( "garrysmod/save_load1.wav" )
 			self:NAKSimfFireTime(true)
 		else
 			self:NAKSimfFireTime(false)

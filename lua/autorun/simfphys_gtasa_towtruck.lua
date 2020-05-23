@@ -5,6 +5,8 @@ local V = {
 	Category = "GTA:SA - Public Service",
 	SpawnOffset = Vector(0,0,20),
 	SpawnAngleOffset = 90,
+	NAKGame = "GTA:SA",
+	NAKType = "Sports",
 	
 	Members = {
 		Mass = 3500,
@@ -48,16 +50,16 @@ local V = {
 			
 			ent:NAKSimfGTASA() -- function that'll do all the GTASA changes for you
 
-			if ( SetProxyColor ) then
-				local CarCols = {}  -- for now we define the other 5 colors because my tool is bugged
-				CarCols[1] = {Color(245,245,245),Color(245,245,245),Color(245,245,245),Color(255,255,255),Color(255,255,255),Color(255,255,255)}
-				CarCols[2] = {Color(115,14,26),Color(59,78,120),Color(245,245,245),Color(255,255,255),Color(255,255,255),Color(255,255,255)}
-				CarCols[3] = {Color(123,10,42),Color(59,78,120),Color(245,245,245),Color(255,255,255),Color(255,255,255),Color(255,255,255)}
-				CarCols[4] = {Color(105,30,59),Color(66,31,33),Color(245,245,245),Color(255,255,255),Color(255,255,255),Color(255,255,255)}
-				CarCols[5] = {Color(37,37,39),Color(95,10,21),Color(245,245,245),Color(255,255,255),Color(255,255,255),Color(255,255,255)}
-				CarCols[6] = {Color(25,56,38),Color(48,79,69),Color(245,245,245),Color(255,255,255),Color(255,255,255),Color(255,255,255)}
-				CarCols[7] = {Color(77,98,104),Color(39,47,75),Color(245,245,245),Color(255,255,255),Color(255,255,255),Color(255,255,255)}
-				SetProxyColor( nil, ent, CarCols[math.random(1,7)] )
+			if ( ProxyColor ) then
+				local CarCols = {}
+				CarCols[1] = {Color(245,245,245),Color(245,245,245),Color(245,245,245)}
+				CarCols[2] = {Color(115,14,26),Color(59,78,120),Color(245,245,245)}
+				CarCols[3] = {Color(123,10,42),Color(59,78,120),Color(245,245,245)}
+				CarCols[4] = {Color(105,30,59),Color(66,31,33),Color(245,245,245)}
+				CarCols[5] = {Color(37,37,39),Color(95,10,21),Color(245,245,245)}
+				CarCols[6] = {Color(25,56,38),Color(48,79,69),Color(245,245,245)}
+				CarCols[7] = {Color(77,98,104),Color(39,47,75),Color(245,245,245)}
+				ent:SetProxyColor( CarCols[math.random(1,7)] )
 			end
 		end,	
 		

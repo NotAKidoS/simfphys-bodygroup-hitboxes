@@ -5,6 +5,8 @@ local V = {
 	Category = "GTA:SA - Sedans/Wagons",
 	SpawnOffset = Vector(0,0,20),
 	SpawnAngleOffset = 90,
+	NAKGame = "GTA:SA",
+	NAKType = "Sports",
 	
 	Members = {
 		Mass = 1650,
@@ -49,23 +51,23 @@ local V = {
 			hitboxes.drdoor = {min = Vector(-13.975,40.466,-15.112), max = Vector(-48.503,34.092,8.405), bdgroup = 6, gibmodel = "models/gtasa/vehicles/admiral/door_lr_dam.mdl", giboffset = Vector(-15,40,0), health=100 }
 			hitboxes.prdoor = {max = Vector(-13.975,-40.466,-15.112), min = Vector(-48.503,-34.092,8.405), bdgroup = 8, gibmodel = "models/gtasa/vehicles/admiral/door_rr_dam.mdl", giboffset = Vector(-15,-40,0), health=100 }
 			hitboxes.windowf = {min = Vector(38.901,34.251,9.725), max = Vector(10.353,-34.251,27.39), bdgroup = 9, health=6, glass=true, glasspos=Vector(22.645,0,21.77) }
-			
 			hitboxes.gastank = {min = Vector(-69.348,36,7.3), max = Vector(-74.554,39.024,2.377), explode=true }
 			
-			
 			ent:NAKAddHitBoxes(hitboxes)
-			
-			
 			ent:NAKSimfGTASA() -- function that'll do all the GTASA changes for you
-		end,
-		
-		OnTick = function(ent) 
-            if ent:GetLightsEnabled()	then
-			    ent:SetSubMaterial( 4 ,"models/gtasa/vehicles/share/vehiclelightson128" )
-            else 
-				ent:SetSubMaterial( 4 ,"models/gtasa/vehicles/share/vehiclelights128" )
-            end
-        end,	
+			
+			if ( ProxyColor ) then
+				local CarCols = {}
+				CarCols[1] = {Color(100,100,100)}
+				CarCols[2] = {Color(90,87,82)}
+				CarCols[3] = {Color(45,58,53)}
+				CarCols[4] = {Color(109,122,136)}
+				CarCols[5] = {Color(111,103,95)}
+				CarCols[6] = {Color(95,10,21)}
+				CarCols[7] = {Color(122,117,96)}
+				ent:SetProxyColor( CarCols[math.random(1,7)] )
+			end
+		end,	
 		
 		CustomWheels = true,
 		CustomSuspensionTravel = 1.5,
@@ -264,7 +266,19 @@ local light_table = {
 				color = Color(255,135,0,255),
 			},
 		},
-	}
+	},
 	
+	SubMaterials = {
+		off = {
+			Base = {
+				[4] = ""
+			},
+		},
+		on_lowbeam = {
+			Base = {
+				[4] = "models/gtasa/vehicles/share/vehiclelightson128"
+			},
+		},
+	}
 }
 list.Set( "simfphys_lights", "gtasa_admiral", light_table)

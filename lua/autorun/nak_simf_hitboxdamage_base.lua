@@ -53,6 +53,7 @@ local function SpawnGib(self, id)
 		bprop.DoNotDuplicate = true
 		bprop:SetColor(self:GetColor())
 		hbinfo[id].broken = true
+		if ProxyColor then bprop:SetProxyColor(self:GetProxyColor()) end
 		
 		self:DeleteOnRemove( bprop )
 	end
