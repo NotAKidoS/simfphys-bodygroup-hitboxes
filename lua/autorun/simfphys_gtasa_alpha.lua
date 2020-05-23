@@ -37,10 +37,10 @@ local V = {
 			end		
 			
 			local hitboxes = {}
-			hitboxes.hood = {max=Vector(32.817,-40,10), min=Vector(98,40,-20), bdgroup = 1, gibmodel = "models/gtasa/vehicles/alpha/bonnet_dam.mdl", giboffset = Vector(32,-2,8), health=180 }
-			hitboxes.trunk = {max=Vector(-70.664,30.356,12), min=Vector(-100,-30.356,-5), bdgroup = 2, gibmodel = "models/gtasa/vehicles/alpha/boot_dam.mdl", giboffset = Vector(-72,0,13), health=160 }
-			hitboxes.bumperf = {max=Vector(72.052,-42.048,-4), min=Vector(98,42.048,-22), bdgroup = 3, gibmodel = "models/gtasa/vehicles/alpha/bump_front_dam.mdl", giboffset = Vector(90,-34,-15), health=120 }
-			hitboxes.bumperr = {min=Vector(-68.723,-41.032,-4), max=Vector(-101,41.032,-20.368), bdgroup = 4, gibmodel = "models/gtasa/vehicles/alpha/bump_rear_dam.mdl", giboffset = Vector(-87,34,-14), health=120 }
+			hitboxes.hood = {max=Vector(32.817,-40,10), min=Vector(98,40,-22), bdgroup = 1, gibmodel = "models/gtasa/vehicles/alpha/bonnet_dam.mdl", giboffset = Vector(32,-2,8), health=180 }
+			hitboxes.trunk = {max=Vector(-70.664,30.356,12), min=Vector(-105,-30.356,-20), bdgroup = 2, gibmodel = "models/gtasa/vehicles/alpha/boot_dam.mdl", giboffset = Vector(-72,0,13), health=160 }
+			hitboxes.bumperf = {max=Vector(72.052,-42.048,-4), min=Vector(98,42.048,-24), bdgroup = 3, gibmodel = "models/gtasa/vehicles/alpha/bump_front_dam.mdl", giboffset = Vector(90,-34,-15), health=140 }
+			hitboxes.bumperr = {min=Vector(-68.723,-41.032,-4), max=Vector(-106,41.032,-22), bdgroup = 4, gibmodel = "models/gtasa/vehicles/alpha/bump_rear_dam.mdl", giboffset = Vector(-87,34,-14), health=120 }
 			hitboxes.dfdoor = {min=Vector(-34,43,8.499), max = Vector(34,34.991,-22), bdgroup = 5, gibmodel = "models/gtasa/vehicles/alpha/door_lf_dam.mdl", giboffset = Vector(29,38,-5.5), health=125 }
 			hitboxes.pfdoor = {max=Vector(-34,-43,8.499), min = Vector(34,-34.991,-22), bdgroup = 6, gibmodel = "models/gtasa/vehicles/alpha/door_rf_dam.mdl", giboffset = Vector(29,-38.5,-5.5), health=125 }
 			hitboxes.windowf = {min=Vector(33.734,32.611,8.056), max=Vector(3.52,-32.611,21.738), bdgroup = 7, health=6, glass=true, glasspos=Vector(19.286,0,15.077) }
@@ -57,6 +57,11 @@ local V = {
             else 
 				ent:SetSubMaterial( 3 ,"models/gtasa/vehicles/share/vehiclelights128" )
             end
+			
+			
+			-- if ent:
+			
+			
         end,
 		
 		CustomWheels = true,

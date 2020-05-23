@@ -82,11 +82,15 @@ local function SharedDamage(self, damagePos, dmgAmount, type)
 		-- print(id)
 		-- print(damagePos:WithinAABox( hbinfo[id].min, hbinfo[id].max ))
 		if damagePos:WithinAABox( hbinfo[id].min, hbinfo[id].max ) then
-		
 			
 			if hbinfo[id].bdgroup then
 				print("PART "..hbinfo[id].bdgroup.." WAS HIT")
 			end
+			
+			if hbinfo[id].curhealth < 70%hbinfo[id].health && (self:GetBodygroup( hbinfo[id].bdgroup ) + 2) < (self:GetBodygroupCount( hbinfo[id].bdgroup ) ) then
+				hbinfo[id].curhealth = hbinfo[id].health --if someone changes the bodygroup to new when it is damaged then fix it
+			end
+			
 			
 			if hbinfo[id].explode then
 				self:ExplodeVehicle()
@@ -96,9 +100,8 @@ local function SharedDamage(self, damagePos, dmgAmount, type)
 			hbinfo[id].curhealth = hbinfo[id].curhealth - dmgAmount
 			
 			
-			if hbinfo[id].curhealth < 70%hbinfo[id].health && self.hbinfo[id].damaged != 1 then 
-				self.hbinfo[id].damaged = 1
-				if (self:GetBodygroup( hbinfo[id].bdgroup ) + 1) < (self:GetBodygroupCount( hbinfo[id].bdgroup ) ) then
+			if hbinfo[id].curhealth < 70%hbinfo[id].health then 
+				if (self:GetBodygroup( hbinfo[id].bdgroup ) + 2) < (self:GetBodygroupCount( hbinfo[id].bdgroup ) ) then
 					self:SetBodygroup( hbinfo[id].bdgroup, (self:GetBodygroup( hbinfo[id].bdgroup ) + 1) )
 					if hbinfo[id].glass then
 						self:EmitSound("gtasa/sfx/damage_light.wav")
@@ -106,7 +109,7 @@ local function SharedDamage(self, damagePos, dmgAmount, type)
 				end
 			end
 			
-			if hbinfo[id].curhealth < 1 && self.hbinfo[id].damaged == 1 then 
+			if hbinfo[id].curhealth < 1 then 
 				if (self:GetBodygroup( hbinfo[id].bdgroup ) + 1) < (self:GetBodygroupCount( hbinfo[id].bdgroup ) ) then
 					SpawnGib(self, id)
 				end
@@ -169,8 +172,8 @@ local function OverridePhysicsDamage(self,hbinfo)
 				SharedDamage(ent, damagePos, data.Speed/12 )
 			elseif data.HitEntity:IsWorld() && ( (data.Speed) > 60 && data.DeltaTime > 0.2 ) then
 				local damagePos = ent:WorldToLocal(data.HitPos)
-				SharedDamage(ent, damagePos, data.Speed/12 )
-				print("world damage")
+				SharedDamage(ent, damagePos, data.Speed/8 )
+				-- print("world damage")
 			end
 			
 		elseif ( (data.Speed) > 100 && data.DeltaTime > 0.2 ) then
@@ -190,7 +193,10 @@ function Entity:NAKAddHitBoxes(hbinfo)
 
 
 	for id in SortedPairs( hbinfo ) do
-		hbinfo[id].curhealth = hbinfo[id].health and hbinfo[id].health or 100
+		if !hbinfo[id].health then
+			hbinfo[id].health = 100
+		end
+		hbinfo[id].curhealth = hbinfo[id].health
 	end
 	
 	

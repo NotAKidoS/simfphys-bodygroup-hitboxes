@@ -40,10 +40,10 @@ local V = {
 			end		
 			
 			local hitboxes = {}
-			hitboxes.hood = {min = Vector(36.187,-35,-8), max = Vector(100,35,11.006), bdgroup = 1, gibmodel = "models/gtasa/vehicles/admiral/bonnet_dam.mdl", giboffset = Vector(42,0,10), health=120 }
-			hitboxes.trunk = {min = Vector(-103.976,-33.207,0.717), max = Vector(-75.137,33.207,9.102), bdgroup = 2, gibmodel = "models/gtasa/vehicles/admiral/boot_dam.mdl", giboffset = Vector(-80,0,10), health=120 }
-			hitboxes.bumperf = {min = Vector(79.655,-42,-25), max = Vector(100,42,-4), bdgroup = 3, gibmodel = "models/gtasa/vehicles/admiral/bump_front_dam.mdl", giboffset = Vector(97,-34,-8), health=60 }
-			hitboxes.bumperr = {max = Vector(-96,-39.112,-20), min = Vector(-110,39.112,-6), bdgroup = 4, gibmodel = "models/gtasa/vehicles/admiral/bump_rear_dam.mdl", giboffset = Vector(-97,34,-8), health=60 }
+			hitboxes.hood = {min = Vector(36.187,-35,-14), max = Vector(100,35,13), bdgroup = 1, gibmodel = "models/gtasa/vehicles/admiral/bonnet_dam.mdl", giboffset = Vector(42,0,10), health=120 }
+			hitboxes.trunk = {min = Vector(-110,-40,-20), max = Vector(-75.137,40,11), bdgroup = 2, gibmodel = "models/gtasa/vehicles/admiral/boot_dam.mdl", giboffset = Vector(-80,0,10), health=120 }
+			hitboxes.bumperf = {min = Vector(75,-42,-25), max = Vector(100,42,8), bdgroup = 3, gibmodel = "models/gtasa/vehicles/admiral/bump_front_dam.mdl", giboffset = Vector(97,-34,-8), health=100 }
+			hitboxes.bumperr = {max = Vector(-92,-39.112,-25), min = Vector(-110,39.112,8), bdgroup = 4, gibmodel = "models/gtasa/vehicles/admiral/bump_rear_dam.mdl", giboffset = Vector(-97,34,-8), health=60 }
 			hitboxes.dfdoor = {min = Vector(31.641,40.466,-15.112), max = Vector(-13.111,34.092,8.405), bdgroup = 5, gibmodel = "models/gtasa/vehicles/admiral/door_lf_dam.mdl", giboffset = Vector(30,40,0), health=100 }
 			hitboxes.pfdoor = {max = Vector(31.641,-40.466,-15.112), min = Vector(-13.111,-34.092,8.405), bdgroup = 7, gibmodel = "models/gtasa/vehicles/admiral/door_rf_dam.mdl", giboffset = Vector(30,-40,0), health=100 }
 			hitboxes.drdoor = {min = Vector(-13.975,40.466,-15.112), max = Vector(-48.503,34.092,8.405), bdgroup = 6, gibmodel = "models/gtasa/vehicles/admiral/door_lr_dam.mdl", giboffset = Vector(-15,40,0), health=100 }

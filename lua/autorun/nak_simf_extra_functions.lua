@@ -227,7 +227,44 @@ function Entity:NAKSimfCustomExplode()
 	end
 end
 
+function Entity:NAKSimfFireTime(eqa)
+	-- print(eqa)
+	if eqa then
+		self:TakeDamage(5)
+		if self:GetCurHealth() == 0 then self:ExplodeVehicle() end
+	end
+	
+end
 
+function Entity:NAKSimfUpsideDownFire()
+
+	//--store the old built in simfphys function
+	self._OnTick = self.OnTick
+	
+	//--override the old function to call our code first, then call the old stored one
+	
+	self.OnTick  = function(self) ---START OF FUNCTION
+	
+		-- if istable( self.Wheels ) then
+			-- for i = 1, table.Count( self.Wheels ) do
+				-- local Wheel = self.Wheels[ i ]
+				-- if IsValid(Wheel) then
+					-- print(Wheel:GetOnGround())
+				-- end
+			-- end
+		-- end
+	
+		if self:GetAngles():Up().z < -0.7 then
+			-- self:EmitSound( "garrysmod/save_load1.wav" )
+			self:NAKSimfFireTime(true)
+		else
+			self:NAKSimfFireTime(false)
+		end
+		
+		self:_OnTick()
+	end
+
+end
 
 
 
@@ -241,5 +278,6 @@ function Entity:NAKSimfGTASA()
 	self:NAKSimfEngineStart("gtasa/sfx/engine_start.wav")
 	self:NAKSimfCustomExplode()
 	self:NAKDmgEngineSnd("gtasa/sfx/engine_damaged_loop.wav")
+	self:NAKSimfUpsideDownFire()
 
 end

@@ -1,0 +1,17 @@
+"VertexlitGeneric"
+{
+"$basetexture" "models/gtasa/vehicles/share/vehiclegrunge256"
+"$envmap" "env_cubemap"
+"$envmaptint" "[.4 .4 .4]"
+"$envmapmask" "models/gtasa/vehicles/share/xvehicleenv128"
+"$nocull" 1
+"$blendtintbybasealpha" 1
+"$halflambert" 1
+
+Proxies {
+    		ColorSlot3{
+			name "Tetriary Color"
+       			resultVar $color2
+           		}
+	}
+}
