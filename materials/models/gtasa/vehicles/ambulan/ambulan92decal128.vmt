@@ -1,0 +1,12 @@
+"VertexlitGeneric"
+{
+"$basetexture" "models/gtasa/vehicles/ambulan/ambulan92decal128"
+"$translucent" 1
+
+Proxies {
+    		ColorSlot3{
+			name "Decals 1"
+       			resultVar $color2
+           		}
+	}
+}

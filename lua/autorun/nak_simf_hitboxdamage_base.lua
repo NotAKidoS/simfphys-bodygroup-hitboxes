@@ -43,6 +43,8 @@ local function SpawnGib(self, id)
 	if (hbinfo[id].gibmodel) then
 		local offset = hbinfo[id].giboffset and hbinfo[id].giboffset or Vector(0,0,0)
 		local bprop = ents.Create( "gmod_simf_gtasa_nofire_gib" )
+		local PrxyColor 
+		if ProxyColor then PrxyColor = self:GetProxyColor() end
 		-- print(self:LocalToWorld(offset) - self:GetPos(), self:GetPos())
 		bprop:SetModel( hbinfo[id].gibmodel )
 		bprop:SetPos( self:LocalToWorld(offset) ) 
@@ -53,9 +55,12 @@ local function SpawnGib(self, id)
 		bprop.DoNotDuplicate = true
 		bprop:SetColor(self:GetColor())
 		hbinfo[id].broken = true
-		if ProxyColor then bprop:SetProxyColor(self:GetProxyColor()) end
-		
 		self:DeleteOnRemove( bprop )
+		if ProxyColor then
+			timer.Simple( 0, function() -- gmod is wack and needs this timer to actually do stuff
+				 bprop:SetProxyColor(PrxyColor)
+			end)
+		end
 	end
 
 end
@@ -84,9 +89,9 @@ local function SharedDamage(self, damagePos, dmgAmount, type)
 		-- print(damagePos:WithinAABox( hbinfo[id].min, hbinfo[id].max ))
 		if damagePos:WithinAABox( hbinfo[id].min, hbinfo[id].max ) then
 			
-			if hbinfo[id].bdgroup then
-				print("PART "..hbinfo[id].bdgroup.." WAS HIT")
-			end
+			-- if hbinfo[id].bdgroup then
+				-- print("PART "..hbinfo[id].bdgroup.." WAS HIT")
+			-- end
 			
 			if hbinfo[id].curhealth < 70%hbinfo[id].health && (self:GetBodygroup( hbinfo[id].bdgroup ) + 2) < (self:GetBodygroupCount( hbinfo[id].bdgroup ) ) then
 				hbinfo[id].curhealth = hbinfo[id].health --if someone changes the bodygroup to new when it is damaged then fix it
