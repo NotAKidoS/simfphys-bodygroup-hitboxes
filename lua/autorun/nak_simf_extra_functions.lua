@@ -332,6 +332,38 @@ function Entity:NAKSimfUpsideDownFire()
 
 end
 
+local function NAKPlayEMSRadio(self)
+
+	if !IsValid(self) then return end
+	
+	local filter = RecipientFilter()
+	
+	if IsValid(self:GetDriver()) then
+		filter:AddPlayer( self:GetDriver() )
+	end
+	if self.PassengerSeats then
+		for i = 1, table.Count( self.PassengerSeats ) do
+			local Passenger = self.pSeat[i]:GetDriver()
+			if IsValid(Passenger) then
+				filter:AddPlayer( Passenger )
+			end
+		end
+	end
+	
+	self.NAKEMSRadio = CreateSound(self, "gtasa/sfx/police_radio/police_radio"..math.random(1,53)..".wav", filter )
+	self.NAKEMSRadio:SetSoundLevel( 100 )
+	self.NAKEMSRadio:PlayEx( 2, 100 )
+	timer.Create( "NAKGTASA_EMSRadio_" .. self:EntIndex(), math.random(20,45), 1, function()
+		NAKPlayEMSRadio(self)
+	end)
+end
+
+function Entity:NAKSimfEMSRadio()
+	timer.Create( "NAKGTASA_EMSRadio_" .. self:EntIndex(), 1, 1, function()
+		NAKPlayEMSRadio(self)
+	end)
+end
+
 
 
 

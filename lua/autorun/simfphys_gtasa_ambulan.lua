@@ -54,6 +54,8 @@ local V = {
 			ent:NAKAddHitBoxes(hitboxes)
 			ent:NAKSimfGTASA() -- function that'll do all the GTASA changes for you
 			
+			ent:NAKSimfEMSRadio()
+			
 			if ( ProxyColor ) then
 				local CarCols = {}
 				CarCols[1] = {Color(245,245,245),Color(132,4,16),Color(245,245,245),Color(0,0,0),Color(131,104,229)}
@@ -72,7 +74,7 @@ local V = {
 		CustomWheelPosRR = Vector(-80.52,-37.63,-24),
 		CustomWheelAngleOffset = Angle(0,90,0),
 		
-		CustomMassCenter = Vector(0,0,0),		
+		CustomMassCenter = Vector(0,0,20),		
 		
 		CustomSteerAngle = 45,
 		
