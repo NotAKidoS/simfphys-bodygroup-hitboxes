@@ -35,19 +35,16 @@ if SERVER then
 		self:PhysicsInit( SOLID_VPHYSICS )
 		self:SetMoveType( MOVETYPE_VPHYSICS )
 		self:SetSolid( SOLID_VPHYSICS )
-		
 		if not IsValid( self:GetPhysicsObject() ) then
 			self.RemoveTimer = 0
 			
 			self:Remove()
 			return
 		end
-		
 		self:GetPhysicsObject():EnableMotion(true)
 		self:GetPhysicsObject():Wake()
 		self:SetCollisionGroup( COLLISION_GROUP_DEBRIS ) 
 		self:SetRenderMode( RENDERMODE_TRANSALPHA )
-		
 		
 		timer.Simple( 0.05, function()
 			if not IsValid( self ) then return end
@@ -121,6 +118,26 @@ if SERVER then
 		self.RemoveDis = GetConVar("sv_simfphys_gib_lifetime"):GetFloat()
 
 		self.RemoveTimer = CurTime() + self.RemoveDis
+		
+		--//Color support
+		self:SetColor(self.Car:GetColor())
+		self:SetSkin(self.Car:GetSkin())
+		self.PrxyClr = self.Car:GetProxyColor()
+		self.DoNotDuplicate = true
+		
+		if game.SinglePlayer() then
+			if ProxyColor then self:SetProxyColor(self.PrxyClr) end
+			self:SetRenderMode( RENDERMODE_TRANSALPHA )
+			self:SetNoDraw( false )
+		else
+			timer.Simple( 0.01, function() 
+				if !IsValid(self) then return end 
+				if ProxyColor then self:SetProxyColor(self.PrxyClr) end
+				self:SetRenderMode( RENDERMODE_TRANSALPHA )
+				self:SetNoDraw( false )
+			end )
+		end
+		--//End
 	end
 
 	function ENT:Think()	

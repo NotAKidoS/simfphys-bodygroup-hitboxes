@@ -25,11 +25,11 @@ local V = {
 			"models/gtasa/vehicles/alpha/wheel.mdl",
 		},
 		
-		EnginePos = Vector(0,56.34,4.46),
+		EnginePos = Vector(56.34,0,4.46),
 		
 		LightsTable = "gtasa_alpha",
 		
-        OnSpawn = function(ent)
+		OnSpawn = function(ent)
 		
 			if (file.Exists( "sound/trailers/trailer_connected.mp3", "GAME" )) then  --checks if sound file exists. will exist if dangerkiddys trailer base is subscribed.
 				if ent.GetCenterposition != nil then
@@ -46,10 +46,11 @@ local V = {
 			hitboxes.dfdoor = {min=Vector(-34,43,8.499), max = Vector(34,34.991,-22), bdgroup = 5, gibmodel = "models/gtasa/vehicles/alpha/door_lf_dam.mdl", giboffset = Vector(29,38,-5.5), health=125 }
 			hitboxes.pfdoor = {max=Vector(-34,-43,8.499), min = Vector(34,-34.991,-22), bdgroup = 6, gibmodel = "models/gtasa/vehicles/alpha/door_rf_dam.mdl", giboffset = Vector(29,-38.5,-5.5), health=125 }
 			hitboxes.windowf = {min=Vector(33.734,32.611,8.056), max=Vector(3.52,-32.611,21.738), bdgroup = 7, health=6, glass=true, glasspos=Vector(19.286,0,15.077) }
+			
 			hitboxes.gastank = {min=Vector(-75.286,-40.8,1.014), max=Vector(-67.834,-38,7.337), explode=true }
 			
-			ent:NAKAddHitBoxes(hitboxes)
 			
+			ent:NAKAddHitBoxes(hitboxes)
 			ent:NAKSimfGTASA() -- function that'll do all the GTASA changes for you
 			
 			if ( ProxyColor ) then
@@ -140,7 +141,7 @@ local V = {
 		Supercharged = false,
 		DoNotStall = false,
 		
-		FuelFillPos = Vector(-72,-40.32,4.21),
+		FuelFillPos = Vector(-73.64,-40.32,4.21),
 		FuelType = FUELTYPE_PETROL,
 		FuelTankSize = 75,
 		
@@ -159,7 +160,7 @@ local V = {
 		snd_mid_gearup = "gtasa/vehicles/31-32_gear.wav",
 		snd_mid_pitch = 1.05,
 		
-		snd_horn = "gtasa/vehicles/horns/.wav",
+		snd_horn = "gtasa/vehicles/horns/horn_004.wav",
 		
 		DifferentialGear = 0.25,
 		Gears = {-0.15,0,0.15,0.35,0.5,0.75,1}
@@ -246,6 +247,18 @@ local light_table = {
 				material = "sprites/light_ignorez",
 				size = 60,
 				color = Color(255,135,0,255),
+				OnBodyGroups = { 
+					[4] = {0},
+				}
+			},
+			{
+				pos = Vector(-95.96,33.61,-10.78),
+				material = "sprites/light_ignorez",
+				size = 60,
+				color = Color(255,135,0,255),
+				OnBodyGroups = { 
+					[4] = {1},
+				}
 			},
 		},
 		Right = {
@@ -254,6 +267,18 @@ local light_table = {
 				material = "sprites/light_ignorez",
 				size = 60,
 				color = Color(255,135,0,255),
+				OnBodyGroups = { 
+					[3] = {0},
+				}
+			},
+			{
+				pos = Vector(90,-30.6,-15.3),
+				material = "sprites/light_ignorez",
+				size = 60,
+				color = Color(255,135,0,255),
+				OnBodyGroups = { 
+					[3] = {1},
+				}
 			},
 			{
 				pos = Vector(-95.96,-33.61,-10.78),
@@ -279,5 +304,6 @@ local light_table = {
 			},
 		},
 	}
+	
 }
 list.Set( "simfphys_lights", "gtasa_alpha", light_table)

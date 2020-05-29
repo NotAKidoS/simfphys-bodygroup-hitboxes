@@ -6,17 +6,13 @@ local V = {
 	SpawnOffset = Vector(0,0,20),
 	SpawnAngleOffset = 90,
 	NAKGame = "GTA:SA",
-	NAKType = "Sports",
+	NAKType = "Public Service",
 	
 	Members = {
 		Mass = 3500,
 		
 		GibModels = {
 			"models/gtasa/vehicles/towtruck/chassis.mdl",
-			"models/gtasa/vehicles/towtruck/bonnet_dam.mdl",
-			"models/gtasa/vehicles/towtruck/bump_front_dam.mdl",
-			"models/gtasa/vehicles/towtruck/door_lf_dam.mdl",
-			"models/gtasa/vehicles/towtruck/door_rf_dam.mdl",
 			"models/gtasa/vehicles/towtruck/wheel.mdl",
 			"models/gtasa/vehicles/towtruck/wheel.mdl",
 			"models/gtasa/vehicles/towtruck/wheel.mdl",
@@ -46,10 +42,10 @@ local V = {
 			
 			hitboxes.gastank = {min = Vector(-22.92,50,0.65), max = Vector(-14.69,40,-7.3), explode=true }
 			
-			ent:NAKAddHitBoxes(hitboxes)
 			
+			ent:NAKAddHitBoxes(hitboxes)
 			ent:NAKSimfGTASA() -- function that'll do all the GTASA changes for you
-
+			
 			if ( ProxyColor ) then
 				local CarCols = {}
 				CarCols[1] = {Color(245,245,245),Color(245,245,245),Color(245,245,245)}

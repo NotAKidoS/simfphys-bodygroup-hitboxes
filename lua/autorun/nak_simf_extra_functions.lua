@@ -155,6 +155,7 @@ function Entity:NAKSimfCustomExplode()
 			bprop:SetPos( self:GetPos() )
 			bprop:SetAngles( self:GetAngles() )
 			bprop.MakeSound = true
+			bprop.Car = self
 			bprop:Spawn()
 			bprop:Activate()
 			bprop:GetPhysicsObject():SetVelocity( self:GetVelocity() + Vector(math.random(-5,5),math.random(-5,5),math.random(150,250)) ) 
@@ -178,16 +179,14 @@ function Entity:NAKSimfCustomExplode()
 			end
 			
 			for i = 2, table.Count( self.GibModels ) do
-				local prop = ents.Create( "gmod_sent_vehicle_fphysics_gib" )
+				local prop = ents.Create( "gmod_simf_gtasa_gib" )
 				prop:SetModel( self.GibModels[i] )			
 				prop:SetPos( self:GetPos() )
 				prop:SetAngles( self:GetAngles() )
 				prop:SetOwner( bprop )
+				prop.Car = self
 				prop:Spawn()
 				prop:Activate()
-				prop:SetColor( Col )
-				if ProxyColor then prop:SetProxyColor(prxyClr) end
-				prop.DoNotDuplicate = true
 				bprop:DeleteOnRemove( prop )
 				
 				local PhysObj = prop:GetPhysicsObject()
@@ -201,19 +200,16 @@ function Entity:NAKSimfCustomExplode()
 			end
 		else
 			
-			local bprop = ents.Create( "gmod_sent_vehicle_fphysics_gib" )
+			local bprop = ents.Create( "gmod_simf_gtasa_gib" )
 			bprop:SetModel( self:GetModel() )			
 			bprop:SetPos( self:GetPos() )
 			bprop:SetAngles( self:GetAngles() )
 			bprop.MakeSound = true
+			bprop.Car = self
 			bprop:Spawn()
 			bprop:Activate()
 			bprop:GetPhysicsObject():SetVelocity( self:GetVelocity() + Vector(math.random(-5,5),math.random(-5,5),math.random(150,250)) ) 
 			bprop:GetPhysicsObject():SetMass( self.Mass * 0.75 )
-			bprop.DoNotDuplicate = true
-			bprop:SetColor( Col )
-			if ProxyColor then bprop:SetProxyColor(prxyClr) end
-			bprop:SetSkin( skin )
 			
 			self.Gib = bprop
 			
@@ -249,6 +245,11 @@ function Entity:NAKSimfCustomExplode()
 				end
 			end
 		end
+		
+		for id in SortedPairs( self.hbinfo ) do
+			NAKSpawnGib(self, id)
+		end
+		
 
 		local Driver = self:GetDriver()
 		if IsValid( Driver ) then
@@ -327,8 +328,18 @@ function Entity:NAKSimfUpsideDownFire()
 			self:NAKSimfFireTime(false)
 		end
 		
+		if self:GetGear() == 1 then
+			self.ReverseSound:ChangeVolume( 1, 0.2 )
+			self.ReverseSound:ChangePitch( math.Clamp(self:GetRPM()/50,0,100), 0.4 )
+		elseif self.ReverseSound then
+			self.ReverseSound:ChangePitch( 0, 0.8 )
+			self.ReverseSound:ChangeVolume( 0, 0.4 )
+		end
+		
 		self:_OnTick()
 	end
+	
+	self:CallOnRemove( "RevSound", function() if self.ReverseSound then self.ReverseSound:Stop() end end)
 
 end
 
@@ -371,6 +382,11 @@ end
 --(i can update this function to apply to all vehicles using it)
 
 function Entity:NAKSimfGTASA()
+
+	if !self.ReverseSound then
+		self.ReverseSound = CreateSound(self, "gtasa/vehicles/reverse_gear.wav")
+		self.ReverseSound:PlayEx(0,0)
+	end
 
 	self:NAKSimfSkidSounds() -- replaces the wheel skid sounds
 	self:NAKSimfEngineStart("gtasa/sfx/engine_start.wav")

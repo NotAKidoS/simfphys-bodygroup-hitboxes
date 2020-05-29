@@ -6,7 +6,7 @@ local V = {
 	SpawnOffset = Vector(0,0,20),
 	SpawnAngleOffset = 90,
 	NAKGame = "GTA:SA",
-	NAKType = "Sports",
+	NAKType = "Sedans/Wagons",
 	
 	Members = {
 		Mass = 1650,
@@ -42,16 +42,18 @@ local V = {
 			end		
 			
 			local hitboxes = {}
-			hitboxes.hood = {min = Vector(36.187,-35,-14), max = Vector(100,35,13), bdgroup = 1, gibmodel = "models/gtasa/vehicles/admiral/bonnet_dam.mdl", giboffset = Vector(42,0,10), health=120 }
-			hitboxes.trunk = {min = Vector(-110,-40,-20), max = Vector(-75.137,40,11), bdgroup = 2, gibmodel = "models/gtasa/vehicles/admiral/boot_dam.mdl", giboffset = Vector(-80,0,10), health=120 }
-			hitboxes.bumperf = {min = Vector(75,-42,-25), max = Vector(100,42,8), bdgroup = 3, gibmodel = "models/gtasa/vehicles/admiral/bump_front_dam.mdl", giboffset = Vector(97,-34,-8), health=100 }
-			hitboxes.bumperr = {max = Vector(-92,-39.112,-25), min = Vector(-110,39.112,8), bdgroup = 4, gibmodel = "models/gtasa/vehicles/admiral/bump_rear_dam.mdl", giboffset = Vector(-97,34,-8), health=60 }
+			hitboxes.hood = {min = Vector(36.187,-35,-8), max = Vector(100,35,11.006), bdgroup = 1, gibmodel = "models/gtasa/vehicles/admiral/bonnet_dam.mdl", giboffset = Vector(42,0,10), health=120 }
+			hitboxes.trunk = {min = Vector(-103.976,-33.207,0.717), max = Vector(-75.137,33.207,9.102), bdgroup = 2, gibmodel = "models/gtasa/vehicles/admiral/boot_dam.mdl", giboffset = Vector(-80,0,10), health=120 }
+			hitboxes.bumperf = {min = Vector(79.655,-42,-25), max = Vector(100,42,-4), bdgroup = 3, gibmodel = "models/gtasa/vehicles/admiral/bump_front_dam.mdl", giboffset = Vector(97,-34,-8), health=60 }
+			hitboxes.bumperr = {max = Vector(-96,-39.112,-20), min = Vector(-110,39.112,-6), bdgroup = 4, gibmodel = "models/gtasa/vehicles/admiral/bump_rear_dam.mdl", giboffset = Vector(-97,34,-8), health=60 }
 			hitboxes.dfdoor = {min = Vector(31.641,40.466,-15.112), max = Vector(-13.111,34.092,8.405), bdgroup = 5, gibmodel = "models/gtasa/vehicles/admiral/door_lf_dam.mdl", giboffset = Vector(30,40,0), health=100 }
 			hitboxes.pfdoor = {max = Vector(31.641,-40.466,-15.112), min = Vector(-13.111,-34.092,8.405), bdgroup = 7, gibmodel = "models/gtasa/vehicles/admiral/door_rf_dam.mdl", giboffset = Vector(30,-40,0), health=100 }
 			hitboxes.drdoor = {min = Vector(-13.975,40.466,-15.112), max = Vector(-48.503,34.092,8.405), bdgroup = 6, gibmodel = "models/gtasa/vehicles/admiral/door_lr_dam.mdl", giboffset = Vector(-15,40,0), health=100 }
 			hitboxes.prdoor = {max = Vector(-13.975,-40.466,-15.112), min = Vector(-48.503,-34.092,8.405), bdgroup = 8, gibmodel = "models/gtasa/vehicles/admiral/door_rr_dam.mdl", giboffset = Vector(-15,-40,0), health=100 }
 			hitboxes.windowf = {min = Vector(38.901,34.251,9.725), max = Vector(10.353,-34.251,27.39), bdgroup = 9, health=6, glass=true, glasspos=Vector(22.645,0,21.77) }
+			
 			hitboxes.gastank = {min = Vector(-69.348,36,7.3), max = Vector(-74.554,39.024,2.377), explode=true }
+			
 			
 			ent:NAKAddHitBoxes(hitboxes)
 			ent:NAKSimfGTASA() -- function that'll do all the GTASA changes for you
@@ -166,7 +168,7 @@ local V = {
 		snd_mid_gearup = "gtasa/vehicles/80-81_gear.wav",
 		snd_mid_pitch = 1.1,
 		
-		snd_horn = "gtasa/vehicles/horns/.wav",
+		snd_horn = "gtasa/vehicles/horns/horn_004.wav",
 		
 		DifferentialGear = 0.2,
 		Gears = {-0.15,0,0.15,0.35,0.5,0.75,1}

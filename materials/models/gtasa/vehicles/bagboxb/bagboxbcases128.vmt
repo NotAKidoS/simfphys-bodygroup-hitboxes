@@ -1,0 +1,5 @@
+"VertexlitGeneric"
+{
+"$basetexture" "models/gtasa/vehicles/bagboxb/bagboxbcases128"
+"$blendtintbybasealpha" 1
+}

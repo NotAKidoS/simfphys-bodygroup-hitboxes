@@ -28,9 +28,39 @@ if SERVER then
 	util.AddNetworkString("simfphys_gtasa_glassbreak_fx")
 end
 
+function NAKSpawnGib(self, id)
+
+	local hbinfo = self.hbinfo
+	
+	if hbinfo[id].curhealth < 0 then return end
+	if hbinfo[id].broken then return end
+	if hbinfo[id].glass then return end
+
+	if (hbinfo[id].gibmodel) then
+		local offset = hbinfo[id].giboffset and hbinfo[id].giboffset or Vector(0,0,0)
+		local bprop = ents.Create( "gmod_simf_gtasa_gib" )
+		bprop:SetModel( hbinfo[id].gibmodel )
+		bprop:SetPos( self:LocalToWorld(offset) ) 
+		bprop:SetAngles( self:GetAngles() )
+		bprop.Car = self
+		bprop:Spawn()
+		bprop:Activate()
+		hbinfo[id].broken = true
+		self.Gib:DeleteOnRemove( bprop )
+
+		local PhysObj = bprop:GetPhysicsObject()
+		if IsValid( PhysObj ) then
+			PhysObj:SetVelocityInstantaneous( VectorRand() * 500 + self:GetVelocity() + Vector(0,0,math.random(150,250)) )
+			PhysObj:AddAngleVelocity( VectorRand() )
+		end
+	end
+end
+
 local function SpawnGib(self, id)
 
 	local hbinfo = self.hbinfo
+	if hbinfo[id].broken then return end
+	hbinfo[id].broken = true
 	
 	if hbinfo[id].glass then
 		self:EmitSound("Glass.BulletImpact")
@@ -43,26 +73,27 @@ local function SpawnGib(self, id)
 	if (hbinfo[id].gibmodel) then
 		local offset = hbinfo[id].giboffset and hbinfo[id].giboffset or Vector(0,0,0)
 		local bprop = ents.Create( "gmod_simf_gtasa_nofire_gib" )
-		local PrxyColor 
-		if ProxyColor then PrxyColor = self:GetProxyColor() end
-		-- print(self:LocalToWorld(offset) - self:GetPos(), self:GetPos())
 		bprop:SetModel( hbinfo[id].gibmodel )
 		bprop:SetPos( self:LocalToWorld(offset) ) 
 		bprop:SetAngles( self:GetAngles() )
+		bprop.Car = self
 		bprop:Spawn()
 		bprop:Activate()
-		bprop:GetPhysicsObject():SetMass( self.Mass * 0.25 )
-		bprop.DoNotDuplicate = true
-		bprop:SetColor(self:GetColor())
-		hbinfo[id].broken = true
-		self:DeleteOnRemove( bprop )
-		if ProxyColor then
-			timer.Simple( 0, function() -- gmod is wack and needs this timer to actually do stuff
-				 bprop:SetProxyColor(PrxyColor)
-			end)
+		if !game.SinglePlayer() then
+			timer.Simple( 0.1, function() 
+				if !IsValid(bprop) then return end 
+				if ProxyColor then bprop:SetProxyColor(self:GetProxyColor()) end
+			end )
 		end
+		self:CallOnRemove("NAKKillGibsOnRemove" .. bprop:EntIndex(),function(self) 
+			if !self.destroyed then if IsValid(bprop) then bprop:Remove() end
+			elseif IsValid(self.Gib) then
+				if IsValid(bprop) then
+					self.Gib:DeleteOnRemove( bprop )
+				end
+			end 
+		end)
 	end
-
 end
 
 
@@ -76,14 +107,6 @@ local function SharedDamage(self, damagePos, dmgAmount, type)
 	
 	local damagePos = self:WorldToLocal(self:NearestPoint( self:LocalToWorld(damagePos) ))
 	
-	-- print(damagePos)
-	
-	-- if type == DMG_BLAST then -- horrid attempt at making blast damage do something
-		-- damagePos = self:WorldToLocal(self:NearestPoint( self:LocalToWorld(damagePos) ))
-	-- end
-	
-	-- print(dmgAmount)
-	
 	for id in SortedPairs( hbinfo ) do
 		-- print(id)
 		-- print(damagePos:WithinAABox( hbinfo[id].min, hbinfo[id].max ))
@@ -94,6 +117,7 @@ local function SharedDamage(self, damagePos, dmgAmount, type)
 			-- end
 			
 			if hbinfo[id].curhealth < 70%hbinfo[id].health && (self:GetBodygroup( hbinfo[id].bdgroup ) + 2) < (self:GetBodygroupCount( hbinfo[id].bdgroup ) ) then
+				hbinfo[id].broken = false
 				hbinfo[id].curhealth = hbinfo[id].health --if someone changes the bodygroup to new when it is damaged then fix it
 			end
 			
@@ -117,14 +141,19 @@ local function SharedDamage(self, damagePos, dmgAmount, type)
 			
 			if hbinfo[id].curhealth < 1 then 
 				if (self:GetBodygroup( hbinfo[id].bdgroup ) + 1) < (self:GetBodygroupCount( hbinfo[id].bdgroup ) ) then
+					if hbinfo[id].broken then return end
 					SpawnGib(self, id)
+					hbinfo[id].broken = true
 				end
-				self:SetBodygroup( hbinfo[id].bdgroup, (self:GetBodygroup( hbinfo[id].bdgroup ) + 1) )
+				if game.SinglePlayer() then
+					self:SetBodygroup( hbinfo[id].bdgroup, (self:GetBodygroup( hbinfo[id].bdgroup ) + 1) )
+				else
+					timer.Simple( 0.01, function() 
+						if !IsValid(self) then return end 
+						self:SetBodygroup( hbinfo[id].bdgroup, (self:GetBodygroup( hbinfo[id].bdgroup ) + 1) )
+					end )
+				end
 			end
-			
-			-- if dmgAmount > hbinfo[id].health then SharedDamage(self, damagePos, 1) end -- if insane damage, give chance to completely kill the thing
-			-- if dmgAmount > hbinfo[id].health/1.5 && math.random(0,1) == 1 then SharedDamage(self, damagePos, math.random(10,80)) end -- if insane damage, give chance to completely kill the thing
-			
 		end
 	end
 end

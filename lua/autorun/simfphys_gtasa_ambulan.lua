@@ -6,19 +6,19 @@ local V = {
 	SpawnOffset = Vector(0,0,30),
 	SpawnAngleOffset = 90,
 	NAKGame = "GTA:SA",
-	NAKType = "Sports",
+	NAKType = "Government",
 	
 	Members = {
 		Mass = 2600,
 		
 		GibModels = {
 			"models/gtasa/vehicles/ambulan/chassis.mdl",
-			"models/gtasa/vehicles/ambulan/bonnet_dam.mdl",
-			"models/gtasa/vehicles/ambulan/bump_front_dam.mdl",
-			"models/gtasa/vehicles/ambulan/door_lf_dam.mdl",
-			"models/gtasa/vehicles/ambulan/door_lr_dam.mdl",
-			"models/gtasa/vehicles/ambulan/door_rf_dam.mdl",
-			"models/gtasa/vehicles/ambulan/door_rr_dam.mdl",
+			-- "models/gtasa/vehicles/ambulan/bonnet_dam.mdl",
+			-- "models/gtasa/vehicles/ambulan/bump_front_dam.mdl",
+			-- "models/gtasa/vehicles/ambulan/door_lf_dam.mdl",
+			-- "models/gtasa/vehicles/ambulan/door_lr_dam.mdl",
+			-- "models/gtasa/vehicles/ambulan/door_rf_dam.mdl",
+			-- "models/gtasa/vehicles/ambulan/door_rr_dam.mdl",
 			"models/gtasa/vehicles/ambulan/wheel.mdl",
 			"models/gtasa/vehicles/ambulan/wheel.mdl",
 			"models/gtasa/vehicles/ambulan/wheel.mdl",
@@ -62,6 +62,12 @@ local V = {
 				ent:SetProxyColor( CarCols[1] )
 			end
 		end,	
+		
+		OnTick = function(ent)
+			if ent.horn then
+				ent.horn:ChangePitch( 95, 0 )
+			end
+		end,
 		
 		CustomWheels = true,
 		CustomSuspensionTravel = 1.5,
@@ -147,7 +153,7 @@ local V = {
 		FuelType = FUELTYPE_DIESEL,
 		FuelTankSize = 150,
 		
-		PowerBias = 1,
+		PowerBias = 0,
 		
 		EngineSoundPreset = -1,
 
