@@ -1,0 +1,12 @@
+"VertexlitGeneric"
+{
+"$basetexture" "models/gtasa/vehicles/firetruk/lsfd92badge64"
+"$alphatest" 1
+
+Proxies {
+    		ColorSlot5{
+			name "Decals (No Tint)"
+       			resultVar $color2
+           		}
+	}
+}

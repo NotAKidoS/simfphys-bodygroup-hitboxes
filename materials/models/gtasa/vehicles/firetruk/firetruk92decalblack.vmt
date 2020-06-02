@@ -1,0 +1,12 @@
+"VertexlitGeneric"
+{
+"$basetexture" "models/gtasa/vehicles/firetruk/firetruk92decal"
+"$alphatest" 1
+
+Proxies {
+    		ColorSlot4{
+			name "Decals 2"
+       			resultVar $color2
+           		}
+	}
+}

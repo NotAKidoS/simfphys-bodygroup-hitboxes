@@ -43,6 +43,7 @@ local V = {
 			
 			hitboxes.gastank = {min = Vector(21,37.1,6), max = Vector(32,20.9,-5), explode=true }
 			
+			ent:SetBodyGroups("0000"..math.random(0,1)..math.random(0,1)..math.random(0,1) ) --sets headphones/toolbox/gas whatnot
 			
 			ent:NAKAddHitBoxes(hitboxes)
 			ent:NAKSimfGTASA() -- function that'll do all the GTASA changes for you

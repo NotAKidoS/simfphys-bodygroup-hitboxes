@@ -1,0 +1,5 @@
+"VertexlitGeneric"
+{
+"$basetexture" "models/gtasa/vehicles/firetruk/firetruk92plate32"
+"$blendtintbybasealpha" 1
+}

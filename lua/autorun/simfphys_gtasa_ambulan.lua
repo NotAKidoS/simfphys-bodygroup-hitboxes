@@ -50,6 +50,7 @@ local V = {
 			
 			hitboxes.gastank = {min = Vector(-96,40,-13), max = Vector(-107,55,-2), explode=true }
 			
+			ent:SetBodyGroups("00000000"..math.random(0,1) ) --random unit number
 			
 			ent:NAKAddHitBoxes(hitboxes)
 			ent:NAKSimfGTASA() -- function that'll do all the GTASA changes for you
