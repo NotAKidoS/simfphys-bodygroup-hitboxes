@@ -1,6 +1,6 @@
 local V = {
 	Name = "Fire Truck",
-	Model = "models/gtasa/vehicles/firetruk.mdl",
+	Model = "models/gtasa/vehicles/firetruk/firetruk.mdl",
 	Class = "gmod_sent_vehicle_fphysics_base",
 	Category = "GTA:SA - Government",
 	SpawnOffset = Vector(0,0,30),
