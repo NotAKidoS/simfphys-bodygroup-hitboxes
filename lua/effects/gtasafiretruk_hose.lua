@@ -47,7 +47,7 @@ function EFFECT:Init( data )
 				particleC:SetGravity( Vector( 0, 0, 0 ) )
 
 				for id, prop in pairs( ents.FindInSphere( HitPos, 15 ) ) do
-					net.Start( "testwaterthiss" )
+					net.Start( "GTASAFiretrukWaterHit" )
 						net.WriteEntity( prop )
 					net.SendToServer()
 				end

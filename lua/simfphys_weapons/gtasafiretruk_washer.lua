@@ -13,7 +13,7 @@ end
 function simfphys.weapon:Initialize( vehicle ) -- "vehicle" is the "gmod_sent_vehicle_fphysics_base" entity. 
 	-- this function is called once the weapon is initialized
 	local pod = vehicle:GetDriverSeat()
-	simfphys.RegisterCamera( pod, Vector(0,-18,12), Vector(22,60,40))
+	simfphys.RegisterCamera( pod, Vector(0,-10,6), Vector(22,60,40))
 	-- print("shit")
 end
 
@@ -106,8 +106,8 @@ function simfphys.weapon:SecondaryAttack( vehicle, ply )
 	util.Effect( "gtasafiretruk_hose", effectdata )
 	self:SetNextSecondaryFire( vehicle, 0.5 )
 end
-util.AddNetworkString( "testwaterthiss" )
-net.Receive( "testwaterthiss", function( len, pl )
+util.AddNetworkString( "GTASAFiretrukWaterHit" )
+net.Receive( "GTASAFiretrukWaterHit", function( len, pl )
 
 	local prop = net.ReadEntity()
 
@@ -126,7 +126,6 @@ net.Receive( "testwaterthiss", function( len, pl )
 			prop:Fire( "Extinguish" )
 		end
 	end
-	-- print("shisihsih")
 end )
 
 
