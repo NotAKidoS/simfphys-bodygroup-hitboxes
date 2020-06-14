@@ -12,14 +12,14 @@ local V = {
 		Mass = 1500,
 		
 		GibModels = {
-			-- "models/gtasa/vehicles/alpha/chassis.mdl",
+			"models/gtasa/vehicles/alpha/chassis.mdl",
 			-- "models/gtasa/vehicles/alpha/bonnet_dam.mdl",
 			-- "models/gtasa/vehicles/alpha/boot_dam.mdl",
-			-- "models/gtasa/vehicles/alpha/bump_front_dam.mdl",
+			"models/gtasa/vehicles/alpha/bump_front_dam.mdl",
 			-- "models/gtasa/vehicles/alpha/bump_rear_dam.mdl",
 			-- "models/gtasa/vehicles/alpha/door_lf_dam.mdl",
 			-- "models/gtasa/vehicles/alpha/door_rf_dam.mdl",
-			//hmmmmm
+			-- //hmmmmm
 			-- "models/gtasa/vehicles/bandito/wheel.mdl",
 			-- "models/gtasa/vehicles/bandito/wheel.mdl",
 			-- "models/gtasa/vehicles/bandito/wheel.mdl",

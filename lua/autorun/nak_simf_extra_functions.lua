@@ -142,7 +142,7 @@ function Entity:NAKSimfCustomExplode()
 		local skin = self:GetSkin()
 		local Col = self:GetColor()
 		local prxyClr
-		if ProxyColor then
+		if (self.GetProxyColor) then
 			prxyClr = self:GetProxyColor()
 		end
 		Col.r = Col.r * 0.8
@@ -162,7 +162,7 @@ function Entity:NAKSimfCustomExplode()
 			bprop:GetPhysicsObject():SetMass( self.Mass * 0.75 )
 			bprop.DoNotDuplicate = true
 			bprop:SetColor( Col )
-			if ProxyColor then bprop:SetProxyColor(prxyClr) end
+			if (self.GetProxyColor) then bprop:SetProxyColor(prxyClr) end
 			bprop:SetSkin( skin )
 			
 			self.Gib = bprop
@@ -246,8 +246,10 @@ function Entity:NAKSimfCustomExplode()
 			end
 		end
 		
-		for id in SortedPairs( self.hbinfo ) do
-			NAKSpawnGib(self, id)
+		if self.hbinfo then
+			for id in SortedPairs( self.hbinfo ) do
+				NAKSpawnGib(self, id)
+			end
 		end
 		
 

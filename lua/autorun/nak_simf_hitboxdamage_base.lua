@@ -82,7 +82,7 @@ local function SpawnGib(self, id)
 		if !game.SinglePlayer() then
 			timer.Simple( 0.1, function() 
 				if !IsValid(bprop) then return end 
-				if ProxyColor then bprop:SetProxyColor(self:GetProxyColor()) end
+				if (self.GetProxyColor) then bprop:SetProxyColor(self:GetProxyColor()) end
 			end )
 		end
 		self:CallOnRemove("NAKKillGibsOnRemove" .. bprop:EntIndex(),function(self) 
