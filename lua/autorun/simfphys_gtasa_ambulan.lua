@@ -27,7 +27,7 @@ local V = {
 		
 		EnginePos = Vector(93.97,0,4.10),
 		
-		LightsTable = "gtasa_ambulan",
+		LightsTable = "simfphys_lighting_test",
 		
 		
         OnSpawn = function(ent)
@@ -62,7 +62,7 @@ local V = {
 				CarCols[1] = {Color(245,245,245),Color(132,4,16),Color(245,245,245),Color(0,0,0),Color(131,104,229)}
 				ent:SetProxyColor( CarCols[1] )
 			end
-		end,	
+		end,		
 		
 		OnTick = function(ent)
 			if ent.horn then
@@ -238,11 +238,14 @@ local light_table = {
 	},
 	
 	ems_sounds = {"gtasa/vehicles/horns/siren_wail.wav","gtasa/vehicles/horns/siren_yelp.wav"},
+	
 	ems_sprites = {
+			
 		{
 			pos = Vector(33,-22,50),
 			material = "sprites/light_ignorez",
 			size = 70,
+			
 			Colors = {
 						Color(255,0,0,50),
 						Color(255,0,0,150),
@@ -268,6 +271,7 @@ local light_table = {
 			pos = Vector(33,-8,50),
 			material = "sprites/light_ignorez",
 			size = 70,
+			
 			Colors = {
 						Color(255,0,0,0),
 						Color(255,0,0,50),
@@ -293,6 +297,7 @@ local light_table = {
 			pos = Vector(33,8,50),
 			material = "sprites/light_ignorez",
 			size = 70,
+			
 			Colors = {
 						Color(255,0,0,0),
 						Color(255,0,0,0),
@@ -318,6 +323,7 @@ local light_table = {
 			pos = Vector(33,22,50),
 			material = "sprites/light_ignorez",
 			size = 70,
+			
 			Colors = {
 						Color(255,0,0,0),
 						Color(255,0,0,0),

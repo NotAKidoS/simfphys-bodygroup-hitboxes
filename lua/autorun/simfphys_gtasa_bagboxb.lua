@@ -19,59 +19,44 @@ local V = {
 			"models/gtasa/vehicles/bagboxb/wheel.mdl",
 		},
 		
+		Trailers = {
+			input = Vector(83,0,-20.66),
+			output = Vector(-60.60,0,-20.66)
+		},
+		
 		EnginePos = Vector(0,0,0),
 		
         OnSpawn = function(ent)
 		
+			--DK Trailer support
 			if (file.Exists( "sound/trailers/trailer_connected.mp3", "GAME" )) then  --checks if sound file exists. will exist if dangerkiddys trailer base is subscribed.
 				if ent.GetCenterposition != nil then
-					ent:SetActive( true )
 					ent:SetSimfIsTrailer(true)
-					ent:SetCenterposition(Vector(-60.60,0,-20.66))  -- position of center ballsocket for tow hitch(trailer coupling)
-					ent:SetTrailerCenterposition(Vector(83,0,-20.66)) -- position of center ballsocket for trailer hook
+					ent:SetCenterposition(Vector(-60.60,0,-20.66))
+					ent:SetTrailerCenterposition(Vector(83,0,-20.66))
 				end
-			else
-        		print("Please install and enable the Trailer base")
 			end		
 			
-			ent:NAKSimfGTASA() -- function that'll do all the GTASA changes for you
+			--make the trailer freewheel
+			ent:SetActive(true)
+			ent.PressedKeys["joystick_throttle"] = 1 -- makes thottle to 1, for remove handbrake
+			ent.PressedKeys["joystick_brake"] = 0 -- makes brake to 0, for turn off reverse
 			
-			ent:Lock()
-			ent.Use = function()	 return end
-			for i = 1, table.Count( ent.Wheels ) do
-				local Wheel = ent.Wheels[i]
-				if IsValid(Wheel) then
-					Wheel.Use = function() return end
-					-- if i == 2 or i == 3 then 
-						-- timer.Simple( 0.1, function() Wheel:Remove()  end )
-					-- end
-				end
-			end
+			ent:NAKSimfGTASA() -- function that does all GTASA changes, like damage sound, explode when upsidedown, ect
+			
+			--disables Use() function on wheels, makes Use() function call TrailerUse() if it exists
+			ent:NAKSimfTrailer() --//in OnSpawn
 		end,	
 		
-		OnTick = function(ent) 
-	        if ent.SimfIsTrailer != nil then 
-	        	if not ent:GetIsBraking() then
-	        		ent.ForceTransmission = 1
-		        	if ent:GetNWBool("zadnyaya_gear", false) then
-		        		ent.PressedKeys["joystick_throttle"] = 0
-		        		ent.PressedKeys["joystick_brake"] = 1
-		        	else
-		        		ent.PressedKeys["joystick_throttle"] = 1
-		        		ent.PressedKeys["joystick_brake"] = 0
-		        	end
-	        	end 
-        	end
-			
-			for k, ent2 in pairs( ents.FindInSphere( ent:LocalToWorld(Vector(83,0,-20.66)), 30 ) ) do
-				if ( ent2:GetClass() == "gmod_sent_vehicle_fphysics_base" ) then
-					if ent2 != ent then
-						if ent2:GetVehicleSteer() then
-							-- ent:SteerVehicle( ent2:GetVehicleSteer() * 20 )
-							ent:SteerVehicle( math.Clamp((ent:GetLocalAngles() - ent2:GetLocalAngles()).y, -15, 15) )
-						end
-					end
-				end
+		-- TrailerUse = function(ent) 	
+			-- do stuff if i need to press E on the trailer
+		-- end,
+		
+		OnTick = function(ent) 	
+			--//makes the wheels steer toward the car or trailer connected in front
+			if IsValid(ent.TRConnectedInput) then
+				local AlignedSteering = math.AngleDifference( ent:EyeAngles().y, ent.TRConnectedInput:EyeAngles().y )
+				ent:SteerVehicle( math.Clamp(AlignedSteering, -15, 15) )
 			end
         end,
 		
@@ -128,7 +113,7 @@ local V = {
 		FuelType = FUELTYPE_NONE,
 		FuelTankSize = 0,
 		
-		PowerBias = 0,
+		PowerBias = 1,
 		
 		EngineSoundPreset = -1,
 

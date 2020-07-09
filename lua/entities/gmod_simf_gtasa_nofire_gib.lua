@@ -29,13 +29,13 @@ if SERVER then
 		--//Color support
 		self:SetColor(self.Car:GetColor())
 		self:SetSkin(self.Car:GetSkin())
-		if (self.GetProxyColor) then
+		if (self.Car.GetProxyColor) then
 			self.PrxyClr = self.Car:GetProxyColor()
 		end
 		self.DoNotDuplicate = true
 		
 		if game.SinglePlayer() then
-			if (self.GetProxyColor) then self:SetProxyColor(self.PrxyClr) end
+			if (self.Car.GetProxyColor) then self:SetProxyColor(self.PrxyClr) end
 			self:SetRenderMode( RENDERMODE_TRANSALPHA )
 			self:SetNoDraw( false )
 		else

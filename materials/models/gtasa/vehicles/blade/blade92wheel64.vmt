@@ -1,0 +1,5 @@
+"VertexlitGeneric"
+{
+"$basetexture" "models/gtasa/vehicles/blade/blade92wheel64"
+"$blendtintbybasealpha" 1
+}

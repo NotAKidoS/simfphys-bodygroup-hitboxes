@@ -13,14 +13,14 @@ local V = {
 		
 		GibModels = {
 			"models/gtasa/vehicles/admiral/chassis.mdl",
-			"models/gtasa/vehicles/admiral/bonnet_dam.mdl",
-			"models/gtasa/vehicles/admiral/boot_dam.mdl",
-			"models/gtasa/vehicles/admiral/bump_front_dam.mdl",
-			"models/gtasa/vehicles/admiral/bump_rear_dam.mdl",
-			"models/gtasa/vehicles/admiral/door_lf_dam.mdl",
-			"models/gtasa/vehicles/admiral/door_lr_dam.mdl",
-			"models/gtasa/vehicles/admiral/door_rf_dam.mdl",
-			"models/gtasa/vehicles/admiral/door_rr_dam.mdl",
+			-- "models/gtasa/vehicles/admiral/bonnet_dam.mdl",
+			-- "models/gtasa/vehicles/admiral/boot_dam.mdl",
+			-- "models/gtasa/vehicles/admiral/bump_front_dam.mdl",
+			-- "models/gtasa/vehicles/admiral/bump_rear_dam.mdl",
+			-- "models/gtasa/vehicles/admiral/door_lf_dam.mdl",
+			-- "models/gtasa/vehicles/admiral/door_lr_dam.mdl",
+			-- "models/gtasa/vehicles/admiral/door_rf_dam.mdl",
+			-- "models/gtasa/vehicles/admiral/door_rr_dam.mdl",
 			"models/gtasa/vehicles/admiral/wheel.mdl",
 			"models/gtasa/vehicles/admiral/wheel.mdl",
 			"models/gtasa/vehicles/admiral/wheel.mdl",
@@ -31,32 +31,95 @@ local V = {
 		
 		LightsTable = "gtasa_admiral",
 		
+		NAKHitboxes = {
+			Hood = {
+				OBBMin = Vector(36.187,-35,-8), 
+				OBBMax = Vector(100,35,11.006), 
+				TypeFlag = 0,
+				BDGroup = 1, 
+				GibModel = "models/gtasa/vehicles/admiral/bonnet_dam.mdl", 
+				GibOffset = Vector(42,0,10), 
+				Health = 120 
+			},
+			Trunk = {
+				OBBMin = Vector(-103.976,-33.207,0.717), 
+				OBBMax = Vector(-75.137,33.207,9.102), 
+				TypeFlag = 0,
+				BDGroup = 2, 
+				GibModel = "models/gtasa/vehicles/admiral/boot_dam.mdl", 
+				GibOffset = Vector(-80,0,10), 
+				Health = 120 
+			},
+			BumperF = {
+				OBBMin = Vector(79.655,-42,-25), 
+				OBBMax = Vector(100,42,-4), 
+				TypeFlag = 0,
+				BDGroup = 3, 
+				GibModel = "models/gtasa/vehicles/admiral/bump_front_dam.mdl", 
+				GibOffset = Vector(97,-34,-8), 
+				Health = 60 
+			},
+			BumperR = {
+				OBBMin = Vector(-110,39.112,-6), 
+				OBBMax = Vector(-96,-39.112,-20), 
+				TypeFlag = 0,
+				BDGroup = 4, 
+				GibModel = "models/gtasa/vehicles/admiral/bump_rear_dam.mdl", 
+				GibOffset = Vector(-97,34,-8), 
+				Health = 60 
+			},
+			FDoor = {
+				OBBMin = Vector(31.641,40.466,-15.112), 
+				OBBMax = Vector(-13.111,34.092,8.405), 
+				TypeFlag = 0,
+				BDGroup = 5, 
+				GibModel = "models/gtasa/vehicles/admiral/door_lf_dam.mdl", 
+				GibOffset = Vector(30,40,0), 
+				Health = 100,
+				
+				Mirror = Vector(1,-1,1), --// Vector(-15,40,0) * Vector(1,-1,1) = Vector(-15,-40,0) || multiplies it!!
+				BDGroup_2 = 7,
+				GibModel_2 = "models/gtasa/vehicles/admiral/door_rf_dam.mdl"
+			},
+			RDoor = {
+				OBBMin = Vector(-13.975,40.466,-15.112), 
+				OBBMax = Vector(-48.503,34.092,8.405), 
+				TypeFlag = 0,
+				BDGroup = 6, 
+				GibModel = "models/gtasa/vehicles/admiral/door_lr_dam.mdl", 
+				GibOffset = Vector(-15,40,0), 
+				Health = 100,
+				
+				Mirror = Vector(1,-1,1), --// Vector(-15,40,0) * Vector(1,-1,1) = Vector(-15,-40,0) || multiplies it!!
+				BDGroup_2 = 8,
+				GibModel_2 = "models/gtasa/vehicles/admiral/door_rr_dam.mdl"
+			},
+			Windsheild = {
+				OBBMin = Vector(38.901,34.251,9.725), 
+				OBBMax = Vector(10.353,-34.251,27.39), 
+				TypeFlag = 1, --//glass or window
+				BDGroup = 9,
+				Health =6, 
+				ShatterPos = Vector(22.645,0,21.77) 
+			},
+			Tank = {
+				OBBMin = Vector(-69.348,36,7.3), 
+				OBBMax = Vector(-74.554,39.024,2.377), 
+				TypeFlag = 2 --//gas tank
+			},
+		},
 		
         OnSpawn = function(ent)
-		
-			if (file.Exists( "sound/trailers/trailer_connected.mp3", "GAME" )) then  --checks if sound file exists. will exist if dangerkiddys trailer base is subscribed.
+
+			if (file.Exists( "sound/trailers/trailer_connected.mp3", "GAME" )) then  --checks if sound file exists. will exist if DKs trailer base is subscribed.
 				if ent.GetCenterposition != nil then
-					ent:SetCenterposition(Vector(-108,0,-12))  -- position of center ballsocket for tow hitch(trailer coupling)
-					ent:SetTrailerCenterposition(Vector(0,0,0)) -- position of center ballsocket for trailer hook
+					ent:SetCenterposition(Vector(-108,0,-12))
+					ent:SetTrailerCenterposition(Vector(0,0,0))
 				end
-			end		
+			end
 			
-			local hitboxes = {}
-			hitboxes.hood = {min = Vector(36.187,-35,-8), max = Vector(100,35,11.006), bdgroup = 1, gibmodel = "models/gtasa/vehicles/admiral/bonnet_dam.mdl", giboffset = Vector(42,0,10), health=120 }
-			hitboxes.trunk = {min = Vector(-103.976,-33.207,0.717), max = Vector(-75.137,33.207,9.102), bdgroup = 2, gibmodel = "models/gtasa/vehicles/admiral/boot_dam.mdl", giboffset = Vector(-80,0,10), health=120 }
-			hitboxes.bumperf = {min = Vector(79.655,-42,-25), max = Vector(100,42,-4), bdgroup = 3, gibmodel = "models/gtasa/vehicles/admiral/bump_front_dam.mdl", giboffset = Vector(97,-34,-8), health=60 }
-			hitboxes.bumperr = {max = Vector(-96,-39.112,-20), min = Vector(-110,39.112,-6), bdgroup = 4, gibmodel = "models/gtasa/vehicles/admiral/bump_rear_dam.mdl", giboffset = Vector(-97,34,-8), health=60 }
-			hitboxes.dfdoor = {min = Vector(31.641,40.466,-15.112), max = Vector(-13.111,34.092,8.405), bdgroup = 5, gibmodel = "models/gtasa/vehicles/admiral/door_lf_dam.mdl", giboffset = Vector(30,40,0), health=100 }
-			hitboxes.pfdoor = {max = Vector(31.641,-40.466,-15.112), min = Vector(-13.111,-34.092,8.405), bdgroup = 7, gibmodel = "models/gtasa/vehicles/admiral/door_rf_dam.mdl", giboffset = Vector(30,-40,0), health=100 }
-			hitboxes.drdoor = {min = Vector(-13.975,40.466,-15.112), max = Vector(-48.503,34.092,8.405), bdgroup = 6, gibmodel = "models/gtasa/vehicles/admiral/door_lr_dam.mdl", giboffset = Vector(-15,40,0), health=100 }
-			hitboxes.prdoor = {max = Vector(-13.975,-40.466,-15.112), min = Vector(-48.503,-34.092,8.405), bdgroup = 8, gibmodel = "models/gtasa/vehicles/admiral/door_rr_dam.mdl", giboffset = Vector(-15,-40,0), health=100 }
-			hitboxes.windowf = {min = Vector(38.901,34.251,9.725), max = Vector(10.353,-34.251,27.39), bdgroup = 9, health=6, glass=true, glasspos=Vector(22.645,0,21.77) }
-			
-			hitboxes.gastank = {min = Vector(-69.348,36,7.3), max = Vector(-74.554,39.024,2.377), explode=true }
-			
-			
-			ent:NAKAddHitBoxes(hitboxes)
 			ent:NAKSimfGTASA() -- function that'll do all the GTASA changes for you
+			ent:NAKHitboxDmg() -- function that'll activate the hitboxes
 			
 			if ( ProxyColor ) then
 				local CarCols = {}

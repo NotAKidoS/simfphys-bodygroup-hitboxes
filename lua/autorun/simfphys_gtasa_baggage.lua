@@ -26,6 +26,9 @@ local V = {
 		
 		LightsTable = "gtasa_baggage",
 		
+		Trailers = {
+			output = Vector(-62.97,0,-5.83)
+		},
 		
         OnSpawn = function(ent)
 		
