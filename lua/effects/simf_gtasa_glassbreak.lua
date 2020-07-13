@@ -8,9 +8,7 @@
 
 function EFFECT:Init( data )
 	local Pos = data:GetOrigin()
-	
 	self:GlassBreak( Pos )
-
 end
 
 function EFFECT:GlassBreak( pos )

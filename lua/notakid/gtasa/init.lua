@@ -24,11 +24,25 @@ sound.Add( {
 	https://steamcommunity.com/sharedfiles/filedetails/?id=2135782690
 --]]
 
+local function createslider(x, y, sizex, sizey, label, command, parent,min,max,default)
+	local slider = vgui.Create( "DNumSlider", parent)
+	slider:SetPos( x, y )
+	slider:SetSize( sizex, sizey )
+	slider:SetText( label )
+	slider:SetMin( min )
+	slider:SetMax( max )
+	slider:SetDecimals( 2 )
+	slider:SetConVar( command )
+	slider:SetValue( default )
+	return slider
+end
+
 local function addhook(a,b,c)
     hook.Add(a,c or 'nak_gtasa_config',b)
 end
 
 local function buildthemenu( self )
+
 	local Background = vgui.Create('DShape',self.PropPanel)
 	Background:SetType('Rect')
 	Background:SetPos(20,20)
@@ -36,37 +50,42 @@ local function buildthemenu( self )
 	local y = 0
 	
 	if LocalPlayer():IsSuperAdmin() then
+
+
+
 		y = y + 25
-		local settime = vgui.Create('DCheckBoxLabel',self.PropPanel)
-		settime:SetPos(25,y)
-		settime:SetText('Set the time to the real time at the beginning of the game')
-		settime:SetValue(0)
-		settime:SizeToContents()
+		local CheckBoxDamage = vgui.Create( "DCheckBoxLabel", self.PropPanel)
+		CheckBoxDamage:SetPos( 25, y )
+		CheckBoxDamage:SetText( "Enable Damage" )
+		CheckBoxDamage:SetValue( GetConVar( "sv_simfphys_enabledamage" ) :GetInt() )
+		CheckBoxDamage:SizeToContents()
 		
-		y = y + 30
-		local DermaButton = vgui.Create('DButton')
-		DermaButton:SetParent(self.PropPanel)
-		DermaButton:SetText('Apply')	
-		DermaButton:SetPos(25,y-10)
-		DermaButton:SetSize(340,25)
-        DermaButton.DoClick = function()
-			print("aaa")
-		end
-		
-		y = y + 30
-		local DermaButton = vgui.Create('DButton')
-		DermaButton:SetParent(self.PropPanel)
-		DermaButton:SetText('Reset')
-		DermaButton:SetPos(25,y-10)
-		DermaButton:SetSize(340,25)
-		DermaButton.DoClick = function()
-			print("aaa222")
-		end
+		y = y + 18
+		local DamageMul = vgui.Create( "DNumSlider", self.PropPanel)
+		DamageMul:SetPos( 30, y )
+		DamageMul:SetSize( 345, 30 )
+		DamageMul:SetText( "Physical Damage Multiplier" )
+		DamageMul:SetMin( 0 )
+		DamageMul:SetMax( 10 )
+		DamageMul:SetDecimals( 3 )
+		DamageMul:SetValue( GetConVar( "gtasa_physicdamagemultiplier" ):GetFloat() )
+
+		y = y + 32
+		local DamageMul = vgui.Create( "DNumSlider", self.PropPanel)
+		DamageMul:SetPos( 30, y )
+		DamageMul:SetSize( 345, 30 )
+		DamageMul:SetText( "Bullet Damage Multiplier" )
+		DamageMul:SetMin( 0 )
+		DamageMul:SetMax( 10 )
+		DamageMul:SetDecimals( 3 )
+		DamageMul:SetValue( GetConVar( "gtasa_takedamagemultiplier" ):GetFloat() )
+
+		y = y + 18
 	else
 		y = y + 25
 		local Label = vgui.Create('DLabel',self.PropPanel)
 		Label:SetPos(30,y)
-		Label:SetText("whatthehell")
+		Label:SetText("Admin-Only Settings!")
 		Label:SizeToContents()
 	end
 	
@@ -105,16 +124,22 @@ if CLIENT then
 		if GetConVar("nak_simf_hitboxes"):GetInt() == 0 then return end
 		for k, ent in pairs( ents.GetAll() ) do
 			if ( ent:GetClass() == "gmod_sent_vehicle_fphysics_base" ) then
-				if (!ent.hbinfo) then return end
-				for id in SortedPairs( ent.hbinfo ) do
+				
+				if !ent.GetSpawn_List then return end
+				
+				local vehiclelist = list.Get( "simfphys_vehicles" )[ ent:GetSpawn_List() ]
+				local HBInfo = vehiclelist.Members.NAKHitboxes
+				if (!HBInfo) then return end
+				
+				for id in SortedPairs( HBInfo ) do
 					local clcolor = util.StringToType( GetConVar("nak_simf_hitbox_color"):GetString(), "Vector" )
 					local clalpha = GetConVar("nak_simf_hitbox_alpha"):GetFloat()
 					local color = Color(clcolor.x,clcolor.y,clcolor.z,clalpha)	
 					render.SetColorMaterial()
 					if GetConVar("nak_simf_hitboxes_filled"):GetInt() == 0 then
-						render.DrawWireframeBox( ent:GetPos(), ent:GetAngles(), ent.hbinfo[id].min, ent.hbinfo[id].max, color )
+						render.DrawWireframeBox( ent:GetPos(), ent:GetAngles(), HBInfo[id].OBBMin, HBInfo[id].OBBMax, color )
 					else
-						render.DrawBox( ent:GetPos(), ent:GetAngles(), ent.hbinfo[id].min, ent.hbinfo[id].max, color )
+						render.DrawBox( ent:GetPos(), ent:GetAngles(), HBInfo[id].OBBMin, HBInfo[id].OBBMax, color )
 					end
 				end
 			end
@@ -275,6 +300,54 @@ function Entity:NAKSimfTickStuff()
 		self:OnTick_UDF()
 	end
 	
+end
+
+
+local function NAKPlayEMSRadio(self)
+
+	if !IsValid(self) then return end
+	
+	local filter = RecipientFilter()
+	
+	if IsValid(self:GetDriver()) then
+		filter:AddPlayer( self:GetDriver() )
+	end
+	if self.PassengerSeats then
+		for i = 1, table.Count( self.PassengerSeats ) do
+			local Passenger = self.pSeat[i]:GetDriver()
+			if IsValid(Passenger) then
+				filter:AddPlayer( Passenger )
+			end
+		end
+	end
+	
+	self.NAKEMSRadio = CreateSound(self, "gtasa/sfx/police_radio/police_radio"..math.random(1,53)..".wav", filter )
+	self.NAKEMSRadio:SetSoundLevel( 100 )
+	self.NAKEMSRadio:PlayEx( 2, 100 )
+	timer.Create( "NAKGTASA_EMSRadio_" .. self:EntIndex(), math.random(20,45), 1, function()
+		NAKPlayEMSRadio(self)
+	end)
+end
+
+function Entity:NAKSimfEMSRadio()
+	timer.Create( "NAKGTASA_EMSRadio_" .. self:EntIndex(), 1, 1, function()
+		NAKPlayEMSRadio(self)
+	end)
+end
+
+function Entity:NAKSimfTrailer()
+	for i = 1, table.Count( self.Wheels ) do
+		self.Wheels[i].Use = nil
+	end
+	
+	if self.TrailerUse then
+		self.Use = nil
+		self.Use = function()
+			self:TrailerUse()
+		end
+	else
+		self.Use = nil
+	end
 end
 
 --MAIN GLOBAL FUNCTION TO APPLY MOST IF NOT ALL OF THESE TO ALL VEHICLES

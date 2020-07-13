@@ -12,7 +12,7 @@
 	
 	Contact:
 		NotAKid - Steam
-		NotAKidoS#0792 - Discord
+		NotAKidoS#0792 - Discord 
 		
 	GitHub:
 		https://github.com/NotAKidOnSteam/simfphys-bodygroup-hitboxes

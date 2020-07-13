@@ -33,8 +33,8 @@ local V = {
 		
 		NAKHitboxes = {
 			Hood = {
-				OBBMin = Vector(36.187,-35,-8), 
-				OBBMax = Vector(100,35,11.006), 
+				OBBMin = Vector(36.187,-38,-8), 
+				OBBMax = Vector(100,38,11.006), 
 				TypeFlag = 0,
 				BDGroup = 1, 
 				GibModel = "models/gtasa/vehicles/admiral/bonnet_dam.mdl", 
@@ -42,8 +42,8 @@ local V = {
 				Health = 120 
 			},
 			Trunk = {
-				OBBMin = Vector(-103.976,-33.207,0.717), 
-				OBBMax = Vector(-75.137,33.207,9.102), 
+				OBBMin = Vector(-108,-40,-8), 
+				OBBMax = Vector(-75.137,40,10), 
 				TypeFlag = 0,
 				BDGroup = 2, 
 				GibModel = "models/gtasa/vehicles/admiral/boot_dam.mdl", 
@@ -109,15 +109,7 @@ local V = {
 			},
 		},
 		
-        OnSpawn = function(ent)
-
-			if (file.Exists( "sound/trailers/trailer_connected.mp3", "GAME" )) then  --checks if sound file exists. will exist if DKs trailer base is subscribed.
-				if ent.GetCenterposition != nil then
-					ent:SetCenterposition(Vector(-108,0,-12))
-					ent:SetTrailerCenterposition(Vector(0,0,0))
-				end
-			end
-			
+        OnSpawn = function(ent)	
 			ent:NAKSimfGTASA() -- function that'll do all the GTASA changes for you
 			ent:NAKHitboxDmg() -- function that'll activate the hitboxes
 			

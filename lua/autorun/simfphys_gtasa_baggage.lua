@@ -8,6 +8,13 @@ local V = {
 	NAKGame = "GTA:SA",
 	NAKType = "Public Service",
 	
+	FLEX = {
+		Trailers = {
+			outputPos = Vector(-62.97,0,-5.83),
+			outputType = "ballsocket",
+		}
+	},
+	
 	Members = {
 		Mass = 1000.0,
 		
@@ -26,31 +33,17 @@ local V = {
 		
 		LightsTable = "gtasa_baggage",
 		
-		Trailers = {
-			output = Vector(-62.97,0,-5.83)
+		NAKHitboxes = {
+			hood = {OBBMin = Vector(20,34.1,29), OBBMax = Vector(72,-34.1,-8), BDGroup = 1, GibModel = "models/gtasa/vehicles/baggage/bonnet_dam.mdl", GibOffset = Vector(29.78,0,25.31), Health=120 },
+			bumperf = {OBBMin = Vector(72,-34.1,-3), OBBMax = Vector(59,34.1,-18), BDGroup = 2, GibModel = "models/gtasa/vehicles/baggage/bump_front_dam.mdl", GibOffset = Vector(63.48,-24.93,-9.18), Health=60 },
+			bumperr = {OBBMin = Vector(-63,34.1,-3), OBBMax = Vector(-50,-34.1,-18), BDGroup = 3, GibModel = "models/gtasa/vehicles/baggage/bump_rear_dam.mdl", GibOffset = Vector(-57.31,24.93,-9.19), Health=60 },
+			gastank = {OBBMin = Vector(21,37.1,6), OBBMax = Vector(32,20.9,-5), TypeFlag=2 },
 		},
 		
         OnSpawn = function(ent)
-		
-			if (file.Exists( "sound/trailers/trailer_connected.mp3", "GAME" )) then  --checks if sound file exists. will exist if dangerkiddys trailer base is subscribed.
-				if ent.GetCenterposition != nil then
-					ent:SetCenterposition(Vector(-62.97,0,-5.83))  -- position of center ballsocket for tow hitch(trailer coupling)
-					ent:SetTrailerCenterposition(Vector(0,0,0)) -- position of center ballsocket for trailer hook
-				end
-			end		
-			
-			local hitboxes = {}
-			hitboxes.hood = {min = Vector(20,34.1,29), max = Vector(72,-34.1,-8), bdgroup = 1, gibmodel = "models/gtasa/vehicles/baggage/bonnet_dam.mdl", giboffset = Vector(29.78,0,25.31), health=120 }
-			hitboxes.bumperf = {min = Vector(72,-34.1,-3), max = Vector(59,34.1,-18), bdgroup = 2, gibmodel = "models/gtasa/vehicles/baggage/bump_front_dam.mdl", giboffset = Vector(63.48,-24.93,-9.18), health=60 }
-			hitboxes.bumperr = {min = Vector(-63,34.1,-3), max = Vector(-50,-34.1,-18), bdgroup = 3, gibmodel = "models/gtasa/vehicles/baggage/bump_rear_dam.mdl", giboffset = Vector(-57.31,24.93,-9.19), health=60 }
-			
-			hitboxes.gastank = {min = Vector(21,37.1,6), max = Vector(32,20.9,-5), explode=true }
-			
 			ent:SetBodyGroups("0000"..math.random(0,1)..math.random(0,1)..math.random(0,1) ) --sets headphones/toolbox/gas whatnot
-			
-			ent:NAKAddHitBoxes(hitboxes)
-			ent:NAKSimfGTASA() -- function that'll do all the GTASA changes for you
-			
+			ent:NAKHitboxDmg()
+			ent:NAKSimfGTASA()
 			if ( ProxyColor ) then
 				local CarCols = {}
 				CarCols[1] = {Color(245,245,245)}

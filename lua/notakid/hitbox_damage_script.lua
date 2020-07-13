@@ -1,19 +1,24 @@
---[[
+	--[[
 
 	This is the base for the damage script, I am trying my best to make it easy to use & usable for most things.
 	Written by NotAKidoS
 --]]
 
+local NAK_CONVAR = { FCVAR_ARCHIVE, FCVAR_SERVER_CAN_EXECUTE }
+CreateConVar("gtasa_physicdamagemultiplier",  "1"  , NAK_SERVER_CONVAR)
+CreateConVar("gtasa_takedamagemultiplier",  "1"  , NAK_SERVER_CONVAR)
+
+
 --//Client stuff
 if CLIENT then
 	net.Receive("simfphys_gtasa_glassbreak_fx", function(length)
 		local self = net.ReadEntity()
-		local ShatterPos = net.ReadVector()
+		local ShatterPos = self:LocalToWorld( net.ReadVector() )
 		if IsValid( self ) then
 			local effectdata = EffectData()
-			effectdata:SetOrigin( self:LocalToWorld( ShatterPos ) )
+			effectdata:SetOrigin( ShatterPos )
 			util.Effect( "simf_gtasa_glassbreak", effectdata )
-		end
+		end		
 	end)
 end
 
@@ -50,36 +55,48 @@ end
 
 
 
-local function AddBDGroup(self, BDGroup)
-	
-	if istable(BDGroup) then
-		for BD in SortedPairs( BDGroup ) do
-			self:SetBodygroup( BDGroup[BD], (self:GetBodygroup( BDGroup[BD] ) + 1) )
+local function AddBDGroup(self, BDGroup, broken)
+
+	if !broken then
+		if istable(BDGroup) then
+			for BD in SortedPairs( BDGroup ) do
+				self:SetBodygroup( BDGroup[BD], (self:GetBodygroup( BDGroup[BD] ) + 1) )
+			end
+		else
+			self:SetBodygroup( BDGroup, (self:GetBodygroup( BDGroup ) + 1) )
 		end
 	else
-		self:SetBodygroup( BDGroup, (self:GetBodygroup( BDGroup ) + 1) )
+		if istable(BDGroup) then
+			for BD in SortedPairs( BDGroup ) do
+				self:SetBodygroup( BDGroup[BD], ( self:GetBodygroupCount( BDGroup[BD] ) - 1) )
+			end
+		else
+			self:SetBodygroup( BDGroup, ( self:GetBodygroupCount( BDGroup ) - 1) )
+		end
 	end
 end
 
 local function SharedDamage(self, damagePos, dmgAmount, type)
-	-- print("Vehicle Damaged")
-	local HBInfo = self.NAKHitboxes
-	for id in SortedPairs( HBInfo ) do
+
+	for id in SortedPairs( self.NAKHitboxes ) do
+		local HBInfo = self.NAKHitboxes
 		if damagePos:WithinAABox( HBInfo[id].OBBMin, HBInfo[id].OBBMax ) then
 
 			--//Check for special damage areas
 			if HBInfo[id].TypeFlag == 2 then -- Explode collisions
 				self:ExplodeVehicle()
-				return
+				break
 			end
 			
+			dmgAmount = dmgAmount * math.random(0.6, 0.9)
 			--//Take damage
-			HBInfo[id].CurHealth = math.Clamp( (HBInfo[id].CurHealth - dmgAmount), 0, HBInfo[id].Health )
-			print(HBInfo[id].CurHealth)
+			HBInfo[id].CurHealth = math.Clamp( (HBInfo[id].CurHealth - dmgAmount ), 0, HBInfo[id].Health )
 			
-			--//70% health stage
+			
+			
+			--//90% health stage
 			if HBInfo[id].Stage == 0 then
-				if HBInfo[id].CurHealth < 70%HBInfo[id].Health then
+				if HBInfo[id].CurHealth < HBInfo[id].Health*0.9 then
 					AddBDGroup(self, HBInfo[id].BDGroup)
 					HBInfo[id].Stage = 1
 				end
@@ -87,7 +104,7 @@ local function SharedDamage(self, damagePos, dmgAmount, type)
 			--//Break off stage
 			if HBInfo[id].Stage == 1 then
 				if HBInfo[id].CurHealth < 1 then
-					AddBDGroup(self, HBInfo[id].BDGroup)
+					AddBDGroup(self, HBInfo[id].BDGroup, true)
 					HBInfo[id].Stage = 2 --means broken
 					
 					if HBInfo[id].TypeFlag == 1 then
@@ -102,7 +119,7 @@ local function SharedDamage(self, damagePos, dmgAmount, type)
 				end
 			end
 
-			print("Bodypanel "..id.." hit")
+			-- print("Bodypanel "..id.." hit", HBInfo[id].CurHealth)
 		end
 	end
 end
@@ -112,48 +129,35 @@ local function OverrideTakeDamage(self)
 	self.NAKOnTakeDamage = self.OnTakeDamage
 	--define new function
 	self.OnTakeDamage  = function(ent, dmginfo) ---START OF FUNCTION
-	
-		local Damage = dmginfo:GetDamage() 
+		-- local DmgMultiplier = GetConVar( "gtasa_takedamagemultiplier" ):GetFloat()
+		local Damage = dmginfo:GetDamage() --* DmgMultiplier
 		local DamagePos = ent:WorldToLocal( dmginfo:GetDamagePosition() ) 
-		local Type = dmginfo:GetDamageType()
-
-		SharedDamage(ent, DamagePos, Damage, Type)
-
+		-- local Type = dmginfo:GetDamageType()
+		SharedDamage(ent, DamagePos, Damage)
 		self:NAKOnTakeDamage(dmginfo)
 	end
 end
 
 
-local function OverridePhysicsDamage(self,HBInfo)
-
-	self.NAKHBPhysicsCollide = self.PhysicsCollide --//store the old built in simfphys function
-	
-	self.PhysicsCollide  = function(ent, data, physobj) --//override the old function to call our code first, then call the old stored one
-		--//The damage sound from GTASA
+local function OverridePhysicsDamage(self)
+	--//store the old built in simfphys function
+	self.NAKHBPhysicsCollide = self.PhysicsCollide 
+	--//override the old function to call our code first, then call the old stored one
+	self.PhysicsCollide  = function(ent, data, physobj) 
+		--//The damage sounds from GTASA
 		if (data.Speed > 50 && data.DeltaTime > 0.8 ) then
 			self:EmitSound( "gtasa/sfx/damage_hvy"..math.random(1,7)..".wav" )
 		end
 		--//dont do damage if hitting flesh (player walking into a vehicle)
-		if IsValid( data.HitEntity ) then
-			if data.HitEntity:IsNPC() or data.HitEntity:IsNextBot() or data.HitEntity:IsPlayer() then
-				self:NAKHBPhysicsCollide(data, physobj) 
-				return
+		if !data.HitEntity:IsNPC() && !data.HitEntity:IsNextBot() && !data.HitEntity:IsPlayer() then
+			local spd = data.Speed + data.OurOldVelocity:Length() + data.TheirOldVelocity:Length()
+			local dmgmult = math.Round( spd/30, 0 )
+			local damagePos = ent:WorldToLocal( data.HitPos )
+			if ( data.DeltaTime > 0.2 ) then
+				PrintMessage(HUD_PRINTTALK, dmgmult)
+				SharedDamage(ent, damagePos, dmgmult )
 			end
 		end
-		
-		local damagePos = ent:WorldToLocal( ent:NearestPoint( data.HitPos ) )
-		
-		--//dont let handheld tin cans hurt the car (the worlds mass is 0, so we make an exeption)
-		if ( data.HitObject:GetMass() < 50) then
-			if ( (data.Speed) > 1000 && data.DeltaTime > 0.2) && !data.HitEntity:IsWorld() then
-				SharedDamage(ent, damagePos, data.Speed/10 )
-			elseif data.HitEntity:IsWorld() && ( (data.Speed) > 60 && data.DeltaTime > 0.2 ) then
-				SharedDamage(ent, damagePos, data.Speed/6 )
-			end
-		elseif ( (data.Speed) > 100 && data.DeltaTime > 0.2 ) then
-			SharedDamage(ent, damagePos, data.Speed/10 )
-		end
-		--//call original function so it can do its sparky thing
 		self:NAKHBPhysicsCollide(data, physobj) 
 	end
 end
@@ -189,7 +193,6 @@ function NAKSpawnGibs(self, prxyClr)
 	end
 end
 
-
 --[[
 	This bit of the code applies the altered functions above to the vehicle, and also sets any values we need for later
 	CurHealth, Stage, and mirroring hitboxes is done here.
@@ -200,7 +203,7 @@ local Entity = FindMetaTable( "Entity" )
 --//CUSTOM EXPLODE FUNCTIONNNN
 
 function Entity:NAKSimfCustomExplode()
-
+ 
 	self.ExplodeVehicle  = function(self) ---START OF FUNCTION
 	
 		if not IsValid( self ) then return end
@@ -341,7 +344,7 @@ function Entity:NAKHitboxDmg()
 	for id in SortedPairs( self.NAKHitboxes ) do
 		--//Set current health, unless it is added by the mod maker
 		self.NAKHitboxes[id].CurHealth = self.NAKHitboxes[id].CurHealth or self.NAKHitboxes[id].Health
-		self.NAKHitboxes[id].Stage = self.NAKHitboxes[id].Stage or 0
+		self.NAKHitboxes[id].Stage = 0
 		
 		if self.NAKHitboxes[id].Mirror then
 			print("MIRROR THIS "..id)

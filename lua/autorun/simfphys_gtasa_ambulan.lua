@@ -27,34 +27,23 @@ local V = {
 		
 		EnginePos = Vector(93.97,0,4.10),
 		
-		LightsTable = "simfphys_lighting_test",
+		LightsTable = "gtasa_ambulan",
 		
+		NAKHitboxes = {
+			Hood = {OBBMin = Vector(69.4,42,19.6), OBBMax = Vector(120,-42,-8.4), BDGroup = 1, GibModel = "models/gtasa/vehicles/ambulan/bonnet_dam.mdl", GibOffset = Vector(69.45,0,18.10), Health=160 },
+			BumperF = {OBBMin = Vector(94.4,42,5), OBBMax = Vector(120,-42,-27.6), BDGroup = 2, GibModel = "models/gtasa/vehicles/ambulan/bump_front_dam.mdl", GibOffset = Vector(96.72,-39.63,-12.67), Health=120 },
+			DoorDF = {OBBMin = Vector(20,46,17), OBBMax = Vector(62,27,-25), BDGroup = 3, GibModel = "models/gtasa/vehicles/ambulan/door_lf_dam.mdl", GibOffset = Vector(61.01,41.65,3.48), Health=100 },
+			DoorPF = {OBBMax = Vector(20,-46,17), OBBMin = Vector(62,-27,-25), BDGroup = 5, GibModel = "models/gtasa/vehicles/ambulan/door_rf_dam.mdl", GibOffset = Vector(61.01,-41.65,3.48), Health=100 },
+			DoorDR = {OBBMin = Vector(-145,-2,53), OBBMax = Vector(-128,32,-13), BDGroup = 4, GibModel = "models/gtasa/vehicles/ambulan/door_lr_dam.mdl", GibOffset = Vector(-134.85,31.42,14.78), Health=100 },
+			DoorPR = {OBBMax = Vector(-145,2,53), OBBMin = Vector(-128,-32,-13), BDGroup = 6, GibModel = "models/gtasa/vehicles/ambulan/door_rr_dam.mdl", GibOffset = Vector(-134.85,-31.42,14.78), Health=100 },
+			Windsheild = {OBBMin = Vector(48,37,42), OBBMax = Vector(69,-37,19), BDGroup = 7, Health=6, TypeFlag=1, ShatterPos=Vector(59.66,0,29.70) },
+			FuelCap = {OBBMin = Vector(-96,40,-13), OBBMax = Vector(-107,55,-2), TypeFlag=2 },
+		},
 		
         OnSpawn = function(ent)
-		
-			if (file.Exists( "sound/trailers/trailer_connected.mp3", "GAME" )) then  --checks if sound file exists. will exist if dangerkiddys trailer base is subscribed.
-				if ent.GetCenterposition != nil then
-					ent:SetCenterposition(Vector(-108,0,-12))  -- position of center ballsocket for tow hitch(trailer coupling)
-					ent:SetTrailerCenterposition(Vector(0,0,0)) -- position of center ballsocket for trailer hook
-				end
-			end		
-			
-			local hitboxes = {}
-			hitboxes.hood = {min = Vector(69.4,42,19.6), max = Vector(120,-42,-8.4), bdgroup = 1, gibmodel = "models/gtasa/vehicles/ambulan/bonnet_dam.mdl", giboffset = Vector(69.45,0,18.10), health=120 }
-			hitboxes.bumperf = {min = Vector(94.4,42,5), max = Vector(120,-42,-27.6), bdgroup = 2, gibmodel = "models/gtasa/vehicles/ambulan/bump_front_dam.mdl", giboffset = Vector(96.72,-39.63,-12.67), health=60 }
-			hitboxes.dfdoor = {min = Vector(20,46,17), max = Vector(62,27,-25), bdgroup = 3, gibmodel = "models/gtasa/vehicles/ambulan/door_lf_dam.mdl", giboffset = Vector(61.01,41.65,3.48), health=100 }
-			hitboxes.pfdoor = {max = Vector(20,-46,17), min = Vector(62,-27,-25), bdgroup = 5, gibmodel = "models/gtasa/vehicles/ambulan/door_rf_dam.mdl", giboffset = Vector(61.01,-41.65,3.48), health=100 }
-			hitboxes.drdoor = {min = Vector(-145,-2,53), max = Vector(-128,32,-13), bdgroup = 4, gibmodel = "models/gtasa/vehicles/ambulan/door_lr_dam.mdl", giboffset = Vector(-134.85,31.42,14.78), health=100 }
-			hitboxes.prdoor = {max = Vector(-145,2,53), min = Vector(-128,-32,-13), bdgroup = 6, gibmodel = "models/gtasa/vehicles/ambulan/door_rr_dam.mdl", giboffset = Vector(-134.85,-31.42,14.78), health=100 }
-			hitboxes.windowf = {min = Vector(48,37,42), max = Vector(69,-37,19), bdgroup = 7, health=6, glass=true, glasspos=Vector(59.66,0,29.70) }
-			
-			hitboxes.gastank = {min = Vector(-96,40,-13), max = Vector(-107,55,-2), explode=true }
-			
 			ent:SetBodyGroups("00000000"..math.random(0,1) ) --random unit number
-			
-			ent:NAKAddHitBoxes(hitboxes)
-			ent:NAKSimfGTASA() -- function that'll do all the GTASA changes for you
-			
+			ent:NAKSimfGTASA() -- gtasa functions
+			ent:NAKHitboxDmg() -- hitboxes
 			ent:NAKSimfEMSRadio()
 			
 			if ( ProxyColor ) then

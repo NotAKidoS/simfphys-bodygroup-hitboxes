@@ -8,6 +8,13 @@ local V = {
 	NAKGame = "GTA:SA",
 	NAKType = "Coupes/Hatchbacks",
 	
+	FLEX = {
+		Trailers = {
+			outputPos = Vector(-85,0,-9),
+			outputType = "ballsocket",
+		}
+	},
+	
 	Members = {
 		Mass = 1000,
 		
@@ -25,7 +32,7 @@ local V = {
 		
 		NAKHitboxes = {
 			Hood = {
-				OBBMin = Vector(90,42,-15), 
+				OBBMin = Vector(90,42,-18), 
 				OBBMax = Vector(33,-42,16), 
 				BDGroup = { 1,10,11 },
 				GibModel = "models/gtasa/vehicles/blistac/bonnet_dam.mdl", 
@@ -75,7 +82,7 @@ local V = {
 				TypeFlag = 1, --//glass or window
 				BDGroup = 7, 
 				Health = 6, 
-				ShatterPos=Vector(-17.57,0,19.68) 
+				ShatterPos=Vector(16.643,0,19.497) 
 			},
 			FuelCap = {
 				OBBMin = Vector(-62,-47,10), 
@@ -83,16 +90,8 @@ local V = {
 				TypeFlag = 2 --//gas tank 
 			},
 		},
-		
-		OnSpawn = function(ent)
-		
-			if (file.Exists( "sound/trailers/trailer_connected.mp3", "GAME" )) then  --checks if sound file exists. will exist if dangerkiddys trailer base is subscribed.
-				if ent.GetCenterposition != nil then
-					ent:SetCenterposition(Vector(-100,0,-14))  -- position of center ballsocket for tow hitch(trailer coupling)
-					ent:SetTrailerCenterposition(Vector(0,0,0)) -- position of center ballsocket for trailer hook
-				end
-			end		
 			
+		OnSpawn = function(ent)
 			ent:SetBodyGroups("00000000002280" )
 			
 			ent:NAKSimfGTASA() -- function that'll do all the GTASA changes for you
