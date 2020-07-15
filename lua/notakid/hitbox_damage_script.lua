@@ -2,9 +2,10 @@
 
 	This is the base for the damage script, I am trying my best to make it easy to use & usable for most things.
 	Written by NotAKidoS
---]] local NAK_CONVAR = {FCVAR_ARCHIVE, FCVAR_SERVER_CAN_EXECUTE}
-CreateConVar("gtasa_physicdamagemultiplier", "1", NAK_SERVER_CONVAR)
-CreateConVar("gtasa_takedamagemultiplier", "1", NAK_SERVER_CONVAR)
+--]]
+local NAK_CONVAR = {FCVAR_ARCHIVE, FCVAR_SERVER_CAN_EXECUTE}
+CreateConVar("gtasa_physicdamagemultiplier", "1", NAK_CONVAR)
+CreateConVar("gtasa_takedamagemultiplier", "1", NAK_CONVAR)
 
 -- //Client stuff
 if CLIENT then
@@ -23,6 +24,7 @@ if CLIENT then return end
 
 util.AddNetworkString("NAKSendSimfphysHitbox")
 util.AddNetworkString("simfphys_gtasa_glassbreak_fx")
+util.AddNetworkString("nak_hitbox_cashed")
 
 local function SpawnGib(self, GibModel, GibOffset)
 
@@ -141,11 +143,12 @@ local function OverridePhysicsDamage(self)
     -- //override the old function to call our code first, then call the old stored one
     self.PhysicsCollide = function(ent, data, physobj)
         -- //The damage sounds from GTASA
+        PrintTable(data)
         if (data.Speed > 50 and data.DeltaTime > 0.8) then
             self:EmitSound("gtasa/sfx/damage_hvy" .. math.random(1, 7) .. ".wav")
         end
         -- dont do damage if hitting flesh (player walking into a vehicle)
-        -- i think we need to dead (0.5, 0.3) of regular damage, bacause if human run into a car, car will get damage
+        -- TODO: i think we need to dead (0.5, 0.3) of regular damage, bacause if human run into a car, car will get damage
         if (not data.HitEntity:IsNPC()) and (not data.HitEntity:IsNextBot()) and
             (not data.HitEntity:IsPlayer()) then
             local spd = data.Speed + data.OurOldVelocity:Length() +
@@ -390,6 +393,10 @@ function Entity:NAKHitboxDmg()
             self.NAKHitboxes[id .. "_2"].Stage = self.NAKHitboxes[id].Stage
         end
     end
+    net.Start("nak_hitbox_cashed")
+    net.WriteEntity(self)
+    net.WriteTable(self.NAKHitboxes)
+    net.Broadcast()
 
     -- PrintTable(self.NAKHitboxes)
 

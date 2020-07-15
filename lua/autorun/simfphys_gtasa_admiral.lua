@@ -7,10 +7,8 @@ local V = {
     SpawnAngleOffset = 90,
     NAKGame = "GTA:SA",
     NAKType = "Sedans/Wagons",
-
     Members = {
         Mass = 1650,
-
         GibModels = {
             "models/gtasa/vehicles/admiral/chassis.mdl",
             -- "models/gtasa/vehicles/admiral/bonnet_dam.mdl",
@@ -26,15 +24,12 @@ local V = {
             "models/gtasa/vehicles/admiral/wheel.mdl",
             "models/gtasa/vehicles/admiral/wheel.mdl"
         },
-
         EnginePos = Vector(69.4, 0, 8.22),
-
         LightsTable = "gtasa_admiral",
-
         NAKHitboxes = {
             Hood = {
                 OBBMin = Vector(36.187, -38, -8),
-                OBBMax = Vector(100, 38, 11.006),
+                OBBMax = Vector(100, 38, 11),
                 TypeFlag = 0,
                 BDGroup = 1,
                 GibModel = "models/gtasa/vehicles/admiral/bonnet_dam.mdl",

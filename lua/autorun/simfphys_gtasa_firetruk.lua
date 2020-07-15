@@ -69,7 +69,7 @@ local V = {
 
             ent:SetBodyGroups("00000" .. math.random(0, 3)) -- sets random number
 
-            ent:NAKAddHitBoxes(hitboxes)
+            --ent:NAKAddHitBoxes(hitboxes)
             ent:NAKSimfGTASA() -- function that'll do all the GTASA changes for you
 
             ent:NAKSimfEMSRadio()

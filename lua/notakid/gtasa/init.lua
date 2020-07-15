@@ -109,74 +109,117 @@ end)
 
 -- //Client stuff
 if CLIENT then
-    CreateClientConVar("nak_simf_hitboxes", 0, FCVAR_ARCHIVE_XBOX,
-                       "Debug Simfphys hitboxes for supported vehicles")
-    CreateClientConVar("nak_simf_hitboxes_filled", 0, FCVAR_ARCHIVE_XBOX,
-                       "Filled boxes instead of wireframe?")
-    CreateClientConVar("nak_simf_hitbox_color", "255 255 255",
-                       FCVAR_ARCHIVE_XBOX,
-                       "Set a color for the box AS A STRING '255,255,255'")
-    CreateClientConVar("nak_simf_hitbox_alpha", "200", FCVAR_ARCHIVE_XBOX,
-                       "Set the alpha of the hitbox")
-
-    hook.Add("PostDrawTranslucentRenderables", "nak_simf_hitboxes", function()
-        if GetConVar("nak_simf_hitboxes"):GetInt() == 0 then return end
-        for k, ent in pairs(ents.GetAll()) do
-            if (ent:GetClass() == "gmod_sent_vehicle_fphysics_base") then
-
-                if not ent.GetSpawn_List then return end
-
-                local vehiclelist =
-                    list.Get("simfphys_vehicles")[ent:GetSpawn_List()]
-                local HBInfo = vehiclelist.Members.NAKHitboxes
-                if not HBInfo then return end
-
-                for id in SortedPairs(HBInfo) do
-                    local clcolor = util.StringToType(
-                                        GetConVar("nak_simf_hitbox_color"):GetString(),
-                                        "Vector")
-                    local clalpha =
-                        GetConVar("nak_simf_hitbox_alpha"):GetFloat()
-                    local color =
-                        Color(clcolor.x, clcolor.y, clcolor.z, clalpha)
+    net.Receive("nak_hitbox_cashed", function()
+        local ent = net.ReadEntity()
+        if IsValid(ent) then ent.NAKHitboxes = net.ReadTable() end
+    end)
+    local function initializeHitboxesRenderer()
+        local nak_simf_hitboxes = CreateConVar("nak_simf_hitboxes", 0, {
+            FCVAR_ARCHIVE, FCVAR_ARCHIVE_XBOX
+        }, "Debug Simfphys hitboxes for supported vehicles", 0, 1)
+        local nak_simf_hitboxes_filled =
+            CreateConVar("nak_simf_hitbox_filled", 1,
+                         {FCVAR_ARCHIVE, FCVAR_ARCHIVE_XBOX},
+                         "Filled boxes?\nrequires nak_simf_hitbox_reload",
+                         0, 1):GetBool()
+        local nak_simf_hitboxes_wireframe =
+                         CreateConVar("nak_simf_hitbox_wireframe", 1,
+                                      {FCVAR_ARCHIVE, FCVAR_ARCHIVE_XBOX},
+                                      "Wireframe boxes?\nrequires nak_simf_hitbox_reload",
+                                      0, 1):GetBool()
+        local veccolor = util.StringToType(
+                             CreateConVar("nak_simf_hitbox_color",
+                                          "255 255 255",
+                                          {FCVAR_ARCHIVE, FCVAR_ARCHIVE_XBOX},
+                                          "Set a color for the box AS A STRING '255,255,255'\nrequires nak_simf_hitbox_reload"):GetString(),
+                             "Vector")
+        local alpha = CreateConVar("nak_simf_hitbox_alpha", 100,
+                                   {FCVAR_ARCHIVE, FCVAR_ARCHIVE_XBOX},
+                                   "Set the alpha of the hitbox\nrequires nak_simf_hitbox_reload",
+                                   0, 255):GetFloat()
+        hook.Remove("PostDrawTranslucentRenderables", "nak_simf_hitboxes")
+        hook.Remove("PostDrawOpaqueRenderables", "nak_simf_hitboxes")
+        local color = Color(veccolor.x, veccolor.y, veccolor.z, alpha)
+        if nak_simf_hitboxes_filled then
+            hook.Add("PostDrawTranslucentRenderables", "nak_simf_hitboxes",
+                     function()
+                if nak_simf_hitboxes:GetBool() then
                     render.SetColorMaterial()
-                    if GetConVar("nak_simf_hitboxes_filled"):GetInt() == 0 then
-                        render.DrawWireframeBox(ent:GetPos(), ent:GetAngles(),
-                                                HBInfo[id].OBBMin,
-                                                HBInfo[id].OBBMax, color)
-                    else
-                        render.DrawBox(ent:GetPos(), ent:GetAngles(),
-                                       HBInfo[id].OBBMin, HBInfo[id].OBBMax,
-                                       color)
+                    for k, ent in pairs(ents.FindByClass(
+                                            "gmod_sent_vehicle_fphysics_base")) do -- WIKI: Gets all entities with the given class, supports wildcards. This works internally by iterating over ents.GetAll. Even if internally ents.GetAll is used, It is faster to use ents.FindByClass than ents.GetAll with a single class comparison.
+                        local HBInfo = ent.NAKHitboxes
+                        if HBInfo then
+                            local entPos = ent:GetPos()
+                            local entAngles = ent:GetAngles()
+                            local key = nil
+                            while true do
+                                key = next(HBInfo, key)
+                                if key == nil then
+                                    break
+                                end
+                                render.DrawBox(entPos, entAngles,
+                                               HBInfo[key].OBBMin,
+                                               HBInfo[key].OBBMax, color, true)
+                            end
+                        end
                     end
                 end
-            end
+            end)
         end
-    end)
-
-    net.Receive("simf_dmgengine_sound", function(length)
-        local self = net.ReadEntity()
+        if nak_simf_hitboxes_wireframe then
+            hook.Add("PostDrawOpaqueRenderables", "nak_simf_hitboxes",
+                     function()
+                if nak_simf_hitboxes:GetBool() then
+                    render.SetColorMaterial()
+                    for k, ent in pairs(ents.FindByClass(
+                                            "gmod_sent_vehicle_fphysics_base")) do -- WIKI: Gets all entities with the given class, supports wildcards. This works internally by iterating over ents.GetAll. Even if internally ents.GetAll is used, It is faster to use ents.FindByClass than ents.GetAll with a single class comparison.
+                        local HBInfo = ent.NAKHitboxes
+                        if HBInfo then
+                            local entPos = ent:GetPos()
+                            local entAngles = ent:GetAngles()
+                            local key = nil
+                            while true do
+                                key = next(HBInfo, key)
+                                if key == nil then
+                                    break
+                                end
+                                render.DrawWireframeBox(entPos, entAngles,
+                                                        HBInfo[key].OBBMin,
+                                                        HBInfo[key].OBBMax,
+                                                        color, true)
+                            end
+                        end
+                    end
+                end
+            end)
+        end
+    end
+    initializeHitboxesRenderer()
+    concommand.Add("nak_simf_hitbox_reload", initializeHitboxesRenderer, nil,
+                   "updates settings for hitbox renderer")
+    net.Receive("simf_dmgengine_sound", function()
+        local ent = net.ReadEntity()
         local snd = net.ReadString()
-        if IsValid(self) then self.DamageSnd = CreateSound(self, snd) end
+        if IsValid(ent) then ent.DamageSnd = CreateSound(ent, snd) end
     end)
 
-    net.Receive("nakkillveh_fire", function(length)
-        local self = net.ReadEntity()
-        if IsValid(self) then
+    net.Receive("nakkillveh_fire", function()
+        local ent = net.ReadEntity()
+        if IsValid(ent) then
             local delay = 0.1
             local nextOccurance = 0
 
-            hook.Add("Think", "nakkillveh_fire_" .. self:EntIndex(), function()
+            hook.Add("Think", "nakkillveh_fire_" .. ent:EntIndex(), function()
                 local timeLeft = nextOccurance - CurTime()
                 if timeLeft > 0 then return end
-                if IsValid(self) then
+                if IsValid(ent) then
                     local effectdata = EffectData()
-                    effectdata:SetOrigin(self:GetEnginePos() + Vector(0, 0, 25))
-                    effectdata:SetEntity(self)
+                    effectdata:SetOrigin(ent:GetEnginePos() + Vector(0, 0, 25))
+                    effectdata:SetEntity(ent)
                     util.Effect("simf_gtasa_fire", effectdata)
                     nextOccurance = CurTime() + delay
                 else
-                    hook.Remove("Think", "nakkillveh_fire_" .. self:EntIndex())
+                    hook.Remove("Think", "nakkillveh_fire_" .. ent:EntIndex())
                 end
             end)
         end

@@ -72,7 +72,7 @@ local V = {
                 explode = true
             }
 
-            ent:NAKAddHitBoxes(hitboxes)
+            --ent:NAKAddHitBoxes(hitboxes)
             ent:NAKSimfGTASA() -- function that'll do all the GTASA changes for you
 
             if (ProxyColor) then

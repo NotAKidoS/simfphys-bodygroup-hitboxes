@@ -8,7 +8,7 @@ local V = {
     NAKGame = "GTA:SA",
     NAKType = "Lowriders",
     FLEX = {
-        Trailers = {outputPos = Vector(-100, 0, -14), outputType = "ballsocket"}
+        Trailers = {outputPos = Vector(-120, 0, -14), outputType = "ballsocket"}
     },
     Members = {
         Mass = 1500,

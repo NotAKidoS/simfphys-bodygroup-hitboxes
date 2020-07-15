@@ -85,7 +85,7 @@ local V = {
         MaxGrip = 75,
         Efficiency = 1,
         GripOffset = 0,
-        BrakePower = 0,
+        BrakePower = 40,
         BulletProofTires = false,
 
         IdleRPM = 0,
