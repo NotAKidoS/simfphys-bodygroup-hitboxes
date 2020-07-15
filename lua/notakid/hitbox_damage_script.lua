@@ -2,12 +2,12 @@
 
 	This is the base for the damage script, I am trying my best to make it easy to use & usable for most things.
 	Written by NotAKidoS
---]]
+]] --
 local NAK_CONVAR = {FCVAR_ARCHIVE, FCVAR_SERVER_CAN_EXECUTE}
 CreateConVar("gtasa_physicdamagemultiplier", "1", NAK_CONVAR)
 CreateConVar("gtasa_takedamagemultiplier", "1", NAK_CONVAR)
 
--- //Client stuff
+-- Client stuff
 if CLIENT then
     net.Receive("simfphys_gtasa_glassbreak_fx", function(length)
         local self = net.ReadEntity()
@@ -18,6 +18,93 @@ if CLIENT then
             util.Effect("simf_gtasa_glassbreak", effectdata)
         end
     end)
+    net.Receive("nak_hitbox_cashed", function()
+        local ent = net.ReadEntity()
+        if IsValid(ent) then ent.NAKHitboxes = net.ReadTable() end
+    end)
+    local function initializeHitboxesRenderer()
+        local nak_simf_hitboxes = CreateConVar("nak_simf_hitboxes", 0, {
+            FCVAR_ARCHIVE, FCVAR_ARCHIVE_XBOX
+        }, "Debug Simfphys hitboxes for supported vehicles", 0, 1)
+        local nak_simf_hitboxes_filled =
+            CreateConVar("nak_simf_hitbox_filled", 1,
+                         {FCVAR_ARCHIVE, FCVAR_ARCHIVE_XBOX},
+                         "Filled boxes?\nrequires nak_simf_hitbox_reload", 0, 1):GetBool()
+        local nak_simf_hitboxes_wireframe =
+            CreateConVar("nak_simf_hitbox_wireframe", 1,
+                         {FCVAR_ARCHIVE, FCVAR_ARCHIVE_XBOX},
+                         "Wireframe boxes?\nrequires nak_simf_hitbox_reload", 0,
+                         1):GetBool()
+        local veccolor = util.StringToType(
+                             CreateConVar("nak_simf_hitbox_color",
+                                          "255 255 255",
+                                          {FCVAR_ARCHIVE, FCVAR_ARCHIVE_XBOX},
+                                          "Set a color for the box AS A STRING '255,255,255'\nrequires nak_simf_hitbox_reload"):GetString(),
+                             "Vector")
+        local alpha = CreateConVar("nak_simf_hitbox_alpha", 100,
+                                   {FCVAR_ARCHIVE, FCVAR_ARCHIVE_XBOX},
+                                   "Set the alpha of the hitbox\nrequires nak_simf_hitbox_reload",
+                                   0, 255):GetFloat()
+        hook.Remove("PostDrawTranslucentRenderables", "nak_simf_hitboxes")
+        hook.Remove("PostDrawOpaqueRenderables", "nak_simf_hitboxes")
+        local color = Color(veccolor.x, veccolor.y, veccolor.z, alpha)
+        if nak_simf_hitboxes_filled then
+            hook.Add("PostDrawTranslucentRenderables", "nak_simf_hitboxes",
+                     function()
+                if nak_simf_hitboxes:GetBool() then
+                    render.SetColorMaterial()
+                    for k, ent in pairs(ents.FindByClass(
+                                            "gmod_sent_vehicle_fphysics_base")) do -- WIKI: Gets all entities with the given class, supports wildcards. This works internally by iterating over ents.GetAll. Even if internally ents.GetAll is used, It is faster to use ents.FindByClass than ents.GetAll with a single class comparison.
+                        local HBInfo = ent.NAKHitboxes
+                        if HBInfo then
+                            local entPos = ent:GetPos()
+                            local entAngles = ent:GetAngles()
+                            local key = nil
+                            while true do
+                                key = next(HBInfo, key)
+                                if key == nil then
+                                    break
+                                end
+                                render.DrawBox(entPos, entAngles,
+                                               HBInfo[key].OBBMin,
+                                               HBInfo[key].OBBMax, color, true)
+                            end
+                        end
+                    end
+                end
+            end)
+        end
+        if nak_simf_hitboxes_wireframe then
+            hook.Add("PostDrawOpaqueRenderables", "nak_simf_hitboxes",
+                     function()
+                if nak_simf_hitboxes:GetBool() then
+                    render.SetColorMaterial()
+                    for k, ent in pairs(ents.FindByClass(
+                                            "gmod_sent_vehicle_fphysics_base")) do -- WIKI: Gets all entities with the given class, supports wildcards. This works internally by iterating over ents.GetAll. Even if internally ents.GetAll is used, It is faster to use ents.FindByClass than ents.GetAll with a single class comparison.
+                        local HBInfo = ent.NAKHitboxes
+                        if HBInfo then
+                            local entPos = ent:GetPos()
+                            local entAngles = ent:GetAngles()
+                            local key = nil
+                            while true do
+                                key = next(HBInfo, key)
+                                if key == nil then
+                                    break
+                                end
+                                render.DrawWireframeBox(entPos, entAngles,
+                                                        HBInfo[key].OBBMin,
+                                                        HBInfo[key].OBBMax,
+                                                        color, true)
+                            end
+                        end
+                    end
+                end
+            end)
+        end
+    end
+    initializeHitboxesRenderer()
+    concommand.Add("nak_simf_hitbox_reload", initializeHitboxesRenderer, nil,
+                   "updates settings for hitbox renderer")
 end
 
 if CLIENT then return end
@@ -38,7 +125,7 @@ local function SpawnGib(self, GibModel, GibOffset)
         TheGib:Spawn()
         TheGib:Activate()
 
-        -- //make the gibs remove with the car
+        -- make the gibs remove with the car
         self:CallOnRemove("NAKKillGibsOnRemove" .. TheGib:EntIndex(),
                           function(self)
             if not self.destroyed then
@@ -138,12 +225,11 @@ local function OverrideTakeDamage(self)
 end
 
 local function OverridePhysicsDamage(self)
-    -- //store the old built in simfphys function
+    -- store the old built in simfphys function
     self.NAKHBPhysicsCollide = self.PhysicsCollide
-    -- //override the old function to call our code first, then call the old stored one
+    -- override the old function to call our code first, then call the old stored one
     self.PhysicsCollide = function(ent, data, physobj)
-        -- //The damage sounds from GTASA
-        PrintTable(data)
+        -- The damage sounds from GTASA
         if (data.Speed > 50 and data.DeltaTime > 0.8) then
             self:EmitSound("gtasa/sfx/damage_hvy" .. math.random(1, 7) .. ".wav")
         end

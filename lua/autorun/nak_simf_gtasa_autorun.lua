@@ -30,10 +30,11 @@
 
 
 --//Loads all the base code, seperated like this to make things easy to read I guess...?
-local loadfile = 'notakid/gtasa/init.lua'
-
-AddCSLuaFile(loadfile)
-include(loadfile)
+local function loadshared(loadfile)
+	AddCSLuaFile(loadfile)
+	include(loadfile)
+end
+loadshared('notakid/gtasa/init.lua')
 
 --//Loads the hitbox damage script, added possibility for me to disable it later on outside the addon too.
 
@@ -41,8 +42,4 @@ NAKHBDVersion = NAKHBDVersion or 1
 
 if NAKHBDVersion > 1 then return end
 
-local loadfile = 'notakid/hitbox_damage_script.lua'
-
-AddCSLuaFile(loadfile)
-include(loadfile)
-
+loadshared('notakid/hitbox_damage_script.lua')
