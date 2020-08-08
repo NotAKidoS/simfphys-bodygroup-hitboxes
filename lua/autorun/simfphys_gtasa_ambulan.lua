@@ -1,3 +1,68 @@
+local HitboxList = {
+   Hood = {
+		OBBMin = Vector(69.4, 42, 19.6),
+		OBBMax = Vector(120, -42, -8.4),
+		BDGroup = 1,
+		GibModel = "models/gtasa/vehicles/ambulan/bonnet_dam.mdl",
+		GibOffset = Vector(69.45, 0, 18.10),
+		Health = 160
+	},
+	BumperF = {
+		OBBMin = Vector(94.4, 42, 5),
+		OBBMax = Vector(120, -42, -27.6),
+		BDGroup = 2,
+		GibModel = "models/gtasa/vehicles/ambulan/bump_front_dam.mdl",
+		GibOffset = Vector(96.72, -39.63, -12.67),
+		Health = 120
+	},
+	DoorDF = {
+		OBBMin = Vector(20, 46, 17),
+		OBBMax = Vector(62, 27, -25),
+		BDGroup = 3,
+		GibModel = "models/gtasa/vehicles/ambulan/door_lf_dam.mdl",
+		GibOffset = Vector(61.01, 41.65, 3.48),
+		Health = 100
+	},
+	DoorPF = {
+		OBBMax = Vector(20, -46, 17),
+		OBBMin = Vector(62, -27, -25),
+		BDGroup = 5,
+		GibModel = "models/gtasa/vehicles/ambulan/door_rf_dam.mdl",
+		GibOffset = Vector(61.01, -41.65, 3.48),
+		Health = 100
+	},
+	DoorDR = {
+		OBBMin = Vector(-145, -2, 53),
+		OBBMax = Vector(-128, 32, -13),
+		BDGroup = 4,
+		GibModel = "models/gtasa/vehicles/ambulan/door_lr_dam.mdl",
+		GibOffset = Vector(-134.85, 31.42, 14.78),
+		Health = 100
+	},
+	DoorPR = {
+		OBBMax = Vector(-145, 2, 53),
+		OBBMin = Vector(-128, -32, -13),
+		BDGroup = 6,
+		GibModel = "models/gtasa/vehicles/ambulan/door_rr_dam.mdl",
+		GibOffset = Vector(-134.85, -31.42, 14.78),
+		Health = 100
+	},
+	Windsheild = {
+		OBBMin = Vector(48, 37, 42),
+		OBBMax = Vector(69, -37, 19),
+		BDGroup = 7,
+		Health = 6,
+		TypeFlag = 1,
+		ShatterPos = Vector(59.66, 0, 29.70)
+	},
+	FuelCap = {
+		OBBMin = Vector(-96, 40, -13),
+		OBBMax = Vector(-107, 55, -2),
+		TypeFlag = 2
+	}
+}
+list.Set("nak_simf_hitboxes", "sim_fphys_gtasa_ambulan", HitboxList)
+
 local V = {
     Name = "Ambulance",
     Model = "models/gtasa/vehicles/ambulan/ambulan.mdl",
@@ -10,7 +75,8 @@ local V = {
 
     Members = {
         Mass = 2600,
-
+        EnginePos = Vector(93.97, 0, 4.10),
+        LightsTable = "gtasa_ambulan",
         GibModels = {
             "models/gtasa/vehicles/ambulan/chassis.mdl",
             -- "models/gtasa/vehicles/ambulan/bonnet_dam.mdl",
@@ -25,92 +91,29 @@ local V = {
             "models/gtasa/vehicles/ambulan/wheel.mdl"
         },
 
-        EnginePos = Vector(93.97, 0, 4.10),
-
-        LightsTable = "gtasa_ambulan",
-
-        NAKHitboxes = {
-            Hood = {
-                OBBMin = Vector(69.4, 42, 19.6),
-                OBBMax = Vector(120, -42, -8.4),
-                BDGroup = 1,
-                GibModel = "models/gtasa/vehicles/ambulan/bonnet_dam.mdl",
-                GibOffset = Vector(69.45, 0, 18.10),
-                Health = 160
-            },
-            BumperF = {
-                OBBMin = Vector(94.4, 42, 5),
-                OBBMax = Vector(120, -42, -27.6),
-                BDGroup = 2,
-                GibModel = "models/gtasa/vehicles/ambulan/bump_front_dam.mdl",
-                GibOffset = Vector(96.72, -39.63, -12.67),
-                Health = 120
-            },
-            DoorDF = {
-                OBBMin = Vector(20, 46, 17),
-                OBBMax = Vector(62, 27, -25),
-                BDGroup = 3,
-                GibModel = "models/gtasa/vehicles/ambulan/door_lf_dam.mdl",
-                GibOffset = Vector(61.01, 41.65, 3.48),
-                Health = 100
-            },
-            DoorPF = {
-                OBBMax = Vector(20, -46, 17),
-                OBBMin = Vector(62, -27, -25),
-                BDGroup = 5,
-                GibModel = "models/gtasa/vehicles/ambulan/door_rf_dam.mdl",
-                GibOffset = Vector(61.01, -41.65, 3.48),
-                Health = 100
-            },
-            DoorDR = {
-                OBBMin = Vector(-145, -2, 53),
-                OBBMax = Vector(-128, 32, -13),
-                BDGroup = 4,
-                GibModel = "models/gtasa/vehicles/ambulan/door_lr_dam.mdl",
-                GibOffset = Vector(-134.85, 31.42, 14.78),
-                Health = 100
-            },
-            DoorPR = {
-                OBBMax = Vector(-145, 2, 53),
-                OBBMin = Vector(-128, -32, -13),
-                BDGroup = 6,
-                GibModel = "models/gtasa/vehicles/ambulan/door_rr_dam.mdl",
-                GibOffset = Vector(-134.85, -31.42, 14.78),
-                Health = 100
-            },
-            Windsheild = {
-                OBBMin = Vector(48, 37, 42),
-                OBBMax = Vector(69, -37, 19),
-                BDGroup = 7,
-                Health = 6,
-                TypeFlag = 1,
-                ShatterPos = Vector(59.66, 0, 29.70)
-            },
-            FuelCap = {
-                OBBMin = Vector(-96, 40, -13),
-                OBBMax = Vector(-107, 55, -2),
-                TypeFlag = 2
-            }
-        },
-
         OnSpawn = function(ent)
-            ent:SetBodyGroups("00000000" .. math.random(0, 1)) -- random unit number
-            ent:NAKSimfGTASA() -- gtasa functions
-            ent:NAKHitboxDmg() -- hitboxes
-            ent:NAKSimfEMSRadio()
+			--random unit number
+            ent:SetBodyGroups("00000000" .. math.random(0, 1))
+
+			NAK.SimfGTASA(ent)
+            NAK.AddHitboxes(ent, "00000000")
+            NAK.GTASAEMSRadio(ent)
 
             if (ProxyColor) then
                 local CarCols = {}
                 CarCols[1] = {
-                    Color(245, 245, 245), Color(132, 4, 16),
-                    Color(245, 245, 245), Color(0, 0, 0), Color(131, 104, 229)
+                    Color(245, 245, 245), 
+					Color(132, 4, 16),
+                    Color(245, 245, 245), 
+					Color(0, 0, 0), 
+					Color(131, 104, 229)
                 }
-                ent:SetProxyColor(CarCols[1])
+                ProxyColor.RandFromTable(ent,CarCols,true)
             end
         end,
 
         OnTick = function(ent)
-            if ent.horn then ent.horn:ChangePitch(95, 0) end
+            if ent.horn then ent.horn:ChangePitch(95,0) end
         end,
 
         CustomWheels = true,

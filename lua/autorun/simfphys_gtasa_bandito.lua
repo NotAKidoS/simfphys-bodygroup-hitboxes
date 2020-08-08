@@ -12,7 +12,8 @@ local V = {
     },
     Members = {
         Mass = 1500,
-
+        EnginePos = Vector(56.34, 0, 4.46),
+        LightsTable = "gtasa_bandito",
         GibModels = {
             "models/gtasa/vehicles/alpha/chassis.mdl",
             -- "models/gtasa/vehicles/alpha/bonnet_dam.mdl",
@@ -28,48 +29,16 @@ local V = {
             -- "models/gtasa/vehicles/bandito/wheel.mdl",
         },
 
-        EnginePos = Vector(56.34, 0, 4.46),
-
-        LightsTable = "gtasa_bandito",
-
         OnSpawn = function(ent)
-            -- local hitboxes = {}
-            -- hitboxes.hood = {max=Vector(32.817,-40,10), min=Vector(98,40,-22), bdgroup = 1, gibmodel = "models/gtasa/vehicles/alpha/bonnet_dam.mdl", giboffset = Vector(32,-2,8), health=180 }
-            -- hitboxes.trunk = {max=Vector(-70.664,30.356,12), min=Vector(-105,-30.356,-20), bdgroup = 2, gibmodel = "models/gtasa/vehicles/alpha/boot_dam.mdl", giboffset = Vector(-72,0,13), health=160 }
-            -- hitboxes.bumperf = {max=Vector(72.052,-42.048,-4), min=Vector(98,42.048,-24), bdgroup = 3, gibmodel = "models/gtasa/vehicles/alpha/bump_front_dam.mdl", giboffset = Vector(90,-34,-15), health=140 }
-            -- hitboxes.bumperr = {min=Vector(-68.723,-41.032,-4), max=Vector(-106,41.032,-22), bdgroup = 4, gibmodel = "models/gtasa/vehicles/alpha/bump_rear_dam.mdl", giboffset = Vector(-87,34,-14), health=120 }
-            -- hitboxes.dfdoor = {min=Vector(-34,43,8.499), max = Vector(34,34.991,-22), bdgroup = 5, gibmodel = "models/gtasa/vehicles/alpha/door_lf_dam.mdl", giboffset = Vector(29,38,-5.5), health=125 }
-            -- hitboxes.pfdoor = {max=Vector(-34,-43,8.499), min = Vector(34,-34.991,-22), bdgroup = 6, gibmodel = "models/gtasa/vehicles/alpha/door_rf_dam.mdl", giboffset = Vector(29,-38.5,-5.5), health=125 }
-            -- hitboxes.windowf = {min=Vector(33.734,32.611,8.056), max=Vector(3.52,-32.611,21.738), bdgroup = 7, health=6, glass=true, glasspos=Vector(19.286,0,15.077) }
-
-            -- hitboxes.gastank = {min=Vector(-75.286,-40.8,1.014), max=Vector(-67.834,-38,7.337), explode=true }
-
-            -- ent:NAKAddHitBoxes(hitboxes)
-
-            ent:NAKSimfGTASA() -- function that'll do all the GTASA changes for you
-
-            -- if ( ProxyColor ) then
-            -- local CarCols = {}
-            -- CarCols[1] = {Color(109,24,34)}
-            -- CarCols[2] = {Color(171,152,143)}
-            -- CarCols[3] = {Color(32,32,44)}
-            -- CarCols[4] = {Color(123,10,42)}
-            -- CarCols[5] = {Color(132,148,171)}
-            -- CarCols[6] = {Color(93,27,32)}
-            -- CarCols[7] = {Color(88,89,90)}
-            -- CarCols[8] = {Color(100,100,100)}
-            -- ent:SetProxyColor( CarCols[math.random(1,8)] )
-            -- end
+            NAK.SimfGTASA(ent)
         end,
 
         OnTick = function(ent)
-            ent:SetPoseParameter("vehicle_enginerpm", ent:GetRPM() * CurTime())
+            ent:SetPoseParameter("vehicle_enginerpm",ent:GetRPM()*CurTime())
         end,
 
         FrontWheelRadius = 9.5,
         RearWheelRadius = 11.5,
-
-        -- CustomMassCenter = Vector(0,0,0),
 
         SeatOffset = Vector(-8, -18, 12),
         SeatPitch = 0,

@@ -19,7 +19,7 @@ local V = {
 
     Members = {
         Mass = 1000.0,
-
+        EnginePos = Vector(0, 0, 0),
         GibModels = {
             "models/gtasa/vehicles/bagboxb/chassis.mdl",
             "models/gtasa/vehicles/bagboxb/wheel.mdl",
@@ -28,25 +28,13 @@ local V = {
             "models/gtasa/vehicles/bagboxb/wheel.mdl"
         },
 
-        EnginePos = Vector(0, 0, 0),
-
         OnSpawn = function(ent)
-            -- make the trailer freewheel
+			NAK.SimfTrailer(ent)
+            --make the trailer freewheel
             ent:SetActive(true)
-            ent.PressedKeys["joystick_throttle"] = 1 -- makes thottle to 1, for remove handbrake
-            ent.PressedKeys["joystick_brake"] = 0 -- makes brake to 0, for turn off reverse
-            -- ent:NAKSimfGTASA()
-            -- disables Use() function on wheels, makes Use() function call TrailerUse() if it exists
-            ent:NAKSimfTrailer() -- //in OnSpawn
+            ent.PressedKeys["joystick_throttle"] = 1
+            ent.PressedKeys["joystick_brake"] = 0
         end,
-
-        -- OnTick = function(ent) 	
-        -- //makes the wheels steer toward the car or trailer connected in front
-        -- if IsValid(ent.TRConnectedInput) then
-        -- local AlignedSteering = math.AngleDifference( ent:EyeAngles().y, ent.TRConnectedInput:EyeAngles().y )
-        -- ent:SteerVehicle( math.Clamp(AlignedSteering, -15, 15) )
-        -- end
-        -- end,
 
         CustomWheels = true,
         CustomSuspensionTravel = 1.5,

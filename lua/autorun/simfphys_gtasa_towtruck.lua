@@ -1,3 +1,52 @@
+local HitboxList = {
+	hood = {
+		OBBMin = Vector(43.36, 50, 30.54),
+		OBBMax = Vector(121, -50, -10),
+		BDGroup = 1,
+		GibModel = "models/gtasa/vehicles/towtruck/bonnet_dam.mdl",
+		GibOffset = Vector(44.6, 0, 27.3),
+		Health = 160
+	},
+	bumperf = {
+		OBBMin = Vector(95, 50, 20),
+		OBBMax = Vector(121, -50, -15),
+		BDGroup = 2,
+		GibModel = "models/gtasa/vehicles/towtruck/bump_front_dam.mdl",
+		GibOffset = Vector(108.98, -39.17, 1.94),
+		Health = 100
+	},
+	dfdoor = {
+		OBBMin = Vector(-9, 50, 25.74),
+		OBBMax = Vector(55, 31.67, -12),
+		BDGroup = 3,
+		GibModel = "models/gtasa/vehicles/towtruck/door_lf_dam.mdl",
+		GibOffset = Vector(44.37, 44.11, 20.34),
+		Health = 100
+	},
+	pfdoor = {
+		OBBMax = Vector(-9, -50, 25.74),
+		OBBMin = Vector(55, -31.67, -12),
+		BDGroup = 4,
+		GibModel = "models/gtasa/vehicles/towtruck/door_rf_dam.mdl",
+		GibOffset = Vector(44.37, -44.11, 20.34),
+		Health = 100
+	},
+	windowf = {
+		OBBMin = Vector(25.68, 36.65, 49.14),
+		OBBMax = Vector(45.68, -36.65, 29.14),
+		BDGroup = 5,
+		Health = 6,
+		ShatterPos = Vector(37.969, 0, 38.025),
+		TypeFlag = 1
+	},
+	gastank = {
+		OBBMin = Vector(-22.92, 50, 0.65),
+		OBBMax = Vector(-14.69, 40, -7.3),
+		TypeFlag = 2
+	}
+}
+list.Set("nak_simf_hitboxes", "sim_fphys_gtasa_towtruck", HitboxList)
+
 local V = {
     Name = "Towtruck",
     Model = "models/gtasa/vehicles/towtruck/towtruck.mdl",
@@ -10,7 +59,8 @@ local V = {
     FLEX = {Trailers = {outputPos = Vector(-108, 0, -12)}},
     Members = {
         Mass = 3500,
-
+        EnginePos = Vector(86.81, 0, 13.75),
+        LightsTable = "gtasa_towtruck",
         GibModels = {
             "models/gtasa/vehicles/towtruck/chassis.mdl",
             "models/gtasa/vehicles/towtruck/wheel.mdl",
@@ -19,61 +69,9 @@ local V = {
             "models/gtasa/vehicles/towtruck/wheel.mdl"
         },
 
-        EnginePos = Vector(86.81, 0, 13.75),
-
-        LightsTable = "gtasa_towtruck",
-
         OnSpawn = function(ent)
-            local hitboxes = {}
-            hitboxes.hood = {
-                min = Vector(43.36, 50, 30.54),
-                max = Vector(121, -50, -10),
-                bdgroup = 1,
-                gibmodel = "models/gtasa/vehicles/towtruck/bonnet_dam.mdl",
-                giboffset = Vector(44.6, 0, 27.3),
-                health = 160
-            }
-            hitboxes.bumperf = {
-                min = Vector(95, 50, 20),
-                max = Vector(121, -50, -15),
-                bdgroup = 2,
-                gibmodel = "models/gtasa/vehicles/towtruck/bump_front_dam.mdl",
-                giboffset = Vector(108.98, -39.17, 1.94),
-                health = 100
-            }
-            hitboxes.dfdoor = {
-                min = Vector(-9, 50, 25.74),
-                max = Vector(55, 31.67, -12),
-                bdgroup = 3,
-                gibmodel = "models/gtasa/vehicles/towtruck/door_lf_dam.mdl",
-                giboffset = Vector(44.37, 44.11, 20.34),
-                health = 100
-            }
-            hitboxes.pfdoor = {
-                max = Vector(-9, -50, 25.74),
-                min = Vector(55, -31.67, -12),
-                bdgroup = 4,
-                gibmodel = "models/gtasa/vehicles/towtruck/door_rf_dam.mdl",
-                giboffset = Vector(44.37, -44.11, 20.34),
-                health = 100
-            }
-            hitboxes.windowf = {
-                min = Vector(25.68, 36.65, 49.14),
-                max = Vector(45.68, -36.65, 29.14),
-                bdgroup = 5,
-                health = 6,
-                glass = true,
-                glasspos = Vector(37.969, 0, 38.025)
-            }
-
-            hitboxes.gastank = {
-                min = Vector(-22.92, 50, 0.65),
-                max = Vector(-14.69, 40, -7.3),
-                explode = true
-            }
-
-            --ent:NAKAddHitBoxes(hitboxes)
-            ent:NAKSimfGTASA() -- function that'll do all the GTASA changes for you
+            NAK.SimfGTASA(ent) -- function that'll do all the GTASA changes for you
+			NAK.AddHitboxes(ent)
 
             if (ProxyColor) then
                 local CarCols = {}
@@ -99,7 +97,7 @@ local V = {
                 CarCols[7] = {
                     Color(77, 98, 104), Color(39, 47, 75), Color(245, 245, 245)
                 }
-                ent:SetProxyColor(CarCols[math.random(1, 7)])
+                ProxyColor.RandFromTable(ent,CarCols,true)
             end
         end,
 

@@ -1,3 +1,68 @@
+local HitboxList = {
+	hood = {
+		OBBMax = Vector(32.817, -40, 10),
+		OBBMin = Vector(98, 40, -22),
+		BDGroup = 1,
+		GibModel = "models/gtasa/vehicles/alpha/bonnet_dam.mdl",
+		GibOffset = Vector(32, -2, 8),
+		Health = 180
+	},
+	trunk = {
+		OBBMax = Vector(-70.664, 30.356, 12),
+		OBBMin = Vector(-105, -30.356, -20),
+		BDGroup = 2,
+		GibModel = "models/gtasa/vehicles/alpha/boot_dam.mdl",
+		GibOffset = Vector(-72, 0, 13),
+		Health = 160
+	},
+	bumperf = {
+		OBBMax = Vector(72.052, -42.048, -4),
+		OBBMin = Vector(98, 42.048, -24),
+		BDGroup = 3,
+		GibModel = "models/gtasa/vehicles/alpha/bump_front_dam.mdl",
+		GibOffset = Vector(90, -34, -15),
+		Health = 140
+	},
+	bumperr = {
+		OBBMin = Vector(-68.723, -41.032, -4),
+		OBBMax = Vector(-106, 41.032, -22),
+		BDGroup = 4,
+		GibModel = "models/gtasa/vehicles/alpha/bump_rear_dam.mdl",
+		GibOffset = Vector(-87, 34, -14),
+		Health = 120
+	},
+	dfdoor = {
+		OBBMin = Vector(-34, 43, 8.499),
+		OBBMax = Vector(34, 34.991, -22),
+		BDGroup = 5,
+		GibModel = "models/gtasa/vehicles/alpha/door_lf_dam.mdl",
+		GibOffset = Vector(29, 38, -5.5),
+		Health = 125
+	},
+	pfdoor = {
+		OBBMax = Vector(-34, -43, 8.499),
+		OBBMin = Vector(34, -34.991, -22),
+		BDGroup = 6,
+		GibModel = "models/gtasa/vehicles/alpha/door_rf_dam.mdl",
+		GibOffset = Vector(29, -38.5, -5.5),
+		Health = 125
+	},
+	windowf = {
+		OBBMin = Vector(33.734, 32.611, 8.056),
+		OBBMax = Vector(3.52, -32.611, 21.738),
+		BDGroup = 7,
+		Health = 6,
+		TypeFlag = 1,
+		ShatterPos = Vector(19.286, 0, 15.077)
+	},
+	gastank = {
+		OBBMin = Vector(-75.286, -40.8, 1.014),
+		OBBMax = Vector(-67.834, -38, 7.337),
+		TypeFlag = 2
+	}
+}
+list.Set("nak_simf_hitboxes", "sim_fphys_gtasa_alpha", HitboxList)
+
 local V = {
     Name = "Alpha",
     Model = "models/gtasa/vehicles/alpha/alpha.mdl",
@@ -10,7 +75,8 @@ local V = {
 
     Members = {
         Mass = 1500,
-
+        EnginePos = Vector(56.34, 0, 4.46),
+        LightsTable = "gtasa_alpha",
         GibModels = {
             "models/gtasa/vehicles/alpha/chassis.mdl",
             -- "models/gtasa/vehicles/alpha/bonnet_dam.mdl",
@@ -25,78 +91,9 @@ local V = {
             "models/gtasa/vehicles/alpha/wheel.mdl"
         },
 
-        NAKHitboxes = {
-            hood = {
-                OBBMax = Vector(32.817, -40, 10),
-                OBBMin = Vector(98, 40, -22),
-                BDGroup = 1,
-                GibModel = "models/gtasa/vehicles/alpha/bonnet_dam.mdl",
-                GibOffset = Vector(32, -2, 8),
-                Health = 180
-            },
-            trunk = {
-                OBBMax = Vector(-70.664, 30.356, 12),
-                OBBMin = Vector(-105, -30.356, -20),
-                BDGroup = 2,
-                GibModel = "models/gtasa/vehicles/alpha/boot_dam.mdl",
-                GibOffset = Vector(-72, 0, 13),
-                Health = 160
-            },
-            bumperf = {
-                OBBMax = Vector(72.052, -42.048, -4),
-                OBBMin = Vector(98, 42.048, -24),
-                BDGroup = 3,
-                GibModel = "models/gtasa/vehicles/alpha/bump_front_dam.mdl",
-                GibOffset = Vector(90, -34, -15),
-                Health = 140
-            },
-            bumperr = {
-                OBBMin = Vector(-68.723, -41.032, -4),
-                OBBMax = Vector(-106, 41.032, -22),
-                BDGroup = 4,
-                GibModel = "models/gtasa/vehicles/alpha/bump_rear_dam.mdl",
-                GibOffset = Vector(-87, 34, -14),
-                Health = 120
-            },
-            dfdoor = {
-                OBBMin = Vector(-34, 43, 8.499),
-                OBBMax = Vector(34, 34.991, -22),
-                BDGroup = 5,
-                GibModel = "models/gtasa/vehicles/alpha/door_lf_dam.mdl",
-                GibOffset = Vector(29, 38, -5.5),
-                Health = 125
-            },
-            pfdoor = {
-                OBBMax = Vector(-34, -43, 8.499),
-                OBBMin = Vector(34, -34.991, -22),
-                BDGroup = 6,
-                GibModel = "models/gtasa/vehicles/alpha/door_rf_dam.mdl",
-                GibOffset = Vector(29, -38.5, -5.5),
-                Health = 125
-            },
-            windowf = {
-                OBBMin = Vector(33.734, 32.611, 8.056),
-                OBBMax = Vector(3.52, -32.611, 21.738),
-                BDGroup = 7,
-                Health = 6,
-                TypeFlag = 1,
-                ShatterPos = Vector(19.286, 0, 15.077)
-            },
-
-            gastank = {
-                OBBMin = Vector(-75.286, -40.8, 1.014),
-                OBBMax = Vector(-67.834, -38, 7.337),
-                TypeFlag = 2
-            }
-        },
-
-        EnginePos = Vector(56.34, 0, 4.46),
-
-        LightsTable = "gtasa_alpha",
-
         OnSpawn = function(ent)
-            ent:NAKSimfGTASA()
-            ent:NAKHitboxDmg()
+            NAK.SimfGTASAent()
+            NAK.AddHitboxes(ent)
 
             if (ProxyColor) then
                 local CarCols = {}
@@ -108,7 +105,7 @@ local V = {
                 CarCols[6] = {Color(93, 27, 32)}
                 CarCols[7] = {Color(88, 89, 90)}
                 CarCols[8] = {Color(100, 100, 100)}
-                ent:SetProxyColor(CarCols[math.random(1, 8)])
+                ProxyColor.RandFromTable(ent,CarCols,true)
             end
         end,
 

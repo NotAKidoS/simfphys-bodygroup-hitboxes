@@ -19,27 +19,14 @@
 
 	Disclaimer:
 		This is by a kid with little knowledge on the Do's and Don'ts of GLUA, so please do not expect anything to be proper.
-		I am at least trying to learn :>
+		This addon heavily relies on being able to override functions on Simfphys vehicles when spawned. May one day
+		cause issues if Simfphys ever has a major update.
 
-		This addon heavily relies on being able to override functions on Simfphys vehicles when spawned. I can make it not need to override functions
-		directly by adding them in the vehicles spawnlists, which may be better to do anyways, but for the sake of saving time and making things
-		easy on Randy (the person that asked for the damage script) I have made it so the base will automatically do that once the vehicle is spawned.
-
-	That is all, thank you for reading. -NotAKidoS													(i like writing blobs of text no one reads)
+	That is all, thank you for reading. -NotAKidoS
 --]]
-
-
---//Loads all the base code, seperated like this to make things easy to read I guess...?
 local function loadshared(loadfile)
 	AddCSLuaFile(loadfile)
 	include(loadfile)
 end
 loadshared('notakid/gtasa/init.lua')
-
---//Loads the hitbox damage script, added possibility for me to disable it later on outside the addon too.
-
-NAKHBDVersion = NAKHBDVersion or 1
-
-if NAKHBDVersion > 1 then return end
-
-loadshared('notakid/hitbox_damage_script.lua')
+loadshared('notakid/hitboxes/init.lua')

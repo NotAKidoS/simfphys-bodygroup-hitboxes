@@ -1,3 +1,44 @@
+local HitboxList = {
+	bumperf = {
+		OBBMin = Vector(170, 50, -14),
+		OBBMax = Vector(130, -50, -34),
+		BDGroup = 1,
+		GibModel = "models/gtasa/vehicles/firetruk/bump_front_dam.mdl",
+		GibOffset = Vector(134.55, -44.34, -18.44),
+		Health = 200
+	},
+	dfdoor = {
+		OBBMin = Vector(138, 50, 45),
+		OBBMax = Vector(98, 30, -31),
+		BDGroup = 2,
+		GibModel = "models/gtasa/vehicles/firetruk/door_lf_dam.mdl",
+		GibOffset = Vector(134.55, 44.33, 9.49),
+		Health = 100
+	},
+	pfdoor = {
+		OBBMax = Vector(138, -50, 45),
+		OBBMin = Vector(98, -30, -31),
+		BDGroup = 3,
+		GibModel = "models/gtasa/vehicles/firetruk/door_rf_dam.mdl",
+		GibOffset = Vector(134.55, -44.33, 9.49),
+		Health = 100
+	},
+	windowf = {
+		OBBMin = Vector(133, 44, 42),
+		OBBMax = Vector(153, -44, 15),
+		BDGroup = 4,
+		Health = 6,
+		TypeFlag = 1,
+		ShatterPos = Vector(142.4, 0, 28.89)
+	},
+	gastank = {
+		OBBMin = Vector(-122, 44, -15),
+		OBBMax = Vector(-139, 36, -25),
+		TypeFlag = 2
+	}
+}
+list.Set("nak_simf_hitboxes", "sim_fphys_gtasa_firetruk", HitboxList)
+
 local V = {
     Name = "Fire Truck",
     Model = "models/gtasa/vehicles/firetruk/firetruk.mdl",
@@ -10,7 +51,8 @@ local V = {
     FLEX = {Trailers = {outputPos = Vector(-108, 0, -12)}},
     Members = {
         Mass = 6500.0,
-
+        EnginePos = Vector(146.06, 0, -2.94),
+        LightsTable = "gtasa_firetruk",
         GibModels = {
             "models/gtasa/vehicles/firetruk/chassis.mdl",
             -- "models/gtasa/vehicles/firetruk/bump_front_dam.mdl",
@@ -22,57 +64,15 @@ local V = {
             "models/gtasa/vehicles/firetruk/wheel.mdl"
         },
 
-        EnginePos = Vector(146.06, 0, -2.94),
-
-        LightsTable = "gtasa_firetruk",
-
         OnSpawn = function(ent)
-            local hitboxes = {}
-            hitboxes.bumperf = {
-                min = Vector(170, 50, -14),
-                max = Vector(130, -50, -34),
-                bdgroup = 1,
-                gibmodel = "models/gtasa/vehicles/firetruk/bump_front_dam.mdl",
-                giboffset = Vector(134.55, -44.34, -18.44),
-                health = 200
-            }
-            hitboxes.dfdoor = {
-                min = Vector(138, 50, 45),
-                max = Vector(98, 30, -31),
-                bdgroup = 2,
-                gibmodel = "models/gtasa/vehicles/firetruk/door_lf_dam.mdl",
-                giboffset = Vector(134.55, 44.33, 9.49),
-                health = 100
-            }
-            hitboxes.pfdoor = {
-                max = Vector(138, -50, 45),
-                min = Vector(98, -30, -31),
-                bdgroup = 3,
-                gibmodel = "models/gtasa/vehicles/firetruk/door_rf_dam.mdl",
-                giboffset = Vector(134.55, -44.33, 9.49),
-                health = 100
-            }
-            hitboxes.windowf = {
-                min = Vector(133, 44, 42),
-                max = Vector(153, -44, 15),
-                bdgroup = 4,
-                health = 6,
-                glass = true,
-                glasspos = Vector(142.4, 0, 28.89)
-            }
-
-            hitboxes.gastank = {
-                min = Vector(-122, 44, -15),
-                max = Vector(-139, 36, -25),
-                explode = true
-            }
-
             ent:SetBodyGroups("00000" .. math.random(0, 3)) -- sets random number
 
-            --ent:NAKAddHitBoxes(hitboxes)
-            ent:NAKSimfGTASA() -- function that'll do all the GTASA changes for you
+            NAK.SimfGTASA(ent)
+            NAK.AddHitboxes(ent, "00000")
+            NAK.GTASAEMSRadio(ent)
 
-            ent:NAKSimfEMSRadio()
+			--fix for simfphys armed thirdperson camera being zoomed in
+			ent:GetDriverSeat():SetCameraDistance( 8 )
 
             if (ProxyColor) then
                 local CarCols = {}
@@ -80,7 +80,7 @@ local V = {
                     Color(132, 4, 16), Color(245, 245, 245),
                     Color(245, 245, 245), Color(0, 0, 0), Color(245, 245, 245)
                 }
-                ent:SetProxyColor(CarCols[1])
+                ProxyColor.RandFromTable(ent,CarCols,true)
             end
         end,
 

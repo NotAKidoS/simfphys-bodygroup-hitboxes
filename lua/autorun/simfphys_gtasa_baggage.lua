@@ -1,3 +1,36 @@
+local HitboxList = {
+	hood = {
+		OBBMin = Vector(20, 34.1, 29),
+		OBBMax = Vector(72, -34.1, -8),
+		BDGroup = 1,
+		GibModel = "models/gtasa/vehicles/baggage/bonnet_dam.mdl",
+		GibOffset = Vector(29.78, 0, 25.31),
+		Health = 120
+	},
+	bumperf = {
+		OBBMin = Vector(72, -34.1, -3),
+		OBBMax = Vector(59, 34.1, -18),
+		BDGroup = 2,
+		GibModel = "models/gtasa/vehicles/baggage/bump_front_dam.mdl",
+		GibOffset = Vector(63.48, -24.93, -9.18),
+		Health = 60
+	},
+	bumperr = {
+		OBBMin = Vector(-63, 34.1, -3),
+		OBBMax = Vector(-50, -34.1, -18),
+		BDGroup = 3,
+		GibModel = "models/gtasa/vehicles/baggage/bump_rear_dam.mdl",
+		GibOffset = Vector(-57.31, 24.93, -9.19),
+		Health = 60
+	},
+	gastank = {
+		OBBMin = Vector(21, 37.1, 6),
+		OBBMax = Vector(32, 20.9, -5),
+		TypeFlag = 2
+	}
+}
+list.Set("nak_simf_hitboxes", "sim_fphys_gtasa_baggage", HitboxList)
+
 local V = {
     Name = "Baggage",
     Model = "models/gtasa/vehicles/baggage/baggage.mdl",
@@ -9,15 +42,16 @@ local V = {
     NAKType = "Public Service",
 
     FLEX = {
-        Trailers = {
-            outputPos = Vector(-62.97, 0, -5.83),
-            outputType = "ballsocket"
-        }
-    },
+		Trailers = {
+			outputPos = Vector(-62.97, 0, -5.83),
+			outputType = "ballsocket"
+		}
+	},
 
     Members = {
         Mass = 1000.0,
-
+        EnginePos = Vector(44.8, 0, 14.92),
+        LightsTable = "gtasa_baggage",
         GibModels = {
             "models/gtasa/vehicles/baggage/chassis.mdl",
             -- "models/gtasa/vehicles/baggage/bonnet_dam.mdl",
@@ -29,52 +63,17 @@ local V = {
             "models/gtasa/vehicles/baggage/wheel.mdl"
         },
 
-        EnginePos = Vector(44.8, 0, 14.92),
-
-        LightsTable = "gtasa_baggage",
-
-        NAKHitboxes = {
-            hood = {
-                OBBMin = Vector(20, 34.1, 29),
-                OBBMax = Vector(72, -34.1, -8),
-                BDGroup = 1,
-                GibModel = "models/gtasa/vehicles/baggage/bonnet_dam.mdl",
-                GibOffset = Vector(29.78, 0, 25.31),
-                Health = 120
-            },
-            bumperf = {
-                OBBMin = Vector(72, -34.1, -3),
-                OBBMax = Vector(59, 34.1, -18),
-                BDGroup = 2,
-                GibModel = "models/gtasa/vehicles/baggage/bump_front_dam.mdl",
-                GibOffset = Vector(63.48, -24.93, -9.18),
-                Health = 60
-            },
-            bumperr = {
-                OBBMin = Vector(-63, 34.1, -3),
-                OBBMax = Vector(-50, -34.1, -18),
-                BDGroup = 3,
-                GibModel = "models/gtasa/vehicles/baggage/bump_rear_dam.mdl",
-                GibOffset = Vector(-57.31, 24.93, -9.19),
-                Health = 60
-            },
-            gastank = {
-                OBBMin = Vector(21, 37.1, 6),
-                OBBMax = Vector(32, 20.9, -5),
-                TypeFlag = 2
-            }
-        },
-
         OnSpawn = function(ent)
-            ent:SetBodyGroups(
-                "0000" .. math.random(0, 1) .. math.random(0, 1) ..
-                    math.random(0, 1)) -- sets headphones/toolbox/gas whatnot
-            ent:NAKHitboxDmg()
-            ent:NAKSimfGTASA()
+			-- sets headphones/toolbox/gas whatnot
+            ent:SetBodyGroups("0000" .. math.random(0, 1) .. math.random(0, 1) ..math.random(0, 1))
+            NAK.SimfGTASA(ent)
+
+            NAK.AddHitboxes(ent, "0000")
+
             if (ProxyColor) then
                 local CarCols = {}
                 CarCols[1] = {Color(245, 245, 245)}
-                ent:SetProxyColor(CarCols[1])
+                ProxyColor.RandFromTable(ent,CarCols,true)
             end
         end,
 

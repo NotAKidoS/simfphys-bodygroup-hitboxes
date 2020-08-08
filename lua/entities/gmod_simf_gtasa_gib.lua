@@ -14,7 +14,7 @@ if CLIENT then
         self:DrawModel()
 
         render.ModelMaterialOverride(Mat)
-        render.SetBlend(0.8)
+        render.SetBlend(0.6)
         self:DrawModel()
 
         render.ModelMaterialOverride()
@@ -110,8 +110,7 @@ if SERVER then
                 self.particleeffect:SetKeyValue("effect_name", "fire_small_03")
                 self.particleeffect:SetKeyValue("start_active", 1)
                 self.particleeffect:SetOwner(self)
-                self.particleeffect:SetPos(
-                    self:LocalToWorld(self:GetPhysicsObject():GetMassCenter()))
+                self.particleeffect:SetPos(self:LocalToWorld(self:GetPhysicsObject():GetMassCenter()))
                 self.particleeffect:SetAngles(self:GetAngles())
                 self.particleeffect:Spawn()
                 self.particleeffect:Activate()
@@ -120,36 +119,9 @@ if SERVER then
             end
 
         end)
-
         self.RemoveDis = GetConVar("sv_simfphys_gib_lifetime"):GetFloat()
-
         self.RemoveTimer = CurTime() + self.RemoveDis
-
-        -- //Color support
-        self:SetColor(self.Car:GetColor())
-        self:SetSkin(self.Car:GetSkin())
-        if (self.GetProxyColor) then
-            self.PrxyClr = self.Car:GetProxyColor()
-        end
         self.DoNotDuplicate = true
-
-        if game.SinglePlayer() then
-            if (self.GetProxyColor) then
-                self:SetProxyColor(self.PrxyClr)
-            end
-            self:SetRenderMode(RENDERMODE_TRANSALPHA)
-            self:SetNoDraw(false)
-        else
-            timer.Simple(0.01, function()
-                if not IsValid(self) then return end
-                if (self.GetProxyColor) then
-                    self:SetProxyColor(self.PrxyClr)
-                end
-                self:SetRenderMode(RENDERMODE_TRANSALPHA)
-                self:SetNoDraw(false)
-            end)
-        end
-        -- //End
     end
 
     function ENT:Think()
@@ -160,10 +132,7 @@ if SERVER then
         self:NextThink(CurTime() + 0.2)
         return true
     end
-
     function ENT:OnRemove() if self.FireSound then self.FireSound:Stop() end end
-
     function ENT:OnTakeDamage(dmginfo) self:TakePhysicsDamage(dmginfo) end
-
     function ENT:PhysicsCollide(data, physobj) end
 end

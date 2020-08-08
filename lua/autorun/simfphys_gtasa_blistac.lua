@@ -1,3 +1,65 @@
+local HitboxList = {
+	Hood = {
+		OBBMin = Vector(90, 42, -18),
+		OBBMax = Vector(33, -42, 16),
+		BDGroup = {1, 10, 11},
+		GibModel = "models/gtasa/vehicles/blistac/bonnet_dam.mdl",
+		GibOffset = Vector(27.86, 0, 10.69),
+		Health = 120
+	},
+	Trunk = {
+		OBBMin = Vector(-82, -42, -15),
+		OBBMax = Vector(-39, 42, 31),
+		BDGroup = {2, 12},
+		GibModel = "models/gtasa/vehicles/blistac/boot_dam.mdl",
+		GibOffset = Vector(-39.75, 0, 28.84),
+		Health = 120
+	},
+
+	BumperF = {
+		OBBMin = Vector(92, 42, -19),
+		OBBMax = Vector(61, -42, 0),
+		BDGroup = 3,
+		GibModel = "models/gtasa/vehicles/blistac/bump_front_dam.mdl",
+		GibOffset = Vector(64.46, 38.20, -1.93),
+		Health = 100
+	},
+	BumperR = {
+		OBBMin = Vector(-65, -42, 0),
+		OBBMax = Vector(-83, 42, -19),
+		BDGroup = 4,
+		GibModel = "models/gtasa/vehicles/blistac/bump_rear_dam.mdl",
+		GibOffset = Vector(-63.8, -38.57, -2.08),
+		Health = 100
+	},
+	Door = {
+		OBBMin = Vector(-34, 44, 28),
+		OBBMax = Vector(34, 18, -18),
+		BDGroup = 5,
+		GibModel = "models/gtasa/vehicles/blistac/door_lf_dam.mdl",
+		GibOffset = Vector(30.34, 37.67, -1.91),
+		Health = 100,
+
+		Mirror = Vector(1, -1, 1), -- // Vector(-15,40,0) * Vector(1,-1,1) = Vector(-15,-40,0) || multiplies it!!
+		BDGroup_2 = 6,
+		GibModel_2 = "models/gtasa/vehicles/blistac/door_rf_dam.mdl"
+	},
+	Windsheild = {
+		OBBMin = Vector(7, 41, 30),
+		OBBMax = Vector(33, -37, 13),
+		TypeFlag = 1, -- //glass or window
+		BDGroup = 7,
+		Health = 6,
+		ShatterPos = Vector(16.643, 0, 19.497)
+	},
+	FuelCap = {
+		OBBMin = Vector(-62, -47, 10),
+		OBBMax = Vector(-74, -27, 0),
+		TypeFlag = 2 -- //gas tank 
+	}
+}
+list.Set("nak_simf_hitboxes", "sim_fphys_gtasa_blistac", HitboxList)
+
 local V = {
     Name = "Blista Compact",
     Model = "models/gtasa/vehicles/blistac/blistac.mdl",
@@ -7,14 +69,15 @@ local V = {
     SpawnAngleOffset = 90,
     NAKGame = "GTA:SA",
     NAKType = "Coupes/Hatchbacks",
-
+	
     FLEX = {
         Trailers = {outputPos = Vector(-85, 0, -9), outputType = "ballsocket"}
     },
-
+	
     Members = {
         Mass = 1000,
-
+        EnginePos = Vector(55.92, 0, 6.04),
+        LightsTable = "gtasa_blistac",
         GibModels = {
             "models/gtasa/vehicles/blistac/chassis.mdl",
             "models/gtasa/vehicles/blistac/wheel.mdl",
@@ -23,76 +86,11 @@ local V = {
             "models/gtasa/vehicles/blistac/wheel.mdl"
         },
 
-        EnginePos = Vector(55.92, 0, 6.04),
-
-        LightsTable = "gtasa_blistac",
-
-        NAKHitboxes = {
-            Hood = {
-                OBBMin = Vector(90, 42, -18),
-                OBBMax = Vector(33, -42, 16),
-                BDGroup = {1, 10, 11},
-                GibModel = "models/gtasa/vehicles/blistac/bonnet_dam.mdl",
-                GibOffset = Vector(27.86, 0, 10.69),
-                Health = 120
-            },
-            Trunk = {
-                OBBMin = Vector(-82, -42, -15),
-                OBBMax = Vector(-39, 42, 31),
-                BDGroup = {2, 12},
-                GibModel = "models/gtasa/vehicles/blistac/boot_dam.mdl",
-                GibOffset = Vector(-39.75, 0, 28.84),
-                Health = 120
-            },
-
-            BumperF = {
-                OBBMin = Vector(92, 42, -19),
-                OBBMax = Vector(61, -42, 0),
-                BDGroup = 3,
-                GibModel = "models/gtasa/vehicles/blistac/bump_front_dam.mdl",
-                GibOffset = Vector(64.46, 38.20, -1.93),
-                Health = 100
-            },
-            BumperR = {
-                OBBMin = Vector(-65, -42, 0),
-                OBBMax = Vector(-83, 42, -19),
-                BDGroup = 4,
-                GibModel = "models/gtasa/vehicles/blistac/bump_rear_dam.mdl",
-                GibOffset = Vector(-63.8, -38.57, -2.08),
-                Health = 100
-            },
-            Door = {
-                OBBMin = Vector(-34, 44, 28),
-                OBBMax = Vector(34, 18, -18),
-                BDGroup = 5,
-                GibModel = "models/gtasa/vehicles/blistac/door_lf_dam.mdl",
-                GibOffset = Vector(30.34, 37.67, -1.91),
-                Health = 100,
-
-                Mirror = Vector(1, -1, 1), -- // Vector(-15,40,0) * Vector(1,-1,1) = Vector(-15,-40,0) || multiplies it!!
-                BDGroup_2 = 6,
-                GibModel_2 = "models/gtasa/vehicles/blistac/door_rf_dam.mdl"
-            },
-            Windsheild = {
-                OBBMin = Vector(7, 41, 30),
-                OBBMax = Vector(33, -37, 13),
-                TypeFlag = 1, -- //glass or window
-                BDGroup = 7,
-                Health = 6,
-                ShatterPos = Vector(16.643, 0, 19.497)
-            },
-            FuelCap = {
-                OBBMin = Vector(-62, -47, 10),
-                OBBMax = Vector(-74, -27, 0),
-                TypeFlag = 2 -- //gas tank 
-            }
-        },
-
         OnSpawn = function(ent)
             ent:SetBodyGroups("00000000002280")
 
-            ent:NAKSimfGTASA() -- function that'll do all the GTASA changes for you
-            ent:NAKHitboxDmg() -- function that'll activate the hitboxes
+            NAK.SimfGTASA(ent)
+            NAK.AddHitboxes(ent, "0000000000228")
 
             if (ProxyColor) then
                 local CarCols = {}
@@ -104,7 +102,7 @@ local V = {
                 CarCols[6] = {Color(59, 78, 120), Color(59, 78, 120)}
                 CarCols[7] = {Color(94, 112, 114), Color(214, 218, 214)}
                 CarCols[8] = {Color(0, 0, 0), Color(0, 0, 0)}
-                ent:SetProxyColor(CarCols[math.random(1, 8)])
+                ProxyColor.RandFromTable(ent,CarCols,true)
             end
         end,
 
