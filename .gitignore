@@ -1,0 +1,9 @@
+lua/autorun/simftrailers_shared.lua
+.vs
+node_modules
+package-lock.json
+obj
+bin
+/yarn.lock
+tstoluatest.njsproj.user
+*.gma

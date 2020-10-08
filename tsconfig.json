@@ -1,0 +1,31 @@
+{
+	"compilerOptions": {
+		"target": "ESNext",
+		"lib": [ "ESNext" ],
+		"types": [
+			"lua-types/5.2",
+			"./src/typings",
+			"@glua-addon-types/flex/index",
+			"@glua-addon-types/glua-types/typings/garrysmod"
+		],
+		"module": "commonjs",
+		"charset": "UTF8",
+		"rootDir": "./src",
+		"outDir": "./lua",
+		"declaration": false,
+		"sourceMap": false,
+		"skipLibCheck": true, // faster
+		"strict": true,
+		"removeComments": true
+	},
+	"tstl": {
+		"luaTarget": "JIT", // 5.3: operator '|'
+		"noHeader": true,
+		// if true, BadCoderZ is broken
+		"sourceMapTraceback": false,
+		"luaLibImport": "inline"
+	},
+	"exclude": [
+		"node_modules"
+	]
+}

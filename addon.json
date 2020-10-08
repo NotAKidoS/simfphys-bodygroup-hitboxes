@@ -1,0 +1,23 @@
+{
+    "title": "[simfphys] Trailers Reborn",
+    "type": "vehicle",
+    "tags": ["roleplay", "realism"],
+    "ignore":[
+        "src/*",
+		".vscode/*",
+		"node_modules/*",
+		".github/*",
+		".vs/*",
+		".git/*",
+		"obj/*",
+		"bin/*",
+		"*.md",
+		".editorconfig",
+		".gitignore",
+		"tsconfig.json",
+		"tstoluatest.*",
+		"yarn.lock",
+		"package.json",
+		"LICENSE"
+    ]
+}

@@ -1,0 +1,68 @@
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">14.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <Name>tstoluatest</Name>
+    <RootNamespace>tstoluatest</RootNamespace>
+    <EnableTypeScript>true</EnableTypeScript>
+    <TypeScriptSourceMap>true</TypeScriptSourceMap>
+    <TypeScriptModuleKind>CommonJS</TypeScriptModuleKind>
+    <SaveNodeJsSettingsInProjectFile>True</SaveNodeJsSettingsInProjectFile>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>72e41931-6376-4c6c-9274-2e68f180e1af</ProjectGuid>
+    <ProjectHome>.</ProjectHome>
+    <StartupFile>
+    </StartupFile>
+    <StartWebBrowser>False</StartWebBrowser>
+    <SearchPath>
+    </SearchPath>
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <ProjectTypeGuids>{3AF33F2E-1136-4D97-BBB7-1795711AC8B8};{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}</ProjectTypeGuids>
+    <StartWebBrowser>False</StartWebBrowser>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="addon.json" />
+    <Content Include="package.json" />
+    <Content Include="README.md" />
+    <Content Include="tsconfig.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <TypeScriptCompile Include="src\effects\shb_glassbreak.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\hitbox\cl_hitbox_renderer.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\autorun\simfphys_hitbox_init.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\hitbox\sv_hitbox.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\hitbox\sv_networking.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\typings.d.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="src\" />
+    <Folder Include="src\autorun\" />
+    <Folder Include="src\hitbox\" />
+    <Folder Include="src\effects\" />
+  </ItemGroup>
+  <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsToolsV2.targets" />
+</Project>

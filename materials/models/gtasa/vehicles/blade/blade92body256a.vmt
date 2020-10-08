@@ -1,8 +1,0 @@
-"VertexlitGeneric"
-{
-"$basetexture" "models/gtasa/vehicles/blade/blade92body256a"
-"$envmap" "env_cubemap"
-"$envmaptint" "[.2 .2 .2]"
-"$nocull" 1
-"$blendtintbybasealpha" 1
-"$halflambert" 1
