@@ -20,7 +20,9 @@ do
             local hbox = ent.HitBoxes[hbox_key]
             if damagePos:WithinAABox(hbox.HBMin or hbox.OBBMin, hbox.HBMax or hbox.OBBMax) then
                 if hbox.TypeFlag == 2 then
-                    ent:ExplodeVehicle()
+                    if ent.GetFuel and (ent:GetFuel() > 0) then
+                        ent:ExplodeVehicle()
+                    end
                     return
                 end
                 hbox.CurHealth = math.Clamp(hbox.CurHealth - damage, 0, hbox.Health)

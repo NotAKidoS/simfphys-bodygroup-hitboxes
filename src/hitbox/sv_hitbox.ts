@@ -15,7 +15,9 @@ namespace SHB {
 			if (damagePos.WithinAABox(hbox.HBMin || hbox.OBBMin, hbox.HBMax || hbox.OBBMax)) {
 				// HitBox hitted
 				if (hbox.TypeFlag == TypeFlag.EXPLOSIVE) {
-					(ent as any).ExplodeVehicle()
+					if (ent.GetFuel && ent.GetFuel() > 0) { // Do NOT explode vehicle if it have no fuel
+						(ent as any).ExplodeVehicle()
+					}
 					return
 				}
 				// compute health

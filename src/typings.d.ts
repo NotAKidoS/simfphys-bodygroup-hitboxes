@@ -36,6 +36,7 @@ declare type MissingMethods = {
 	PhysicsCollide: (this: void, ent: HitboxCar, data: CollisionData, physobj: PhysObj) => void
 	OnTakeDamage: (this: void, ent: HitboxCar, info: CTakeDamageInfo) => void
 	OnDestroyed: (this: void, ent: HitboxCar) => void
+	GetFuel: (this: HitboxCar) => number
 	Gib: Entity
 }
 type HitboxCar = Entity & HitBoxes & MissingMethods
