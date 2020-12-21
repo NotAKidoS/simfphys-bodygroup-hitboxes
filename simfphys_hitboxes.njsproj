@@ -2,7 +2,7 @@
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">14.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
-    <Name>tstoluatest</Name>
+    <Name>simfphys_hitboxes</Name>
     <RootNamespace>tstoluatest</RootNamespace>
     <EnableTypeScript>true</EnableTypeScript>
     <TypeScriptSourceMap>true</TypeScriptSourceMap>
@@ -14,7 +14,8 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>72e41931-6376-4c6c-9274-2e68f180e1af</ProjectGuid>
-    <ProjectHome>.</ProjectHome>
+    <ProjectHome>
+    </ProjectHome>
     <StartupFile>
     </StartupFile>
     <StartWebBrowser>False</StartWebBrowser>
@@ -33,6 +34,8 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
+    <Content Include=".github\FUNDING.yml" />
+    <Content Include=".github\workflows\node.js.yml" />
     <Content Include="addon.json" />
     <Content Include="package.json" />
     <Content Include="README.md" />
@@ -59,6 +62,8 @@
     </TypeScriptCompile>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include=".github\" />
+    <Folder Include=".github\workflows\" />
     <Folder Include="src\" />
     <Folder Include="src\autorun\" />
     <Folder Include="src\hitbox\" />

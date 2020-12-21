@@ -1,4 +1,4 @@
-net.Receive("simfphys_hitbox", (len:number) => {
+net.Receive("simfphys_hitbox", (len: number) => {
 	const ent = net.ReadEntity() as any
 	if (IsValid(ent)) {
 		ent.HitBoxes = {}

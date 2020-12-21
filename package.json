@@ -7,7 +7,7 @@
 		"@glua-addon-types/flex": "^1.1.0",
 		"@glua-addon-types/glua-types": "^0.1.2",
 		"lua-types": "^2.8.0",
-		"typescript-to-lua": "0.34.0"
+		"typescript-to-lua": "^0.36.1"
 	},
 	"scripts": {
 		"build": "tstl",
