@@ -20,9 +20,13 @@ declare type HitBox = {
 	GibOffset: Vector
 	GibModel: string
 
+	Gib: Entity
+
 	OnHit: (this: void, hbox: HitBox, ent: Entity) => void
 	OnRepair: (this: void, hbox: HitBox, ent: Entity) => void
 	OnPhysicsCollide: (this: void, hbox: HitBox, ent: HitboxCar, data: CollisionData, physobj: PhysObj) => void
+
+	OnDestroyed: (this: void, ent: HitboxCar, hbox: HitBox) => void;
 }
 const enum TypeFlag {
 	NONE = 0,

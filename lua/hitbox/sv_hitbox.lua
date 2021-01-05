@@ -107,12 +107,13 @@ do
         end
     end
     function SHB.Init(ent, hboxes)
+        print("Initializing hitboxes")
         ent.HitBoxes = hboxes
         for hbox_key in pairs(ent.HitBoxes) do
             local hbox = ent.HitBoxes[hbox_key]
             hbox.HBMin = hbox.HBMin or hbox.OBBMin
             hbox.HBMax = hbox.HBMax or hbox.OBBMax
-            hbox.bodygroup = hbox.BDGroup
+            hbox.bodygroup = hbox.bodygroup or hbox.BDGroup
             hbox.CurHealth = hbox.Health
             hbox.Stage = 0
             hbox.OnPhysicsCollide = hbox.OnPhysicsCollide or defaultOnCollide
@@ -150,6 +151,12 @@ do
             for hbox_key in pairs(car.HitBoxes) do
                 local hbox = car.HitBoxes[hbox_key]
                 if (hbox.GibModel and hbox.GibOffset) and (not (hbox.Stage == 2)) then
+                    if hbox.bodygroup then
+                        car.Gib:SetBodygroup(
+                            hbox.bodygroup,
+                            car.Gib:GetBodygroup(hbox.bodygroup) + 1
+                        )
+                    end
                     local gib = ents.Create("prop_physics")
                     gib:SetModel(hbox.GibModel)
                     gib:SetPos(
@@ -160,6 +167,9 @@ do
                     )
                     gib:SetColor(
                         car.Gib:GetColor()
+                    )
+                    gib:SetSkin(
+                        car.Gib:GetSkin()
                     )
                     gib:SetVelocity(
                         car.Gib:GetVelocity()
@@ -175,6 +185,10 @@ do
                             end
                         )
                     end
+                    hbox.Gib = gib
+                end
+                if hbox.OnDestroyed then
+                    hbox.OnDestroyed(car, hbox)
                 end
             end
             oldOnDestoyed(car)

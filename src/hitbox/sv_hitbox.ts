@@ -3,7 +3,6 @@ function defaultOnCollide(this: void, hbox: HitBox, ent: HitboxCar, data: Collis
 		ent.EmitSound("gtasa/sfx/damage_hvy" + math.random(1, 7) + ".wav")
 	}
 }
-
 namespace SHB {
 	export function IsValidCollideEntity(this: void, ent: Entity) {
 		return true//(!ent.IsNPC) && (!ent.IsPlayer()) && (!(ent as any).IsNextBot())
@@ -87,6 +86,8 @@ namespace SHB {
 		}
 	}
 	export function Init(this: void, ent: HitboxCar, hboxes: HitBox[]) {
+		print("Initializing hitboxes")
+
 		ent.HitBoxes = hboxes
 
 		for (const hbox_key in ent.HitBoxes as table) {
@@ -94,7 +95,7 @@ namespace SHB {
 			hbox.HBMin = hbox.HBMin || hbox.OBBMin
 			hbox.HBMax = hbox.HBMax || hbox.OBBMax
 
-			hbox.bodygroup = hbox.BDGroup
+			hbox.bodygroup = hbox.bodygroup || hbox.BDGroup
 
 			hbox.CurHealth = hbox.Health
 
@@ -129,11 +130,15 @@ namespace SHB {
 			for (const hbox_key in car.HitBoxes as table) {
 				const hbox = car.HitBoxes[hbox_key as any]
 				if (hbox.GibModel && hbox.GibOffset && !(hbox.Stage == 2)) {
+					if (hbox.bodygroup) {
+						car.Gib.SetBodygroup(hbox.bodygroup, car.Gib.GetBodygroup(hbox.bodygroup) + 1)
+					}
 					const gib = ents.Create("prop_physics")
 					gib.SetModel(hbox.GibModel)
 					gib.SetPos(car.Gib.LocalToWorld(hbox.GibOffset))
 					gib.SetAngles(car.Gib.GetAngles())
 					gib.SetColor(car.Gib.GetColor() as Color)
+					gib.SetSkin(car.Gib.GetSkin())
 					gib.SetVelocity(car.Gib.GetVelocity())
 					gib.Spawn()
 					car.Gib.DeleteOnRemove(gib)
@@ -143,6 +148,10 @@ namespace SHB {
 							(gib as any).SetProxyColor(proxycolor);
 						})
 					}
+					hbox.Gib = gib
+				}
+				if (hbox.OnDestroyed) {
+					hbox.OnDestroyed(car, hbox)
 				}
 			}
 			oldOnDestoyed(car)
