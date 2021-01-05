@@ -13,7 +13,7 @@ declare type HitBox = {
 	Health: number
 
 	BDGroup: number
-	bodygroup: number
+	Bodygroup: number
 
 	Stage: number
 
@@ -21,6 +21,8 @@ declare type HitBox = {
 	GibModel: string
 
 	Gib: Entity
+
+	nakstyle: boolean
 
 	OnHit: (this: void, hbox: HitBox, ent: Entity) => void
 	OnRepair: (this: void, hbox: HitBox, ent: Entity) => void

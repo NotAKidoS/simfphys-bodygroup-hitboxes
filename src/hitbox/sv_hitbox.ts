@@ -24,8 +24,8 @@ namespace SHB {
 				if (hbox.Stage == 0) {
 					if (hbox.CurHealth < hbox.Health * 0.9) {
 						hbox.Stage = 1
-						if (hbox.bodygroup) {
-							ent.SetBodygroup(hbox.bodygroup, (ent.GetBodygroup(hbox.bodygroup) + 1))
+						if (hbox.Bodygroup) {
+							ent.SetBodygroup(hbox.Bodygroup, (ent.GetBodygroup(hbox.Bodygroup) + 1))
 						}
 						if (hbox.OnHit) {
 							hbox.OnHit(hbox, ent)
@@ -37,8 +37,8 @@ namespace SHB {
 				} else if (hbox.Stage == 1) {
 					if (hbox.CurHealth < 1) {
 						hbox.Stage = 2
-						if (hbox.bodygroup) {
-							ent.SetBodygroup(hbox.bodygroup, (ent.GetBodygroup(hbox.bodygroup) + 1))
+						if (hbox.Bodygroup) {
+							ent.SetBodygroup(hbox.Bodygroup, (ent.GetBodygroup(hbox.Bodygroup) + 1))
 						}
 						if (hbox.OnHit) {
 							hbox.OnHit(hbox, ent)
@@ -92,11 +92,10 @@ namespace SHB {
 
 		for (const hbox_key in ent.HitBoxes as table) {
 			const hbox = ent.HitBoxes[hbox_key as any]
-			hbox.HBMin = hbox.HBMin || hbox.OBBMin
-			hbox.HBMax = hbox.HBMax || hbox.OBBMax
 
-			hbox.bodygroup = hbox.bodygroup || hbox.BDGroup
-
+			if (hbox.OBBMin && hbox.OBBMax && hbox.BDGroup) {
+				hbox.nakstyle = true
+			}
 			hbox.CurHealth = hbox.Health
 
 			hbox.Stage = 0
@@ -130,8 +129,8 @@ namespace SHB {
 			for (const hbox_key in car.HitBoxes as table) {
 				const hbox = car.HitBoxes[hbox_key as any]
 				if (hbox.GibModel && hbox.GibOffset && !(hbox.Stage == 2)) {
-					if (hbox.bodygroup) {
-						car.Gib.SetBodygroup(hbox.bodygroup, car.Gib.GetBodygroup(hbox.bodygroup) + 1)
+					if (hbox.Bodygroup) {
+						car.Gib.SetBodygroup(hbox.Bodygroup, car.Gib.GetBodygroup(hbox.Bodygroup) + 1)
 					}
 					const gib = ents.Create("prop_physics")
 					gib.SetModel(hbox.GibModel)

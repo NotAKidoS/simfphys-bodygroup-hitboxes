@@ -29,10 +29,10 @@ do
                 if hbox.Stage == 0 then
                     if hbox.CurHealth < (hbox.Health * 0.9) then
                         hbox.Stage = 1
-                        if hbox.bodygroup then
+                        if hbox.Bodygroup then
                             ent:SetBodygroup(
-                                hbox.bodygroup,
-                                ent:GetBodygroup(hbox.bodygroup) + 1
+                                hbox.Bodygroup,
+                                ent:GetBodygroup(hbox.Bodygroup) + 1
                             )
                         end
                         if hbox.OnHit then
@@ -45,10 +45,10 @@ do
                 elseif hbox.Stage == 1 then
                     if hbox.CurHealth < 1 then
                         hbox.Stage = 2
-                        if hbox.bodygroup then
+                        if hbox.Bodygroup then
                             ent:SetBodygroup(
-                                hbox.bodygroup,
-                                ent:GetBodygroup(hbox.bodygroup) + 1
+                                hbox.Bodygroup,
+                                ent:GetBodygroup(hbox.Bodygroup) + 1
                             )
                         end
                         if hbox.OnHit then
@@ -111,9 +111,9 @@ do
         ent.HitBoxes = hboxes
         for hbox_key in pairs(ent.HitBoxes) do
             local hbox = ent.HitBoxes[hbox_key]
-            hbox.HBMin = hbox.HBMin or hbox.OBBMin
-            hbox.HBMax = hbox.HBMax or hbox.OBBMax
-            hbox.bodygroup = hbox.bodygroup or hbox.BDGroup
+            if (hbox.OBBMin and hbox.OBBMax) and hbox.BDGroup then
+                hbox.nakstyle = true
+            end
             hbox.CurHealth = hbox.Health
             hbox.Stage = 0
             hbox.OnPhysicsCollide = hbox.OnPhysicsCollide or defaultOnCollide
@@ -151,10 +151,10 @@ do
             for hbox_key in pairs(car.HitBoxes) do
                 local hbox = car.HitBoxes[hbox_key]
                 if (hbox.GibModel and hbox.GibOffset) and (not (hbox.Stage == 2)) then
-                    if hbox.bodygroup then
+                    if hbox.Bodygroup then
                         car.Gib:SetBodygroup(
-                            hbox.bodygroup,
-                            car.Gib:GetBodygroup(hbox.bodygroup) + 1
+                            hbox.Bodygroup,
+                            car.Gib:GetBodygroup(hbox.Bodygroup) + 1
                         )
                     end
                     local gib = ents.Create("prop_physics")
