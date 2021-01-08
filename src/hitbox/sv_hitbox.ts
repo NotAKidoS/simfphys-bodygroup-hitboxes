@@ -47,9 +47,11 @@ namespace SHB {
 							hbox.OnPhysicsCollide(hbox, ent, dmginfo_or_data as CollisionData, physobj as PhysObj)
 						}
 						if (hbox.TypeFlag == 1) {
-							ent.EmitSound("Glass.BulletImpact")
+							//ent.EmitSound("Glass.BulletImpact")
+							const damagePosWorld = ent.LocalToWorld(damagePos)
+							sound.Play("Glass.BulletImpact", damagePosWorld, 75, 100, 1)
 							const effectdata = EffectData()
-							effectdata.SetOrigin(ent.LocalToWorld(damagePos))
+							effectdata.SetOrigin(damagePosWorld)
 							util.Effect("shb_glassbreak", effectdata)
 						} else {
 							if (hbox.GibModel && hbox.GibOffset) {
@@ -94,7 +96,28 @@ namespace SHB {
 			const hbox = ent.HitBoxes[hbox_key as any]
 
 			if (hbox.OBBMin && hbox.OBBMax && hbox.BDGroup) {
+				hbox.HBMax = hbox.OBBMax
+				hbox.HBMin = hbox.OBBMin
+				hbox.Bodygroup = hbox.BDGroup
 				hbox.nakstyle = true
+				hbox.Stages = [
+					{
+						bodygroups :{
+							[hbox.Bodygroup]: 0
+						}
+					},
+					{
+						bodygroups: {
+							[hbox.Bodygroup]: 1
+						}
+					},
+					{
+						bodygroups: {
+							[hbox.Bodygroup]: 2
+						},
+						gib : true
+					}
+				]
 			}
 			hbox.CurHealth = hbox.Health
 
@@ -156,6 +179,45 @@ namespace SHB {
 			oldOnDestoyed(car)
 		}
 
+
+		if (ent.OnRepaired) {
+			const oldOnRepaired = ent.OnRepaired
+			ent.OnRepaired = (car: HitboxCar) => {
+				for (const hbox_key in car.HitBoxes as table) {
+					const hbox = car.HitBoxes[hbox_key as any]
+					if (hbox.OnRepair) {
+						hbox.OnRepair(hbox, car)
+					}
+				}
+				oldOnRepaired(car)
+			}
+		} else {
+			// simfphys workaround
+			// if luna still didn't updated simfphys
+			timer.Simple(1, () => {
+				if (IsValid(ent)) {
+					if (istable(ent.Wheels)) {
+						const wheel = ent.Wheels[0]
+						if (IsValid(wheel)) {
+							const oldSetDamaged = wheel.SetDamaged
+							wheel.SetDamaged = (wheel, value) => {
+								if (!value) {
+									if (IsValid(ent)) {
+										for (const hbox_key in ent.HitBoxes as table) {
+											const hbox = ent.HitBoxes[hbox_key as any]
+											if (hbox.OnRepair) {
+												hbox.OnRepair(hbox, ent)
+											}
+										}
+									}
+								}
+								oldSetDamaged(wheel, value)
+							}
+						}
+					}
+				}
+			})
+		}
 		net.Start("simfphys_hitbox")
 		net.WriteEntity(ent)
 		net.WriteUInt(table.Count(ent.HitBoxes), 32)

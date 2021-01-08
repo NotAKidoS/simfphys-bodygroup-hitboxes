@@ -1,5 +1,9 @@
 declare const _G: any
 
+declare type HitBoxStage = {
+	
+}
+
 declare type HitBox = {
 	HBMin: Vector
 	HBMax: Vector
@@ -16,6 +20,8 @@ declare type HitBox = {
 	Bodygroup: number
 
 	Stage: number
+
+	Stages: HitBoxStage[]
 
 	GibOffset: Vector
 	GibModel: string
@@ -42,7 +48,10 @@ declare type MissingMethods = {
 	PhysicsCollide: (this: void, ent: HitboxCar, data: CollisionData, physobj: PhysObj) => void
 	OnTakeDamage: (this: void, ent: HitboxCar, info: CTakeDamageInfo) => void
 	OnDestroyed: (this: void, ent: HitboxCar) => void
+	OnRepaired: (this: void, ent: HitboxCar) => void
 	GetFuel: (this: HitboxCar) => number
+	Wheels: HitboxCar[]
+	SetDamaged: (this: void, ent: HitboxCar, value: boolean) => void
 	Gib: Entity
 }
 type HitboxCar = Entity & HitBoxes & MissingMethods

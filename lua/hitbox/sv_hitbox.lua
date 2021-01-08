@@ -58,11 +58,10 @@ do
                             hbox.OnPhysicsCollide(hbox, ent, dmginfo_or_data, physobj)
                         end
                         if hbox.TypeFlag == 1 then
-                            ent:EmitSound("Glass.BulletImpact")
+                            local damagePosWorld = ent:LocalToWorld(damagePos)
+                            sound.Play("Glass.BulletImpact", damagePosWorld, 75, 100, 1)
                             local effectdata = EffectData()
-                            effectdata:SetOrigin(
-                                ent:LocalToWorld(damagePos)
-                            )
+                            effectdata:SetOrigin(damagePosWorld)
                             util.Effect("shb_glassbreak", effectdata)
                         else
                             if hbox.GibModel and hbox.GibOffset then
@@ -112,7 +111,11 @@ do
         for hbox_key in pairs(ent.HitBoxes) do
             local hbox = ent.HitBoxes[hbox_key]
             if (hbox.OBBMin and hbox.OBBMax) and hbox.BDGroup then
+                hbox.HBMax = hbox.OBBMax
+                hbox.HBMin = hbox.OBBMin
+                hbox.Bodygroup = hbox.BDGroup
                 hbox.nakstyle = true
+                hbox.Stages = {{bodygroups = {[hbox.Bodygroup] = 0}}, {bodygroups = {[hbox.Bodygroup] = 1}}, {bodygroups = {[hbox.Bodygroup] = 2}, gib = true}}
             end
             hbox.CurHealth = hbox.Health
             hbox.Stage = 0
@@ -192,6 +195,47 @@ do
                 end
             end
             oldOnDestoyed(car)
+        end
+        if ent.OnRepaired then
+            local oldOnRepaired
+            oldOnRepaired = ent.OnRepaired
+            ent.OnRepaired = function(car)
+                for hbox_key in pairs(car.HitBoxes) do
+                    local hbox = car.HitBoxes[hbox_key]
+                    if hbox.OnRepair then
+                        hbox.OnRepair(hbox, car)
+                    end
+                end
+                oldOnRepaired(car)
+            end
+        else
+            timer.Simple(
+                1,
+                function()
+                    if IsValid(ent) then
+                        if istable(ent.Wheels) then
+                            local wheel = ent.Wheels[1]
+                            if IsValid(wheel) then
+                                local oldSetDamaged
+                                oldSetDamaged = wheel.SetDamaged
+                                wheel.SetDamaged = function(wheel, value)
+                                    if not value then
+                                        if IsValid(ent) then
+                                            for hbox_key in pairs(ent.HitBoxes) do
+                                                local hbox = ent.HitBoxes[hbox_key]
+                                                if hbox.OnRepair then
+                                                    hbox.OnRepair(hbox, ent)
+                                                end
+                                            end
+                                        end
+                                    end
+                                    oldSetDamaged(wheel, value)
+                                end
+                            end
+                        end
+                    end
+                end
+            )
         end
         net.Start("simfphys_hitbox")
         net.WriteEntity(ent)
