@@ -121,7 +121,7 @@ namespace SHB {
 			}
 			hbox.CurHealth = hbox.Health
 
-			hbox.Stage = 0
+			hbox.Stage = hbox.Stage || 0
 			/*
 			 * this way of setting default OnPhysicsCollide
 			 * will not create new function each time

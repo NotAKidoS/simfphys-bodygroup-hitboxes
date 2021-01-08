@@ -11,7 +11,7 @@ declare type HitBox = {
 	OBBMin: Vector
 	OBBMax: Vector
 
-	TypeFlag: number
+	TypeFlag: TypeFlag
 
 	CurHealth: number
 	Health: number
