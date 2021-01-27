@@ -25,6 +25,16 @@ cvars.AddChangeCallback("shb_rgar", () => {
 	shb_rgar_update()
 })
 
+let shb_gibs: boolean
+function shb_gibs_update(this: void) {
+	shb_gibs = CreateConVar("shb_gibs", "1", FCVAR.FCVAR_ARCHIVE, "enable gibs?", 0, 1).GetBool()
+}
+shb_gibs_update()
+cvars.AddChangeCallback("shb_gibs", () => {
+	shb_gibs_update()
+})
+
+//@todo: change description
 let shb_gibsondestroy: boolean
 function shb_gibsondestroy_update(this: void) {
 	shb_gibsondestroy = CreateConVar("shb_gibsondestroy", "1", FCVAR.FCVAR_ARCHIVE, "Execute last stage on destroy?", 0, 1).GetBool()
@@ -59,7 +69,10 @@ export namespace SHB {
 			if (typeof (newStage.OnSelected) == "function") {
 				newStage.OnSelected(ent, hbox)
 			}
-			if (istable(newStage.Bodygroups)) {
+			if (
+				istable(newStage.Bodygroups)
+					&& destroyed ? shb_gibsondestroy : true
+			) {
 				for (const bodygroupkey in newStage.Bodygroups) {
 					if (typeof (bodygroupkey) == "number") {
 						ent.SetBodygroup(bodygroupkey, newStage.Bodygroups[bodygroupkey])
@@ -73,7 +86,7 @@ export namespace SHB {
 					}
 				}
 			}
-			if (newStage.Gib) {
+			if (newStage.Gib && shb_gibs) {
 				if (destroyed ? shb_gibsondestroy : true) {
 					const gib = ents.Create("prop_physics")
 					const parent = destroyed ? IsValid(ent.Gib) ? ent.Gib : ent : ent
@@ -84,7 +97,7 @@ export namespace SHB {
 					gib.SetVelocity(parent.GetVelocity())
 					gib.Spawn()
 					gib.Activate()
-					if (destroyed) {
+					if (destroyed && IsValid(ent.Gib)) {
 						ent.Gib.DeleteOnRemove(gib)
 					} else {
 						ent.CallOnRemove("simfphys_hitbox_gib_" + tostring(hbox), () => {

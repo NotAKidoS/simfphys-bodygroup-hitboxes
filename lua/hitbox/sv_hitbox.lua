@@ -42,6 +42,17 @@ cvars.AddChangeCallback(
         shb_rgar_update()
     end
 )
+local shb_gibs
+local function shb_gibs_update()
+    shb_gibs = CreateConVar("shb_gibs", "1", FCVAR_ARCHIVE, "enable gibs?", 0, 1):GetBool()
+end
+shb_gibs_update()
+cvars.AddChangeCallback(
+    "shb_gibs",
+    function()
+        shb_gibs_update()
+    end
+)
 local shb_gibsondestroy
 local function shb_gibsondestroy_update()
     shb_gibsondestroy = CreateConVar("shb_gibsondestroy", "1", FCVAR_ARCHIVE, "Execute last stage on destroy?", 0, 1):GetBool()
@@ -79,7 +90,7 @@ do
             if type(newStage.OnSelected) == "function" then
                 newStage:OnSelected(ent, hbox)
             end
-            if istable(newStage.Bodygroups) then
+            if (((istable(newStage.Bodygroups) and destroyed) and (function() return shb_gibsondestroy end)) or (function() return true end))() then
                 for bodygroupkey in pairs(newStage.Bodygroups) do
                     if type(bodygroupkey) == "number" then
                         ent:SetBodygroup(bodygroupkey, newStage.Bodygroups[bodygroupkey])
@@ -93,7 +104,7 @@ do
                     end
                 end
             end
-            if newStage.Gib then
+            if newStage.Gib and shb_gibs then
                 if ((destroyed and (function() return shb_gibsondestroy end)) or (function() return true end))() then
                     local gib = ents.Create("prop_physics")
                     local parent = (destroyed and ((IsValid(ent.Gib) and ent.Gib) or ent)) or ent
@@ -112,7 +123,7 @@ do
                     )
                     gib:Spawn()
                     gib:Activate()
-                    if destroyed then
+                    if destroyed and IsValid(ent.Gib) then
                         ent.Gib:DeleteOnRemove(gib)
                     else
                         ent:CallOnRemove(
@@ -211,39 +222,39 @@ do
             if hbox.OBBMin and hbox.OBBMax then
                 hbox.HBMax = hbox.OBBMax
                 hbox.HBMin = hbox.OBBMin
-                local ____switch52 = hbox.TypeFlag
-                if ____switch52 == SHB.TypeFlag.GLASS then
-                    goto ____switch52_case_0
-                elseif ____switch52 == SHB.TypeFlag.EXPLOSIVE then
-                    goto ____switch52_case_1
-                elseif ____switch52 == SHB.TypeFlag.NONE then
-                    goto ____switch52_case_2
+                local ____switch54 = hbox.TypeFlag
+                if ____switch54 == SHB.TypeFlag.GLASS then
+                    goto ____switch54_case_0
+                elseif ____switch54 == SHB.TypeFlag.EXPLOSIVE then
+                    goto ____switch54_case_1
+                elseif ____switch54 == SHB.TypeFlag.NONE then
+                    goto ____switch54_case_2
                 end
-                goto ____switch52_case_default
-                ::____switch52_case_0::
+                goto ____switch54_case_default
+                ::____switch54_case_0::
                 do
                     hbox.Stages = {{Bodygroups = (hbox.BDGroup and ({[hbox.BDGroup] = 0})) or nil}, {GlassBreakFX = true, Damage = (hbox.Health and (hbox.Health * 0.1)) or 0, Bodygroups = (hbox.BDGroup and ({[hbox.BDGroup] = 1})) or nil}}
                     if hbox.BDGroup then
                         hbox.Stages[3] = {GlassBreakFX = true, Damage = (hbox.Health and hbox.Health) or 0, Bodygroups = (hbox.BDGroup and ({[hbox.BDGroup] = 2})) or nil}
                     end
-                    goto ____switch52_end
+                    goto ____switch54_end
                 end
-                ::____switch52_case_1::
+                ::____switch54_case_1::
                 do
                     hbox.Stages = {{}, {Explode = true}}
-                    goto ____switch52_end
+                    goto ____switch54_end
                 end
-                ::____switch52_case_2::
+                ::____switch54_case_2::
                 do
                 end
-                ::____switch52_case_default::
+                ::____switch54_case_default::
                 do
                     if hbox.BDGroup then
                         hbox.Stages = {{Bodygroups = {[hbox.BDGroup] = 0}}, {Bodygroups = {[hbox.BDGroup] = 1}, Damage = (hbox.Health and (hbox.Health * 0.1)) or 0}, {Bodygroups = {[hbox.BDGroup] = 2}, Damage = (hbox.Health and hbox.Health) or 0, Gib = {Model = hbox.GibModel, PositionOffset = hbox.GibOffset}}}
                     end
-                    goto ____switch52_end
+                    goto ____switch54_end
                 end
-                ::____switch52_end::
+                ::____switch54_end::
                 hbox.nak = true
             end
             hbox.CurHealth = hbox.Health
@@ -289,31 +300,31 @@ do
         ent.OnDestroyed = function(car)
             for hbox_key in pairs(car.HitBoxes) do
                 local hbox = car.HitBoxes[hbox_key]
-                local ____switch64 = __TS__TypeOf(hbox.OnDestroyed)
-                if ____switch64 == "function" then
-                    goto ____switch64_case_0
-                elseif ____switch64 == "number" then
-                    goto ____switch64_case_1
+                local ____switch66 = __TS__TypeOf(hbox.OnDestroyed)
+                if ____switch66 == "function" then
+                    goto ____switch66_case_0
+                elseif ____switch66 == "number" then
+                    goto ____switch66_case_1
                 end
-                goto ____switch64_case_default
-                ::____switch64_case_0::
+                goto ____switch66_case_default
+                ::____switch66_case_0::
                 do
                     hbox.Gib = nil
                     SHB.ChangeStage(car, hbox, #hbox.Stages - 1, nil, true)
                     hbox.OnDestroyed(car, hbox)
-                    goto ____switch64_end
+                    goto ____switch66_end
                 end
-                ::____switch64_case_1::
+                ::____switch66_case_1::
                 do
                     SHB.ChangeStage(car, hbox, hbox.OnDestroyed, nil, true)
-                    goto ____switch64_end
+                    goto ____switch66_end
                 end
-                ::____switch64_case_default::
+                ::____switch66_case_default::
                 do
                     SHB.ChangeStage(car, hbox, #hbox.Stages - 1, nil, true)
-                    goto ____switch64_end
+                    goto ____switch66_end
                 end
-                ::____switch64_end::
+                ::____switch66_end::
             end
             if IsValid(ent.Gib) then
                 do
