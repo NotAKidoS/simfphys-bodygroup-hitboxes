@@ -129,7 +129,7 @@ do
                         )
                     end
                     if _G.ProxyColor then
-                        local proxycolor = parent:GetProxyColor()
+                        local proxycolor = ent:GetProxyColor()
                         timer.Simple(
                             0,
                             function()
@@ -248,7 +248,15 @@ do
             end
             hbox.CurHealth = hbox.Health
             hbox.Damage = 0
-            PrintTable(hbox)
+            for stage_key in pairs(hbox.Stages) do
+                local stage = hbox.Stages[stage_key]
+                if stage.Gib and stage.Gib.Model then
+                    util.PrecacheModel(stage.Gib.Model)
+                end
+                if stage.GlassBreakFX then
+                    util.PrecacheSound("Glass.BulletImpact")
+                end
+            end
             ____exports.SHB.ChangeStage(ent, hbox, 0)
             hbox.OnPhysicsCollide = hbox.OnPhysicsCollide or defaultOnCollide
         end
@@ -281,31 +289,31 @@ do
         ent.OnDestroyed = function(car)
             for hbox_key in pairs(car.HitBoxes) do
                 local hbox = car.HitBoxes[hbox_key]
-                local ____switch61 = __TS__TypeOf(hbox.OnDestroyed)
-                if ____switch61 == "function" then
-                    goto ____switch61_case_0
-                elseif ____switch61 == "number" then
-                    goto ____switch61_case_1
+                local ____switch64 = __TS__TypeOf(hbox.OnDestroyed)
+                if ____switch64 == "function" then
+                    goto ____switch64_case_0
+                elseif ____switch64 == "number" then
+                    goto ____switch64_case_1
                 end
-                goto ____switch61_case_default
-                ::____switch61_case_0::
+                goto ____switch64_case_default
+                ::____switch64_case_0::
                 do
                     hbox.Gib = nil
                     SHB.ChangeStage(car, hbox, #hbox.Stages - 1, nil, true)
                     hbox.OnDestroyed(car, hbox)
-                    goto ____switch61_end
+                    goto ____switch64_end
                 end
-                ::____switch61_case_1::
+                ::____switch64_case_1::
                 do
                     SHB.ChangeStage(car, hbox, hbox.OnDestroyed, nil, true)
-                    goto ____switch61_end
+                    goto ____switch64_end
                 end
-                ::____switch61_case_default::
+                ::____switch64_case_default::
                 do
                     SHB.ChangeStage(car, hbox, #hbox.Stages - 1, nil, true)
-                    goto ____switch61_end
+                    goto ____switch64_end
                 end
-                ::____switch61_end::
+                ::____switch64_end::
             end
             if IsValid(ent.Gib) then
                 do

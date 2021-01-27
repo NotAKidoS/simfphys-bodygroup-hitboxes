@@ -94,9 +94,9 @@ export namespace SHB {
 								SafeRemoveEntity(gib)
 						});
 					}
-					/** @todo: fix */
+					// @todo: provide way to extend simfphys hitbox functionality
 					if (_G.ProxyColor) {
-						const proxycolor = (parent as any).GetProxyColor()
+						const proxycolor = (ent as any).GetProxyColor()
 						timer.Simple(0, () => {
 							(gib as any).SetProxyColor(proxycolor);
 						})
@@ -252,7 +252,16 @@ export namespace SHB {
 			hbox.CurHealth = hbox.Health
 			hbox.Damage = 0
 
-			PrintTable(hbox)
+			// optimization: Precache gib models and sounds
+			for (const stage_key in hbox.Stages as table) {
+				const stage = (hbox.Stages as table)[stage_key]
+				if (stage.Gib && stage.Gib.Model) {
+					util.PrecacheModel(stage.Gib.Model)
+				}
+				if (stage.GlassBreakFX) {
+					util.PrecacheSound("Glass.BulletImpact")
+				}
+			}
 
 			SHB.ChangeStage(ent, hbox, 0)
 			/*
