@@ -25,6 +25,8 @@ cvars.AddChangeCallback("shb_rgar", () => {
 	shb_rgar_update()
 })
 
+//@todo: better configuration
+
 let shb_gibs: boolean
 function shb_gibs_update(this: void) {
 	shb_gibs = CreateConVar("shb_gibs", "1", FCVAR.FCVAR_ARCHIVE, "enable gibs?", 0, 1).GetBool()
@@ -34,7 +36,6 @@ cvars.AddChangeCallback("shb_gibs", () => {
 	shb_gibs_update()
 })
 
-//@todo: change description
 let shb_gibsondestroy: boolean
 function shb_gibsondestroy_update(this: void) {
 	shb_gibsondestroy = CreateConVar("shb_gibsondestroy", "1", FCVAR.FCVAR_ARCHIVE, "Execute last stage on destroy?", 0, 1).GetBool()
@@ -71,7 +72,7 @@ export namespace SHB {
 			}
 			if (
 				istable(newStage.Bodygroups)
-					&& destroyed ? shb_gibsondestroy : true
+				&& (destroyed == true ? shb_gibsondestroy : true)
 			) {
 				for (const bodygroupkey in newStage.Bodygroups) {
 					if (typeof (bodygroupkey) == "number") {
@@ -87,9 +88,9 @@ export namespace SHB {
 				}
 			}
 			if (newStage.Gib && shb_gibs) {
-				if (destroyed ? shb_gibsondestroy : true) {
+				if (destroyed == true ? shb_gibsondestroy : true) {
 					const gib = ents.Create("prop_physics")
-					const parent = destroyed ? IsValid(ent.Gib) ? ent.Gib : ent : ent
+					const parent = destroyed == true ? IsValid(ent.Gib) ? ent.Gib : ent : ent
 					gib.SetModel(newStage.Gib.Model)
 					gib.SetPos(newStage.Gib.PositionOffset ? parent.LocalToWorld(newStage.Gib.PositionOffset) : ent.GetPos())
 					gib.SetAngles(parent.GetAngles())
@@ -97,11 +98,11 @@ export namespace SHB {
 					gib.SetVelocity(parent.GetVelocity())
 					gib.Spawn()
 					gib.Activate()
-					if (destroyed && IsValid(ent.Gib)) {
+					if (destroyed == true && IsValid(ent.Gib)) {
 						ent.Gib.DeleteOnRemove(gib)
 					} else {
 						ent.CallOnRemove("simfphys_hitbox_gib_" + tostring(hbox), () => {
-							if (IsValid((ent as any).Gib)) {
+							if (IsValid((ent as any).Gib) && IsValid(gib)) {
 								((ent as any).Gib as Entity).DeleteOnRemove(gib)
 							} else
 								SafeRemoveEntity(gib)
@@ -114,7 +115,7 @@ export namespace SHB {
 							(gib as any).SetProxyColor(proxycolor);
 						})
 					}
-					hbox.Gib = gib
+					newStage.Gib.Entity = gib
 				}
 			}
 			if (newStage.GlassBreakFX && damagePos) {
@@ -175,15 +176,18 @@ export namespace SHB {
 			if (typeof (hbox.OnRepair) == "function") {
 				hbox.OnRepair(hbox, ent)
 			}
-			if (shb_rgar) {
-				SafeRemoveEntity(hbox.Gib)
+			for (const stage of hbox.Stages) {
+				if (stage.Gib) {
+					if (shb_rgar)
+						if (stage.Gib.Entity)
+							SafeRemoveEntity(stage.Gib.Entity)
+					stage.Gib.Entity = undefined
+				}
 			}
 		}
 	}
 	export function Init(this: void, ent: HitboxCar, hboxes: HitBox[]) {
 		print("Initializing hitboxes")
-
-		print(debug.traceback())
 
 		ent.HitBoxes = hboxes
 
@@ -308,7 +312,6 @@ export namespace SHB {
 				const hbox = car.HitBoxes[hbox_key as any]
 				switch (typeof (hbox.OnDestroyed)) {
 					case "function":
-						hbox.Gib = null as any as Entity
 						ChangeStage(car, hbox, hbox.Stages.length - 1, undefined, true)
 						hbox.OnDestroyed(car, hbox)
 						break

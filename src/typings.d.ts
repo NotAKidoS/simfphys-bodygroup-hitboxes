@@ -13,8 +13,9 @@ declare type HitBoxStage = {
 		Model: string
 		/** Gib Position Offset */
 		PositionOffset?: Vector
-		/** @todo Gib Angle Offset */
-		AngleOffset?: Angle
+		/** Gib entity */
+		// TODO: use Entity[]
+		Entity?: Entity
 	}
 	OnSelected?: (this: HitBoxStage, ent: HitboxCar, hbox: HitBox) => void
 	OnDeselected?: (this: HitBoxStage, ent: HitboxCar, hbox: HitBox) => void
@@ -29,9 +30,6 @@ declare type HitBox = {
 	Stage: number
 
 	Stages: HitBoxStage[]
-
-	/** TODO: make Gib a HitBoxStage's?*/
-	Gib: Entity
 
 	OnHit?: (this: void, hbox: HitBox, ent: Entity, dmginfo: CTakeDamageInfo) => void
 	OnRepair?: (this: void, hbox: HitBox, ent: Entity) => void
