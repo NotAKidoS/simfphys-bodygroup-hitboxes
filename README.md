@@ -38,3 +38,4 @@ https://youtu.be/n5IGriERNwM
 
 # disclaimer
 *The code is shit.* Some parts of the script are not perfected yet and will be reworked once I've finally found and implemented all the features needed.
+well, actually supine rewrote it a few times in typescript or somethin and now it actually look profesional. 
