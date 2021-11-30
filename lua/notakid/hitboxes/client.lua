@@ -6,7 +6,7 @@
 --Hook so the client can see hitboxes on vehicles
 hook.Add( "OnEntityCreated", "NAKSimfCLHitbox", function(ent)
 	if ent:GetClass() ~= "gmod_sent_vehicle_fphysics_base" then return end
-	timer.Simple( 1, function()
+	timer.Simple( 0.5, function()
 		local HBInfo = NAK.GetHitboxes(ent)
 		if HBInfo then
 			ent.NAKHitboxes = HBInfo

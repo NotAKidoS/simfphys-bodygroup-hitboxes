@@ -292,7 +292,9 @@ local function SharedDamage(self, damagePos, dmgAmount, type)
                         net.Broadcast()
                         AddBDGroup(self, HBInfo[id].BDGroup, true)
                     else
-                        SpawnGib(self, HBInfo[id].GibModel, HBInfo[id].GibOffset)
+						if HBInfo[id].GibModel then
+							SpawnGib(self, HBInfo[id].GibModel, HBInfo[id].GibOffset)
+						end
                         timer.Simple(
                             0.02,
                             function()
@@ -358,7 +360,10 @@ end
 	CurHealth, Stage, and mirroring hitboxes is done here. Pretty much just a global stuff.
 ]]
 function NAK.AddHitboxes(self, repairstring)
-    local HBInfo = NAK.GetHitboxes(self)
+    local HBInfo, HBExtra = NAK.GetHitboxes(self)
+	
+	if not HBInfo then return false end
+	
     self.NAKHitboxes = HBInfo
     self.RepairBodygroups = repairstring and repairstring or "0000000000"
     --Override damages

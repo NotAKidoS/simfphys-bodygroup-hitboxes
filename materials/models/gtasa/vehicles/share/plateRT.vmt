@@ -1,6 +1,0 @@
-"VertexlitGeneric"
-{
-"$basetexture" "models/gtasa/vehicles/share/plateback3"
-"$blendtintbybasealpha" 1
-"$nocull" 1
-}

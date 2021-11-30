@@ -31,6 +31,8 @@ end
 loadshared('notakid/gtasa/init.lua')
 loadshared('notakid/hitboxes/init.lua')
 
-hook.Add( "simfphysOnSpawn", "NAKSimfHitboxOnSpawn", function( ent )
-	if NAK.GetHitboxes(ent) then NAK.AddHitboxes(ent) NAK.SimfGTASA(ent) end
+--load hitboxes for any vehicle if it has a hitbox list
+hook.Add( "simfphysOnSpawn", "NAKSimfHitboxOnSpawn", function( self )
+	NAK.AddHitboxes(self) 
+	-- NAK.SimfGTASA(self)
 end )
