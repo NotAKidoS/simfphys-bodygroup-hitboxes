@@ -10,12 +10,12 @@ net.Receive("nak_tweaks_snd_engine_damaged", function()
 end)
 
 --run particles for fire
-net.Receive("nak_tweaks_updsidedownfire", function()
+net.Receive("nak_tweaks_flipped_fire", function()
 	local ent = net.ReadEntity()
 	if IsValid(ent) then
 		local delay = 0.1
 		local nextOccurance = 0
-		hook.Add("Think", "nak_tweaks_updsidedownfire" .. ent:EntIndex(), function()
+		hook.Add("Think", "nak_tweaks_flipped_fire" .. ent:EntIndex(), function()
 			local timeLeft = nextOccurance - CurTime()
 			if timeLeft > 0 then return end
 			if IsValid(ent) then
@@ -25,7 +25,7 @@ net.Receive("nak_tweaks_updsidedownfire", function()
 				util.Effect("simf_gtasa_fire", effectdata)
 				nextOccurance = CurTime() + delay
 			else
-				hook.Remove("Think", "nak_tweaks_updsidedownfire" .. ent:EntIndex())
+				hook.Remove("Think", "nak_tweaks_flipped_fire" .. ent:EntIndex())
 			end
 		end)
 	end

@@ -2,6 +2,10 @@ AddCSLuaFile( "notakid/tweaks/client.lua" )
 if CLIENT then
 	include( "notakid/tweaks/client.lua" )
 	return
+else
+	include("notakid/tweaks/hooks.lua")
+	util.AddNetworkString("nak_tweaks_snd_engine_damaged")
+	util.AddNetworkString("nak_tweaks_flipped_fire")
 end
 
 function NAK.GetTweaks(self)
@@ -40,18 +44,15 @@ end
 
 --bunch of functions that do stuff
 
-util.AddNetworkString("nak_tweaks_snd_engine_damaged")
-util.AddNetworkString("nak_tweaks_flipped_fire")
-
 --Tell clients to replace damaged engine sound
 function NAK.TweakEngineDamaged(self, snd_engine_damaged)
     net.Start("nak_tweaks_snd_engine_damaged")
-    net.WriteEntity(self)
-    net.WriteString(snd_engine_damaged)
+		net.WriteEntity(self)
+		net.WriteString(snd_engine_damaged)
     net.Broadcast()
 end
 
---Start engine sound (lazy way)
+--Start engine sound (lazy way) - might switch to hook in future
 function NAK.TweakEngineStart(self, snd_engine_start)
     self.StartEngine = function(self, bIgnoreSettings)
         if not self:CanStart() then return end
@@ -77,6 +78,36 @@ function NAK.TweakSkid(self, skid_sounds)
     end
 end
 
+--Custom skid sounds
+function NAK.TweakReverseWhine(self, snd_reverse_whine)
+	if not self.nak_snd_reverse_whine then
+		self.nak_snd_reverse_whine = CreateSound(self, snd_reverse_whine)
+		self.nak_snd_reverse_whine:PlayEx(0, 0)
+		self:CallOnRemove("remove_nak_reverse_whine", function()
+			if self.nak_snd_reverse_whine then self.nak_snd_reverse_whine:Stop() end
+		end)
+	end
+end
+
+--TODO: need to rethink how kill vehicle code should work, it is very messy
+
+sound.Add({
+    name = "NAKGTASAFire",
+    channel = CHAN_STATIC,
+    volume = 0.8,
+    level = 70,
+    pitch = {95, 110},
+    sound = "gtasa/sfx/fire_loop.wav"
+})
+sound.Add({
+    name = "NAKGTASAFireEng",
+    channel = CHAN_STATIC,
+    volume = 0.4,
+    level = 72,
+    pitch = {95, 110},
+    sound = "gtasa/sfx/engine_damaged_loop.wav"
+})
+
 -- //prolly not good upsidedown damage timer thing stuffs
 function NAK.TweakKillVehicle(self)
     net.Start("nak_tweaks_flipped_fire")
@@ -95,15 +126,4 @@ function NAK.TweakKillVehicle(self)
         if not IsValid(self) then return end
         self:ExplodeVehicle()
     end)
-end
-
---Custom skid sounds
-function NAK.TweakReverseWhine(self, snd_reverse_whine)
-	if not self.nak_snd_reverse_whine then
-		self.nak_snd_reverse_whine = CreateSound(self, snd_reverse_whine)
-		self.nak_snd_reverse_whine:PlayEx(0, 0)
-		self:CallOnRemove("remove_nak_reverse_whine", function()
-			if self.nak_snd_reverse_whine then self.nak_snd_reverse_whine:Stop() end
-		end)
-	end
 end

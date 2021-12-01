@@ -77,7 +77,7 @@ list.Set("nak_simf_tweaks", "blade", {
 	snd_reverse_whine = "gtasa/vehicles/reverse_gear.wav",
 	
 	--reverse beep
-	-- snd_reverse_beep = "gtasa/vehicles/reverse_gear.wav",
+	snd_reverse_beep = "gtasa/vehicles/reverse_beep.wav",
 
 	--upside down explosion timer
 	flipped_tick_check = true,
