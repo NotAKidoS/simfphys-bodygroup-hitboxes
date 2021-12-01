@@ -359,9 +359,8 @@ end
 	This bit of the code applies the altered functions above to the vehicle, and also sets any values we need for later
 	CurHealth, Stage, and mirroring hitboxes is done here. Pretty much just a global stuff.
 ]]
-function NAK.AddHitboxes(self, repairstring)
+function NAK.InitHitboxes(self, repairstring)
     local HBInfo, HBExtra = NAK.GetHitboxes(self)
-	
 	if not HBInfo then return false end
 	
     self.NAKHitboxes = HBInfo

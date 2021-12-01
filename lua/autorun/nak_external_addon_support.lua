@@ -57,3 +57,32 @@ list.Set("nak_simf_hitboxes", "blade", {
 		TypeFlag = 2
 	}
 })
+
+list.Set("nak_simf_tweaks", "blade", {
+
+	--engine start configuration
+	snd_engine_start = "gtasa/sfx/engine_start.wav",
+	
+	--damaged engine sound configuration
+	snd_engine_damaged = "gtasa/sfx/engine_damaged_loop.wav",
+	
+	--wheel skid configuration
+	skid_sounds = {
+		snd_skid = "gtasa/sfx/tireskid.wav",
+		snd_skid_dirt = "gtasa/sfx/tire_dirt.wav",
+		snd_skid_grass = "gtasa/sfx/tire_grass.wav",
+	},
+	
+	--reverse whine configuration
+	snd_reverse_whine = "gtasa/vehicles/reverse_gear.wav",
+	
+	--reverse beep
+	-- snd_reverse_beep = "gtasa/vehicles/reverse_gear.wav",
+
+	--upside down explosion timer
+	flipped_tick_check = true,
+	
+	--disables air control & vehicle flipping (waiting on simfphys update)
+	disable_air_control = true,
+})
+

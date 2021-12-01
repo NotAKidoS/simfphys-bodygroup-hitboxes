@@ -2,18 +2,20 @@
 	Client file, stuff only the client needs
 ]]
 
-net.Receive("nak_simf_gtasa_dmgsnd", function()
-	local ent = net.ReadEntity()
-	local snd = net.ReadString()
-	if IsValid(ent) then ent.DamageSnd = CreateSound(ent, snd) end
+--replace damaged engine sound on client
+net.Receive("nak_tweaks_snd_engine_damaged", function()
+	local self = net.ReadEntity()
+	local snd_engine_damaged = net.ReadString()
+	if IsValid(self) then self.DamageSnd = CreateSound(self, snd_engine_damaged) end
 end)
 
-net.Receive("nak_gtasa_updsidedownfire", function()
+--run particles for fire
+net.Receive("nak_tweaks_updsidedownfire", function()
 	local ent = net.ReadEntity()
 	if IsValid(ent) then
 		local delay = 0.1
 		local nextOccurance = 0
-		hook.Add("Think", "nak_gtasa_updsidedownfire" .. ent:EntIndex(), function()
+		hook.Add("Think", "nak_tweaks_updsidedownfire" .. ent:EntIndex(), function()
 			local timeLeft = nextOccurance - CurTime()
 			if timeLeft > 0 then return end
 			if IsValid(ent) then
@@ -23,7 +25,7 @@ net.Receive("nak_gtasa_updsidedownfire", function()
 				util.Effect("simf_gtasa_fire", effectdata)
 				nextOccurance = CurTime() + delay
 			else
-				hook.Remove("Think", "nak_gtasa_updsidedownfire" .. ent:EntIndex())
+				hook.Remove("Think", "nak_tweaks_updsidedownfire" .. ent:EntIndex())
 			end
 		end)
 	end
