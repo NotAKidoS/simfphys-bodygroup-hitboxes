@@ -1,9 +1,3 @@
---load hitboxes for any vehicle if it has a hitbox list
-hook.Add( "simfphysOnSpawn", "nak_init_hitboxes", function( self )
-	NAK.InitHitboxes(self)
-	NAK.InitTweaks(self)
-end )
-
 --disable air control tweak
 hook.Add( "simfphysAirControl", "nak_disable_aircontrol", function( self )
 

@@ -2,7 +2,6 @@
 	Shared file, stuff needed on both client and server
 ]]
 
-NAK = istable(NAK) and NAK or {}
 function NAK.GetHitboxes(self)
 	
 	if self.NAKHitboxes then return self.NAKHitboxes end
@@ -16,9 +15,9 @@ function NAK.GetHitboxes(self)
         local HBExtra = hbspawnlist[2] and hbspawnlist[2] or nil
 
         for id in pairs(HBInfo) do
-            --Set current health, unless it is added by the mod maker
-            HBInfo[id].CurHealth = HBInfo[id].CurHealth or HBInfo[id].Health
-            HBInfo[id].Stage = 0
+			--Set current health, unless it is added by the mod maker
+			HBInfo[id].CurHealth = HBInfo[id].CurHealth or HBInfo[id].Health
+			HBInfo[id].Stage = 0
 			
 			if HBInfo[id].HitboxID then
 			
@@ -27,7 +26,7 @@ function NAK.GetHitboxes(self)
 				-- print( "HitboxID: " .. HitboxID )
 				
 				local BonePos, BoneAng =  self:GetBonePosition( self:GetHitBoxBone(HitboxID, 0) )
-		 		local BoneHBMin, BoneHBMax = self:GetHitBoxBounds(HitboxID, 0)
+				local BoneHBMin, BoneHBMax = self:GetHitBoxBounds(HitboxID, 0)
 				HBInfo[id].OBBMin = HBInfo[id].OBBMin and HBInfo[id].OBBMin or Vector(0,0,0)
 				HBInfo[id].OBBMax = HBInfo[id].OBBMax and HBInfo[id].OBBMax or Vector(0,0,0)
 
@@ -43,26 +42,27 @@ function NAK.GetHitboxes(self)
 				HBInfo[id].OBBMax = BoneHBMin - HBInfo[id].OBBMax
 			end
 			
-            --Mirror that hitbox!
-            if HBInfo[id].Mirror then
-                local MirrorAxis = HBInfo[id].Mirror
-                HBMirror[id .. "_2"] = {}
-                --The hitboxes bounds
-                HBMirror[id .. "_2"].OBBMin = HBInfo[id].OBBMax * MirrorAxis
-                HBMirror[id .. "_2"].OBBMax = HBInfo[id].OBBMin * MirrorAxis
-                --Type of hitbox (normal, glass, gas tank)
-                HBMirror[id .. "_2"].TypeFlag = HBInfo[id].TypeFlag
-                --Gib model, offset, ect
-                HBMirror[id .. "_2"].BDGroup = HBInfo[id].BDGroup_2
+			--Mirror that hitbox!
+			if HBInfo[id].Mirror then
+				local MirrorAxis = HBInfo[id].Mirror
+				HBMirror[id .. "_2"] = {}
+				--The hitboxes bounds
+				HBMirror[id .. "_2"].OBBMin = HBInfo[id].OBBMax * MirrorAxis
+				HBMirror[id .. "_2"].OBBMax = HBInfo[id].OBBMin * MirrorAxis
+				--Type of hitbox (normal, glass, gas tank)
+				HBMirror[id .. "_2"].TypeFlag = HBInfo[id].TypeFlag
+				--Gib model, offset, ect
+				HBMirror[id .. "_2"].BDGroup = HBInfo[id].BDGroup_2
 				if HBInfo[id].GibModel then
 					HBMirror[id .. "_2"].GibModel = HBInfo[id].GibModel_2
 					HBMirror[id .. "_2"].GibOffset = HBInfo[id].GibOffset * MirrorAxis
+					HBMirror[id .. "_2"].GibBodygroups = HBInfo[id].GibBodygroups_2
 				end
-                --Health & stage
-                HBMirror[id .. "_2"].Health = HBInfo[id].Health
-                HBMirror[id .. "_2"].CurHealth = HBInfo[id].CurHealth
-                HBMirror[id .. "_2"].Stage = HBInfo[id].Stage
-            end
+				--Health & stage
+				HBMirror[id .. "_2"].Health = HBInfo[id].Health
+				HBMirror[id .. "_2"].CurHealth = HBInfo[id].CurHealth
+				HBMirror[id .. "_2"].Stage = HBInfo[id].Stage
+			end
         end
 		
 		table.Merge( HBInfo, HBMirror )

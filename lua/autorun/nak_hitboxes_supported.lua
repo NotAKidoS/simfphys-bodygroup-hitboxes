@@ -55,7 +55,7 @@ list.Set("nak_simf_hitboxes", "blade", {
 		OBBMin = Vector(-26, -63, 0),
 		OBBMax = Vector(-46, -73, 8),
 		TypeFlag = 2
-	}
+	},
 })
 
 list.Set("nak_simf_tweaks", "blade", {
@@ -77,12 +77,33 @@ list.Set("nak_simf_tweaks", "blade", {
 	snd_reverse_whine = "gtasa/vehicles/reverse_gear.wav",
 	
 	--reverse beep
-	snd_reverse_beep = "gtasa/vehicles/reverse_beep.wav",
+	-- snd_reverse_beep = "gtasa/vehicles/reverse_beep.wav",
 
 	--upside down explosion timer
 	flipped_tick_check = true,
 	
 	--disables air control & vehicle flipping (waiting on simfphys update)
 	disable_air_control = true,
+	
+	--change default tiresmoke color (simfphys doesnt allow in spawnlist)
+	-- tiresmoke_color = Color(255,0,0),
+	
+	
+	--[[
+	
+	--scale wheel model (only works when first spawned, might mess with dupes)
+	--requires custom wheel models
+	ghostwheel_scale = {
+		--scale, deltatime 
+		fl_scale = {0.86,0},
+		fr_scale = {0.86,0},
+		rl_scale = {0.86,0},
+		rr_scale = {0.86,0},
+		
+		--optional (if have middle wheels)
+		-- ml_scale = {0.86,0},
+		-- mr_scale = {0.86,0},
+	},
+	
+	--]]
 })
-

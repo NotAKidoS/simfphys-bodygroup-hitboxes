@@ -31,13 +31,21 @@ function NAK.InitTweaks(self)
 	if TweakList.skid_sounds then
 		NAK.TweakSkid(self, TweakList.skid_sounds)
 	end
-	
+	--add flipped vehicle check
 	if TweakList.flipped_tick_check then
 		self.nak_flipped_tick_check = true
 	end
-
+	--add reverse whine to vehicle
 	if TweakList.snd_reverse_whine then
 		NAK.TweakReverseWhine(self, TweakList.snd_reverse_whine)
+	end
+	--change ghost wheel model scale
+	if TweakList.ghostwheel_scale then
+		NAK.TweakGhostWheelScale(self, TweakList.ghostwheel_scale)
+	end	
+	--change wheel smoke color (why this not in simfphys by default..)
+	if TweakList.tiresmoke_color then
+		self:SetTireSmokeColor(TweakList.tiresmoke_color:ToVector())
 	end
 	
 end
@@ -75,7 +83,29 @@ function NAK.TweakSkid(self, skid_sounds)
         if skid_sounds.snd_skid then Wheel.snd_skid = skid_sounds.snd_skid end
         if skid_sounds.snd_skid_dirt then Wheel.snd_skid_dirt = skid_sounds.snd_skid_dirt end
         if skid_sounds.snd_skid_grass then Wheel.snd_skid_grass = skid_sounds.snd_skid_grass end
-    end
+    end    
+end
+
+--Custom wheel model scale
+function NAK.TweakGhostWheelScale(self, gw_list)
+	
+	local slist = self:GetSpawn_List()
+	local vlist = list.Get( "simfphys_vehicles" )
+	
+	if vlist[slist].Members.CustomWheels then
+		--scale each wheel
+		self.GhostWheels[1]:SetModelScale( gw_list.fl_scale[1], gw_list.fl_scale[2] )
+		self.GhostWheels[2]:SetModelScale( gw_list.fr_scale[1], gw_list.fr_scale[2] )
+		self.GhostWheels[3]:SetModelScale( gw_list.rl_scale[1], gw_list.rl_scale[2] )
+		self.GhostWheels[4]:SetModelScale( gw_list.rr_scale[1], gw_list.rr_scale[2] )
+		
+		if self.CustomWheelPosML then
+			self.GhostWheels[5]:SetModelScale( gw_list.ml_scale[1], gw_list.ml_scale[2] )
+			self.GhostWheels[6]:SetModelScale( gw_list.mr_scale[1], gw_list.mr_scale[2] )
+		end
+	else
+		print("NAKTweaks: Error, ghostwheel_scale defined when theres no CustomWheels!")
+	end
 end
 
 --Custom skid sounds

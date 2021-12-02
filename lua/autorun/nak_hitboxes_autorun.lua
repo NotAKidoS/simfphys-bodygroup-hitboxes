@@ -24,9 +24,17 @@
 
 	That is all, thank you for reading. -NotAKidoS
 --]]
+NAK = istable(NAK) and NAK or {}
+
 local function loadshared(loadfile)
 	AddCSLuaFile(loadfile)
 	include(loadfile)
 end
 loadshared('notakid/tweaks/init.lua')
 loadshared('notakid/hitboxes/init.lua')
+
+--load hitboxes for any vehicle if it has a hitbox list
+hook.Add( "simfphysOnSpawn", "nak_init_hitboxes", function( self )
+	NAK.InitHitboxes(self)
+	NAK.InitTweaks(self)
+end )

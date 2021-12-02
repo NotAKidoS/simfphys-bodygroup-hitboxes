@@ -11,7 +11,6 @@ if CLIENT then
 end
 
 --Rest of code is SERVER only
-NAK = istable(NAK) and NAK or {}
 util.AddNetworkString("nak_glassbreak_fx")
 
 local function SpawnGibExploded(self, skin, Col, PxyClr, HBInfo)
@@ -46,7 +45,7 @@ local function SpawnGibExploded(self, skin, Col, PxyClr, HBInfo)
     end
 end
 
-local function SpawnGib(self, GibModel, GibOffset)
+local function SpawnGib(self, GibModel, GibOffset, GibBodygroups)
     if (GibModel) then
         local offset = GibOffset or Vector(0, 0, 0)
         local TheGib = ents.Create("gmod_simf_gtasa_nofire_gib")
@@ -55,6 +54,7 @@ local function SpawnGib(self, GibModel, GibOffset)
         TheGib:SetAngles(self:GetAngles())
         TheGib:SetColor(self:GetColor())
         TheGib:SetSkin(self:GetSkin())
+		TheGib:SetBodyGroups(GibBodygroups)
         if ProxyColor then
             TheGib:SetProxyColor(self:GetProxyColor())
         end
@@ -293,7 +293,7 @@ local function SharedDamage(self, damagePos, dmgAmount, type)
                         AddBDGroup(self, HBInfo[id].BDGroup, true)
                     else
 						if HBInfo[id].GibModel then
-							SpawnGib(self, HBInfo[id].GibModel, HBInfo[id].GibOffset)
+							SpawnGib(self, HBInfo[id].GibModel, HBInfo[id].GibOffset, HBInfo[id].GibBodygroups)
 						end
                         timer.Simple(
                             0.02,
@@ -359,12 +359,12 @@ end
 	This bit of the code applies the altered functions above to the vehicle, and also sets any values we need for later
 	CurHealth, Stage, and mirroring hitboxes is done here. Pretty much just a global stuff.
 ]]
-function NAK.InitHitboxes(self, repairstring)
+function NAK.InitHitboxes(self)
     local HBInfo, HBExtra = NAK.GetHitboxes(self)
 	if not HBInfo then return false end
 	
     self.NAKHitboxes = HBInfo
-    self.RepairBodygroups = repairstring and repairstring or "0000000000"
+    self.RepairBodygroups = self.RepairBodygroups and self.RepairBodygroups or "0000000000"
     --Override damages
     OverridePhysicsDamage(self)
     OverrideTakeDamage(self)
