@@ -7,7 +7,7 @@ end )
 --run tick tweak to check if vehicle is flipped over
 hook.Add( "simfphysOnTick", "nak_reverse_whine", function( self, Time )
 	if not self.nak_snd_reverse_whine then return end
-	local Time = CurTime()
+	-- local Time = CurTime()
 	--simfphys Think function handles the nexttick stuff
 	if self.NextTick < Time then
 		local Gear = self:GetGear()
@@ -24,7 +24,7 @@ end )
 --run tick tweak to check if vehicle is flipped over
 hook.Add( "simfphysOnTick", "nak_flipped_tick_check", function( self, Time )
 	if not self.nak_flipped_tick_check then return end
-	local Time = CurTime()
+	-- local Time = CurTime()
 	--simfphys Think function handles the nexttick stuff
 	if self.NextTick < Time then
 		--have not touched this shit code in 2 years, idk how it works
