@@ -1,7 +1,3 @@
---[[
-	Client file, stuff only the client needs
-]]
-
 --replace damaged engine sound on client
 net.Receive("nak_tweaks_snd_engine_damaged", function()
 	local self = net.ReadEntity()

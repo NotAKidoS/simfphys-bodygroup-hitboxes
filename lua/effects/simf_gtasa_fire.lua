@@ -86,6 +86,10 @@ function EFFECT:DoFX(pos, vel)
     end
 end
 
-function EFFECT:Think() return false end
+function EFFECT:Think() 
+    return false 
+end
 
-function EFFECT:Render() end
+function EFFECT:Render() 
+    return false
+end

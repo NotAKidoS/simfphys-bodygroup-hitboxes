@@ -51,14 +51,14 @@ list.Set("nak_simf_hitboxes", "blade", {
 		Health = 6,
 		ShatterPos = Vector(22.645, 0, 21.77)
 	},
-	Gascap = {
+	GasTank = {
 		OBBMin = Vector(-26, -63, 0),
 		OBBMax = Vector(-46, -73, 8),
 		TypeFlag = 2
 	},
 })
 
-list.Set("nak_simf_tweaks", "blade", {
+local tweaklist = {
 
 	--engine start configuration
 	snd_engine_start = "gtasa/sfx/engine_start.wav",
@@ -77,7 +77,7 @@ list.Set("nak_simf_tweaks", "blade", {
 	snd_reverse_whine = "gtasa/vehicles/reverse_gear.wav",
 	
 	--reverse beep
-	-- snd_reverse_beep = "gtasa/vehicles/reverse_beep.wav",
+	snd_reverse_beep = "gtasa/vehicles/reverse_beep.wav",
 
 	--upside down explosion timer
 	flipped_tick_check = true,
@@ -88,7 +88,17 @@ list.Set("nak_simf_tweaks", "blade", {
 	--change default tiresmoke color (simfphys doesnt allow in spawnlist)
 	-- tiresmoke_color = Color(255,0,0),
 	
-	
+	--fire sound
+	snd_fire = "NAK_GTASA.Fire",
+	--explosion sound
+	snd_explosion = "NAK_GTASA.Explosion",
+	--collision sounds
+	snd_collision = {
+		snd_soft_impact = "NAK_GTASA.Damage",
+		snd_hard_impact = "NAK_GTASA.Damage",
+		snd_flesh_impact = "NAK_GTASA.Damage",
+	},
+
 	--[[
 	
 	--scale wheel model (only works when first spawned, might mess with dupes)
@@ -106,7 +116,10 @@ list.Set("nak_simf_tweaks", "blade", {
 	},
 	
 	--]]
-})
+}
+
+list.Set("nak_simf_tweaks", "blade", tweaklist)
+list.Set("nak_simf_tweaks", "sim_fphys_gtasa_admiral", tweaklist)
 
 local HitboxList = {
 	Hood = {
@@ -147,7 +160,7 @@ local HitboxList = {
 	},
 	FDoor = {
 		OBBMin = Vector(31.641, 40.466, -15.112),
-		OBBMax = Vector(-13.111, 34.092, 8.405),
+		OBBMax = Vector(-13.111, 25, 32),
 		TypeFlag = 0,
 		BDGroup = 5,
 		GibModel = "models/gtasa/vehicles/admiral/door_lf_dam.mdl",
@@ -160,7 +173,7 @@ local HitboxList = {
 	},
 	RDoor = {
 		OBBMin = Vector(-13.975, 40.466, -15.112),
-		OBBMax = Vector(-48.503, 34.092, 8.405),
+		OBBMax = Vector(-52.503, 25, 32),
 		TypeFlag = 0,
 		BDGroup = 6,
 		GibModel = "models/gtasa/vehicles/admiral/door_lr_dam.mdl",

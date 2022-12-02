@@ -1,8 +1,3 @@
--- written by NotAKidoS, code is shit but it works.
--- If you would like to use this in your addon then you may go ahead and do so,
--- BUT rename the functions and convars. I dont want to update my addon and have it conflict.
--- Id rather you set this addon as a requirment anyways so you get updates whenever gmod breaks the addon
--- but i cant really stop you with text, i doubt you even read all of this.
 local Materials = {
     "particle/smokesprites_0001", "particle/smokesprites_0002",
     "particle/smokesprites_0003", "particle/smokesprites_0004",
@@ -19,17 +14,21 @@ function EFFECT:Init(data)
 
     self:Explosion(Pos)
 
-    local random = math.random(1, 4)
-
-    if random == 1 then
-        sound.Play("gtasa/sfx/explo_detail_1.wav", Pos, 95, 100, 1)
-    elseif random == 2 then
-        sound.Play("gtasa/sfx/explo_detail_2.wav", Pos, 95, 100, 1)
-    elseif random == 3 then
-        sound.Play("gtasa/sfx/explo_detail_1.wav", Pos, 95, 120, 1)
-    else
-        sound.Play("gtasa/sfx/explo_detail_2.wav", Pos, 95, 120, 1)
+    local function GetCar()
+        local own = nil
+            for k,v in ipairs(ents.FindInSphere(data:GetOrigin(), 100)) do
+                if v:GetClass() == "gmod_simf_gtasa_nofire_gib" then
+                own = v
+                break
+            end
+        end
+        return own
     end
+    local owner = GetCar() 
+
+    owner:EmitSound(owner:GetNWString("31simf_snd_explosion","random"))
+
+    --print(owner)
 end
 
 function EFFECT:Explosion(pos)

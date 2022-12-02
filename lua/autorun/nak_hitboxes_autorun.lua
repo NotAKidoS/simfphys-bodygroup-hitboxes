@@ -33,6 +33,10 @@ end
 loadshared('notakid/tweaks/init.lua')
 loadshared('notakid/hitboxes/init.lua')
 
+--Shit fix for non-listed patches, NEXT TIME GET 5 MINS OF FREE TIME and help me pls :(
+--snd_explosion_sound = "NAKSIMF.DefaultExp",
+sound.AddSoundOverrides("lua/sound/game_sounds_NAKSIMF.lua")
+
 --load hitboxes for any vehicle if it has a hitbox list
 hook.Add( "simfphysOnSpawn", "nak_init_hitboxes", function( self )
 	NAK.InitHitboxes(self)

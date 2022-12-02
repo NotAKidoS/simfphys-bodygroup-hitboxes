@@ -48,7 +48,8 @@ if SERVER then
 
     function ENT:PhysicsCollide(data, physobj)
         if (data.Speed > 50 and data.DeltaTime > 0.8) then
-            self:EmitSound("gtasa/sfx/damage_hvy" .. math.random(3, 5) .. ".wav")
+            self:EmitSound(self:GetOwner():GetNWString("31simf_snd_impact"))
         end
     end
+
 end
